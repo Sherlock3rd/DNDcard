@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0b0b10" />
+    <meta
+      name="description"
+      content="Charlie — D&D 5e 三级人类预言学派法师角色卡"
+    />
+    <title>Charlie · 三级人类法师</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="ambient" aria-hidden="true"></div>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="#overview" aria-label="返回角色总览">
+          <span class="brand-mark">C</span>
+          <span>
+            <strong>CHARLIE</strong>
+            <small>奥术档案 · 5e</small>
+          </span>
+        </a>
+        <div class="top-actions">
+          <span class="save-state" id="saveState">本地档案已同步</span>
+          <button class="ghost-button" id="resetButton" type="button">重置状态</button>
+        </div>
+      </header>
+
+      <main>
+        <section class="hero" id="overview" aria-labelledby="characterName">
+          <div class="portrait-panel">
+            <img
+              src="./assets/images/charlie-wizard.png"
+              alt="白银长发、身穿黑靛法袍并手持发光魔法书的人类法师 Charlie"
+            />
+            <div class="portrait-vignette"></div>
+            <div class="portrait-caption">
+              <span>预言学派</span>
+              <strong>命运观测者</strong>
+            </div>
+          </div>
+
+          <div class="identity-panel">
+            <p class="eyebrow">三级角色档案 · 2014 版 5e</p>
+            <h1 id="characterName">Charlie</h1>
+            <p class="character-line">人类 · 法师 3 · 预言学派 · 学者</p>
+            <blockquote>
+              “星辰从不预言未来——它们只提醒我，未来有多少种写法。”
+            </blockquote>
+
+            <div class="hero-metrics">
+              <article>
+                <span>护甲等级</span>
+                <strong>15</strong>
+                <small>法师护甲</small>
+              </article>
+              <article>
+                <span>先攻</span>
+                <strong>+2</strong>
+                <small>敏捷</small>
+              </article>
+              <article>
+                <span>速度</span>
+                <strong>30</strong>
+                <small>尺</small>
+              </article>
+              <article>
+                <span>熟练加值</span>
+                <strong>+2</strong>
+                <small>3 级</small>
+              </article>
+            </div>
+
+            <div class="resource-strip">
+              <div class="resource resource-hp">
+                <div>
+                  <span>生命值</span>
+                  <small>最大 20 · 生命骰 3d6</small>
+                </div>
+                <div class="stepper">
+                  <button type="button" data-step="hp" data-delta="-1" aria-label="生命值减一">−</button>
+                  <output id="hpValue">20</output>
+                  <button type="button" data-step="hp" data-delta="1" aria-label="生命值加一">+</button>
+                </div>
+              </div>
+              <div class="resource">
+                <div>
+                  <span>临时生命</span>
+                  <small>战斗缓冲</small>
+                </div>
+                <div class="stepper">
+                  <button type="button" data-step="tempHp" data-delta="-1" aria-label="临时生命减一">−</button>
+                  <output id="tempHpValue">0</output>
+                  <button type="button" data-step="tempHp" data-delta="1" aria-label="临时生命加一">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <nav class="section-nav" aria-label="角色卡章节">
+          <a class="active" href="#abilities">属性</a>
+          <a href="#combat">战斗</a>
+          <a href="#features">特性</a>
+          <a href="#equipment">装备</a>
+          <a href="#spells">法术</a>
+          <a href="#story">人物</a>
+        </nav>
+
+        <section class="content-section" id="abilities">
+          <div class="section-heading">
+            <span>01</span>
+            <div>
+              <p>ABILITY MATRIX</p>
+              <h2>属性与技能</h2>
+            </div>
+          </div>
+          <div class="ability-grid" id="abilityGrid"></div>
+          <div class="two-column">
+            <article class="ornate-card">
+              <div class="card-heading">
+                <div>
+                  <p>PROFICIENCIES</p>
+                  <h3>熟练与语言</h3>
+                </div>
+              </div>
+              <dl class="detail-list">
+                <div><dt>豁免熟练</dt><dd>智力 +5、感知 +3</dd></div>
+                <div><dt>技能熟练</dt><dd>奥秘、历史、调查、宗教</dd></div>
+                <div><dt>武器</dt><dd>匕首、飞镖、投石索、短棍、轻弩</dd></div>
+                <div><dt>工具</dt><dd>无</dd></div>
+                <div><dt>语言</dt><dd>通用语、精灵语、龙语、天界语</dd></div>
+              </dl>
+            </article>
+            <article class="ornate-card">
+              <div class="card-heading">
+                <div>
+                  <p>SENSES & DEFENSE</p>
+                  <h3>感知与防护</h3>
+                </div>
+              </div>
+              <div class="stat-row">
+                <div><span>被动察觉</span><strong>11</strong></div>
+                <div><span>被动调查</span><strong>15</strong></div>
+                <div><span>被动洞悉</span><strong>11</strong></div>
+              </div>
+              <p class="note">
+                无甲 AC 12；施展法师护甲后 AC 15。护盾术可使 AC 临时提升至 20，并免疫魔法飞弹。
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section class="content-section" id="combat">
+          <div class="section-heading">
+            <span>02</span>
+            <div>
+              <p>COMBAT LEDGER</p>
+              <h2>战斗与当前状态</h2>
+            </div>
+          </div>
+          <div class="two-column combat-layout">
+            <article class="ornate-card">
+              <div class="card-heading">
+                <div>
+                  <p>ATTACKS</p>
+                  <h3>攻击与施法</h3>
+                </div>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead><tr><th>攻击</th><th>命中</th><th>伤害 / 效果</th></tr></thead>
+                  <tbody>
+                    <tr><td>火焰箭</td><td>+5</td><td>1d10 火焰，120 尺</td></tr>
+                    <tr><td>匕首</td><td>+4</td><td>1d4+2 穿刺，灵巧/轻型</td></tr>
+                    <tr><td>短棍</td><td>+1</td><td>1d6−1 钝击，双手 1d8−1</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="spell-math">
+                <div><span>法术攻击</span><strong>+5</strong></div>
+                <div><span>法术豁免 DC</span><strong>13</strong></div>
+                <div><span>施法属性</span><strong>智力</strong></div>
+              </div>
+            </article>
+
+            <article class="ornate-card">
+              <div class="card-heading">
+                <div>
+                  <p>LIVE RESOURCES</p>
+                  <h3>可用资源</h3>
+                </div>
+                <button class="text-button" type="button" id="longRest">长休恢复</button>
+              </div>
+              <div class="slot-group">
+                <div class="slot-title"><span>1 环法术位</span><small>4 / 4</small></div>
+                <div class="slot-pips" data-resource="slot1"></div>
+              </div>
+              <div class="slot-group">
+                <div class="slot-title"><span>2 环法术位</span><small>2 / 2</small></div>
+                <div class="slot-pips" data-resource="slot2"></div>
+              </div>
+              <div class="slot-group">
+                <div class="slot-title"><span>预言骰</span><small>长休重掷</small></div>
+                <div class="portent-row">
+                  <label>Ⅰ <input id="portentOne" inputmode="numeric" maxlength="2" value="17" /></label>
+                  <label>Ⅱ <input id="portentTwo" inputmode="numeric" maxlength="2" value="6" /></label>
+                </div>
+              </div>
+              <div class="conditions">
+                <span>状态</span>
+                <button type="button" id="conditionButton">＋ 添加状态</button>
+                <div id="conditionList"></div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="content-section" id="features">
+          <div class="section-heading">
+            <span>03</span>
+            <div>
+              <p>TRAITS & FEATURES</p>
+              <h2>种族、职业与背景特性</h2>
+            </div>
+          </div>
+          <div class="feature-grid" id="featureGrid"></div>
+        </section>
+
+        <section class="content-section" id="equipment">
+          <div class="section-heading">
+            <span>04</span>
+            <div>
+              <p>INVENTORY</p>
+              <h2>装备与财产</h2>
+            </div>
+          </div>
+          <div class="two-column">
+            <article class="ornate-card">
+              <div class="card-heading">
+                <div><p>CARRIED</p><h3>随身物品</h3></div>
+              </div>
+              <ul class="inventory-list" id="inventoryList"></ul>
+            </article>
+            <article class="ornate-card">
+              <div class="card-heading">
+                <div><p>WEALTH & ENCUMBRANCE</p><h3>货币与负重</h3></div>
+              </div>
+              <div class="coin-row">
+                <div><strong>0</strong><span>PP</span></div>
+                <div><strong>10</strong><span>GP</span></div>
+                <div><strong>0</strong><span>EP</span></div>
+                <div><strong>4</strong><span>SP</span></div>
+                <div><strong>8</strong><span>CP</span></div>
+              </div>
+              <dl class="detail-list">
+                <div><dt>携带重量</dt><dd>约 46 磅</dd></div>
+                <div><dt>负重上限</dt><dd>135 磅</dd></div>
+                <div><dt>推/拖/举</dt><dd>270 磅</dd></div>
+              </dl>
+            </article>
+          </div>
+        </section>
+
+        <section class="content-section" id="spells">
+          <div class="section-heading">
+            <span>05</span>
+            <div>
+              <p>ARCANE GRIMOIRE</p>
+              <h2>法术书</h2>
+            </div>
+          </div>
+          <div class="spell-summary">
+            <div><span>已知戏法</span><strong>3</strong></div>
+            <div><span>法术书</span><strong>10</strong></div>
+            <div><span>每日准备</span><strong>6</strong></div>
+            <div><span>仪式施法</span><strong>可用</strong></div>
+          </div>
+          <div class="spell-filters" role="group" aria-label="法术环级筛选">
+            <button class="active" type="button" data-spell-filter="all">全部</button>
+            <button type="button" data-spell-filter="0">戏法</button>
+            <button type="button" data-spell-filter="1">1 环</button>
+            <button type="button" data-spell-filter="2">2 环</button>
+          </div>
+          <div class="spell-grid" id="spellGrid"></div>
+        </section>
+
+        <section class="content-section" id="story">
+          <div class="section-heading">
+            <span>06</span>
+            <div>
+              <p>PERSONAL ARCHIVE</p>
+              <h2>人物与故事</h2>
+            </div>
+          </div>
+          <div class="story-layout">
+            <article class="ornate-card story-card">
+              <div class="card-heading">
+                <div><p>ORIGIN</p><h3>星图中的空白</h3></div>
+              </div>
+              <p>
+                Charlie 曾是北境王家天文台最年轻的抄写员。他在一份被焚毁的星历中发现了一个从所有记录里被刻意抹去的日期——而那一天，正是导师失踪的夜晚。
+                他带着导师留下的黄铜星盘与未写完的信离开学院，沿着只有自己能看见的征兆追查真相。
+              </p>
+              <p>
+                他相信知识应被证明，而不是被崇拜；但当预言真的应验时，他又会下意识地把责任揽到自己身上。
+              </p>
+            </article>
+            <div class="personality-grid">
+              <article><span>人格特质</span><p>我会在行动前列出三种最坏结果，然后假装自己毫不担心。</p></article>
+              <article><span>理想</span><p><strong>知识。</strong> 被隐藏的真相比舒适的谎言更有价值。</p></article>
+              <article><span>牵绊</span><p>导师遗留的星盘会在某些夜晚自行转动，我必须弄清它指向何处。</p></article>
+              <article><span>缺点</span><p>我太相信自己的推演，偶尔会把同伴当成公式里的变量。</p></article>
+            </div>
+          </div>
+          <div class="character-facts">
+            <div><span>阵营</span><strong>中立善良</strong></div>
+            <div><span>年龄</span><strong>27</strong></div>
+            <div><span>身高</span><strong>6′0″</strong></div>
+            <div><span>体重</span><strong>162 磅</strong></div>
+            <div><span>眼睛</span><strong>灰蓝</strong></div>
+            <div><span>头发</span><strong>银白</strong></div>
+            <div><span>信仰</span><strong>密斯特拉</strong></div>
+            <div><span>经验值</span><strong>900 / 2,700</strong></div>
+          </div>
+        </section>
+      </main>
+
+      <footer>
+        <p>Charlie · Level 3 Human Wizard · School of Divination</p>
+        <small>2014 版 D&D 5e 角色构筑 · 浏览器本地状态保存</small>
+      </footer>
+    </div>
+
+    <dialog id="conditionDialog">
+      <form method="dialog">
+        <div class="dialog-heading">
+          <div><p>CONDITION</p><h2>添加当前状态</h2></div>
+          <button value="cancel" aria-label="关闭">×</button>
+        </div>
+        <label>
+          状态名称
+          <input id="conditionInput" placeholder="例如：专注、倒地、中毒" maxlength="24" />
+        </label>
+        <menu>
+          <button value="cancel" class="ghost-button">取消</button>
+          <button value="default" id="addCondition" class="primary-button">添加</button>
+        </menu>
+      </form>
+    </dialog>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
