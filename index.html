@@ -8,12 +8,15 @@
       name="description"
       content="Charlie — D&D 5e 三级人类预言学派法师角色卡"
     />
-    <title>Charlie · 三级人类法师</title>
+    <title>DNDcard · 奥术档案馆</title>
     <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./portal.css" />
   </head>
   <body>
-    <div class="ambient" aria-hidden="true"></div>
-    <div class="app-shell">
+    <div class="portal-view" id="portalApp" hidden></div>
+    <div class="archive-view" id="archiveApp" hidden></div>
+    <div class="ambient" id="characterAmbient" aria-hidden="true"></div>
+    <div class="app-shell" id="characterApp">
       <header class="topbar">
         <a class="brand" href="#overview" aria-label="返回角色总览">
           <span class="brand-mark">C</span>
@@ -24,6 +27,7 @@
         </a>
         <div class="top-actions">
           <span class="save-state" id="saveState">本地档案已同步</span>
+          <button class="ghost-button archive-home-button" type="button" data-portal-route="portal">切换角色</button>
           <button class="level-button" id="levelUpButton" type="button">升级角色</button>
           <button class="ghost-button" id="resetButton" type="button">重置状态</button>
         </div>
@@ -346,5 +350,6 @@
     <script src="./data/srd-catalog.js"></script>
     <script src="./app.js"></script>
     <script src="./manager.js"></script>
+    <script src="./portal.js"></script>
   </body>
 </html>
