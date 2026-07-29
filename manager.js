@@ -367,6 +367,7 @@ function renderManagerSlots() {
         </div>`;
     })
     .join("");
+  window.renderHeroState?.();
 }
 
 window.renderDynamicSlots = renderManagerSlots;

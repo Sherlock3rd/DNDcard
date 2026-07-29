@@ -265,7 +265,14 @@ function signed(value) {
 
 function loadState() {
   try {
-    return { ...defaults, ...JSON.parse(localStorage.getItem("charlie-5e-state") || "{}") };
+    const saved = JSON.parse(localStorage.getItem("charlie-5e-state") || "{}");
+    return {
+      ...defaults,
+      ...saved,
+      conditions: Array.isArray(saved.conditions)
+        ? [...new Set(saved.conditions.map((condition) => String(condition).trim()).filter(Boolean))]
+        : [],
+    };
   } catch {
     return { ...defaults };
   }
@@ -359,6 +366,7 @@ function renderState() {
   renderSlots("slot2", 2);
   window.renderDynamicSlots?.();
   renderConditions();
+  renderHeroState();
 }
 
 function renderSlots(key, max) {
@@ -371,14 +379,39 @@ function renderSlots(key, max) {
 }
 
 function renderConditions() {
-  document.querySelector("#conditionList").innerHTML = state.conditions
-    .map(
-      (condition, index) =>
-        `<button class="condition-chip" type="button" data-condition-index="${index}" title="点击移除">${String(condition).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")} ×</button>`,
-    )
+  const conditionMarkup = state.conditions
+    .map((condition, index) => {
+      const escaped = String(condition)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+      return `<button class="condition-chip" type="button" data-condition-index="${index}" title="点击移除 ${escaped}">${escaped} ×</button>`;
+    })
     .join("");
+  document.querySelector("#conditionList").innerHTML = conditionMarkup;
+  const heroList = document.querySelector("#heroConditionList");
+  if (heroList) {
+    heroList.innerHTML = conditionMarkup || `<span class="hero-condition-empty">状态正常</span>`;
+  }
   renderConditionPresets();
 }
+
+function renderHeroState() {
+  const summary = document.querySelector("#heroSpellSlotSummary");
+  if (!summary) return;
+  const maximums = window.currentSlotMaximums || { slot1: 4, slot2: 2 };
+  summary.innerHTML = Object.entries(maximums)
+    .map(([key, max]) => {
+      const level = Number(key.replace("slot", ""));
+      const available = Math.max(0, Math.min(max, Number(state[key] ?? max)));
+      return `<span><b>${level} 环</b><strong>${available} / ${max}</strong></span>`;
+    })
+    .join("");
+}
+
+window.renderHeroState = renderHeroState;
 
 function renderConditionPresets() {
   const container = document.querySelector("#conditionPresets");
@@ -467,11 +500,15 @@ document.querySelector("#resetButton").addEventListener("click", () => {
 });
 
 const conditionDialog = document.querySelector("#conditionDialog");
-document.querySelector("#conditionButton").addEventListener("click", () => {
+function openConditionDialog() {
   document.querySelector("#conditionInput").value = "";
   renderConditionPresets();
   conditionDialog.showModal();
   window.setTimeout(() => document.querySelector("#conditionInput").focus(), 0);
+}
+
+document.querySelectorAll("[data-open-condition-dialog]").forEach((button) => {
+  button.addEventListener("click", openConditionDialog);
 });
 
 document.querySelector("#addCondition").addEventListener("click", (event) => {

@@ -27,9 +27,9 @@
         </a>
         <div class="top-actions">
           <span class="save-state" id="saveState">本地档案已同步</span>
-          <button class="ghost-button archive-home-button" type="button" data-portal-route="portal">切换角色</button>
+          <button class="ghost-button character-home-button" type="button" data-portal-route="portal" aria-label="返回主页">返回主页</button>
           <button class="level-button" id="levelUpButton" type="button">升级角色</button>
-          <button class="ghost-button" id="resetButton" type="button">重置状态</button>
+          <button class="ghost-button reset-state-button" id="resetButton" type="button">重置状态</button>
         </div>
       </header>
 
@@ -102,6 +102,23 @@
                 </div>
               </div>
             </div>
+
+            <section class="hero-live-status" aria-label="角色实时摘要">
+              <div class="hero-status-block">
+                <header>
+                  <div><span>当前状态</span><small>与战斗状态实时同步</small></div>
+                  <button type="button" data-open-condition-dialog>＋ 状态</button>
+                </header>
+                <div class="hero-condition-list" id="heroConditionList"></div>
+              </div>
+              <a class="hero-slot-block" href="#combat">
+                <header>
+                  <div><span>法术位</span><small>点击前往战斗资源</small></div>
+                  <b>ARCANE</b>
+                </header>
+                <div class="hero-slot-summary" id="heroSpellSlotSummary"></div>
+              </a>
+            </section>
           </div>
         </section>
 
@@ -218,7 +235,7 @@
               </div>
               <div class="conditions">
                 <span>状态</span>
-                <button type="button" id="conditionButton">＋ 添加状态</button>
+                <button type="button" id="conditionButton" data-open-condition-dialog>＋ 添加状态</button>
                 <div id="conditionList"></div>
               </div>
             </article>
@@ -336,12 +353,12 @@
           <input id="conditionInput" placeholder="例如：专注、倒地、中毒" maxlength="24" />
         </label>
         <div class="condition-presets" aria-label="常用状态">
-          <span>常用状态</span>
+          <span>常用状态 · 点击即可立即添加或移除</span>
           <div id="conditionPresets"></div>
         </div>
         <menu>
           <button value="cancel" class="ghost-button">取消</button>
-          <button value="default" id="addCondition" class="primary-button">添加</button>
+          <button value="default" id="addCondition" class="primary-button">添加自定义状态</button>
         </menu>
       </form>
     </dialog>
