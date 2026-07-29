@@ -14,7 +14,7 @@
 - 错题体系：已建立说明、模板和首条平台路由复盘。
 - 术语体系：已初始化项目术语表。
 - 应用状态：已创建 Charlie 三级人类预言学派法师角色卡前端，支持本地状态持久化。
-- 部署状态：采用 `main` 根目录作为 GitHub Pages 发布源，待首次线上发布完成。
+- 部署状态：已从 `main` 根目录发布到 `https://sherlock3rd.github.io/DNDcard/`，首次线上构建和横竖屏验证通过。
 
 ## 目录总账
 
@@ -33,6 +33,7 @@
 | 2026-07-29 | 启用 Codex 本地记忆 | `C:\Users\liuweichen\.codex\config.toml` | 作为偏好与近期上下文的辅助层 |
 | 2026-07-29 | 创建 Charlie 三级法师角色卡 | `index.html`、`styles.css`、`app.js`、`assets/images/` | 2014 版 5e；生成原创人物、横竖背景和 UI 纹理；支持横竖屏与本地状态保存 |
 | 2026-07-29 | 配置 GitHub Pages | `.nojekyll`、仓库 Pages 发布源 | 直接从 main 根目录发布静态站点 |
+| 2026-07-29 | 完成首次 Pages 发布与验收 | GitHub Pages、线上角色卡 | 构建提交 `9c24040`；桌面和手机竖屏资源加载、布局及控制台检查通过 |
 
 ## 下一步
 
