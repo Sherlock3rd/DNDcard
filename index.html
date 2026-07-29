@@ -24,6 +24,7 @@
         </a>
         <div class="top-actions">
           <span class="save-state" id="saveState">本地档案已同步</span>
+          <button class="level-button" id="levelUpButton" type="button">升级角色</button>
           <button class="ghost-button" id="resetButton" type="button">重置状态</button>
         </div>
       </header>
@@ -45,7 +46,7 @@
           <div class="identity-panel">
             <p class="eyebrow">三级角色档案 · 2014 版 5e</p>
             <h1 id="characterName">Charlie</h1>
-            <p class="character-line">人类 · 法师 3 · 预言学派 · 学者</p>
+            <p class="character-line">人类 · <span id="levelLabel">法师 3</span> · 预言学派 · 学者</p>
             <blockquote>
               “星辰从不预言未来——它们只提醒我，未来有多少种写法。”
             </blockquote>
@@ -68,8 +69,8 @@
               </article>
               <article>
                 <span>熟练加值</span>
-                <strong>+2</strong>
-                <small>3 级</small>
+                <strong id="proficiencyValue">+2</strong>
+                <small id="proficiencyLevel">3 级</small>
               </article>
             </div>
 
@@ -77,7 +78,7 @@
               <div class="resource resource-hp">
                 <div>
                   <span>生命值</span>
-                  <small>最大 20 · 生命骰 3d6</small>
+                  <small id="hpMeta">最大 20 · 生命骰 3d6</small>
                 </div>
                 <div class="stepper">
                   <button type="button" data-step="hp" data-delta="-1" aria-label="生命值减一">−</button>
@@ -127,7 +128,7 @@
                 </div>
               </div>
               <dl class="detail-list">
-                <div><dt>豁免熟练</dt><dd>智力 +5、感知 +3</dd></div>
+                <div><dt>豁免熟练</dt><dd id="savingThrowLine">智力 +5、感知 +3</dd></div>
                 <div><dt>技能熟练</dt><dd>奥秘、历史、调查、宗教</dd></div>
                 <div><dt>武器</dt><dd>匕首、飞镖、投石索、短棍、轻弩</dd></div>
                 <div><dt>工具</dt><dd>无</dd></div>
@@ -180,8 +181,8 @@
                 </table>
               </div>
               <div class="spell-math">
-                <div><span>法术攻击</span><strong>+5</strong></div>
-                <div><span>法术豁免 DC</span><strong>13</strong></div>
+                <div><span>法术攻击</span><strong id="spellAttackValue">+5</strong></div>
+                <div><span>法术豁免 DC</span><strong id="spellDcValue">13</strong></div>
                 <div><span>施法属性</span><strong>智力</strong></div>
               </div>
             </article>
@@ -194,13 +195,15 @@
                 </div>
                 <button class="text-button" type="button" id="longRest">长休恢复</button>
               </div>
-              <div class="slot-group">
-                <div class="slot-title"><span>1 环法术位</span><small>4 / 4</small></div>
-                <div class="slot-pips" data-resource="slot1"></div>
-              </div>
-              <div class="slot-group">
-                <div class="slot-title"><span>2 环法术位</span><small>2 / 2</small></div>
-                <div class="slot-pips" data-resource="slot2"></div>
+              <div id="spellSlotTracker">
+                <div class="slot-group">
+                  <div class="slot-title"><span>1 环法术位</span><small>4 / 4</small></div>
+                  <div class="slot-pips" data-resource="slot1"></div>
+                </div>
+                <div class="slot-group">
+                  <div class="slot-title"><span>2 环法术位</span><small>2 / 2</small></div>
+                  <div class="slot-pips" data-resource="slot2"></div>
+                </div>
               </div>
               <div class="slot-group">
                 <div class="slot-title"><span>预言骰</span><small>长休重掷</small></div>
@@ -237,30 +240,16 @@
               <h2>装备与财产</h2>
             </div>
           </div>
-          <div class="two-column">
-            <article class="ornate-card">
-              <div class="card-heading">
-                <div><p>CARRIED</p><h3>随身物品</h3></div>
+          <div class="manager-shell" id="inventoryManager">
+            <div class="manager-toolbar">
+              <div class="manager-tabs" role="tablist" aria-label="物品管理视图">
+                <button class="active" type="button" data-inventory-view="carried">我的背包</button>
+                <button type="button" data-inventory-view="catalog">全部物品</button>
               </div>
-              <ul class="inventory-list" id="inventoryList"></ul>
-            </article>
-            <article class="ornate-card">
-              <div class="card-heading">
-                <div><p>WEALTH & ENCUMBRANCE</p><h3>货币与负重</h3></div>
-              </div>
-              <div class="coin-row">
-                <div><strong>0</strong><span>PP</span></div>
-                <div><strong>10</strong><span>GP</span></div>
-                <div><strong>0</strong><span>EP</span></div>
-                <div><strong>4</strong><span>SP</span></div>
-                <div><strong>8</strong><span>CP</span></div>
-              </div>
-              <dl class="detail-list">
-                <div><dt>携带重量</dt><dd>约 46 磅</dd></div>
-                <div><dt>负重上限</dt><dd>135 磅</dd></div>
-                <div><dt>推/拖/举</dt><dd>270 磅</dd></div>
-              </dl>
-            </article>
+              <button class="primary-button compact" type="button" id="newItemButton">＋ 自定义物品</button>
+            </div>
+            <div id="inventorySummary"></div>
+            <div id="inventoryWorkspace"></div>
           </div>
         </section>
 
@@ -272,19 +261,18 @@
               <h2>法术书</h2>
             </div>
           </div>
-          <div class="spell-summary">
-            <div><span>已知戏法</span><strong>3</strong></div>
-            <div><span>法术书</span><strong>10</strong></div>
-            <div><span>每日准备</span><strong>6</strong></div>
-            <div><span>仪式施法</span><strong>可用</strong></div>
+          <div class="manager-shell" id="spellManager">
+            <div class="manager-toolbar">
+              <div class="manager-tabs" role="tablist" aria-label="法术管理视图">
+                <button class="active" type="button" data-spell-view="prepared">已准备</button>
+                <button type="button" data-spell-view="spellbook">法术书</button>
+                <button type="button" data-spell-view="catalog">全部法术</button>
+              </div>
+              <button class="primary-button compact" type="button" id="newSpellButton">＋ 自定义法术</button>
+            </div>
+            <div class="spell-summary" id="spellSummary"></div>
+            <div id="spellWorkspace"></div>
           </div>
-          <div class="spell-filters" role="group" aria-label="法术环级筛选">
-            <button class="active" type="button" data-spell-filter="all">全部</button>
-            <button type="button" data-spell-filter="0">戏法</button>
-            <button type="button" data-spell-filter="1">1 环</button>
-            <button type="button" data-spell-filter="2">2 环</button>
-          </div>
-          <div class="spell-grid" id="spellGrid"></div>
         </section>
 
         <section class="content-section" id="story">
@@ -330,7 +318,7 @@
 
       <footer>
         <p>Charlie · Level 3 Human Wizard · School of Divination</p>
-        <small>2014 版 D&D 5e 角色构筑 · 浏览器本地状态保存</small>
+        <small>2014 版 D&D 5e 角色构筑 · SRD 5.1（CC BY 4.0）· 浏览器本地状态保存</small>
       </footer>
     </div>
 
@@ -351,6 +339,12 @@
       </form>
     </dialog>
 
+    <dialog class="manager-dialog" id="spellEditorDialog"></dialog>
+    <dialog class="manager-dialog" id="itemEditorDialog"></dialog>
+    <dialog class="manager-dialog level-dialog" id="levelUpDialog"></dialog>
+
+    <script src="./data/srd-catalog.js"></script>
     <script src="./app.js"></script>
+    <script src="./manager.js"></script>
   </body>
 </html>

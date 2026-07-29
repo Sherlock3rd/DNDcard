@@ -243,6 +243,7 @@ const spells = [
 
 const defaults = {
   hp: 20,
+  maxHp: 20,
   tempHp: 0,
   slot1: 4,
   slot2: 2,
@@ -351,6 +352,7 @@ function renderState() {
   document.querySelector("#portentTwo").value = state.portentTwo;
   renderSlots("slot1", 4);
   renderSlots("slot2", 2);
+  window.renderDynamicSlots?.();
   renderConditions();
 }
 
@@ -376,7 +378,7 @@ document.addEventListener("click", (event) => {
   const step = event.target.closest("[data-step]");
   if (step) {
     const key = step.dataset.step;
-    const max = key === "hp" ? 20 : 99;
+    const max = key === "hp" ? state.maxHp : 99;
     state[key] = Math.max(0, Math.min(max, state[key] + Number(step.dataset.delta)));
     renderState();
     saveState();
@@ -385,18 +387,11 @@ document.addEventListener("click", (event) => {
   const slot = event.target.closest("[data-slot]");
   if (slot) {
     const key = slot.dataset.slot;
-    const max = key === "slot1" ? 4 : 2;
+    const max = window.currentSlotMaximums?.[key] ?? (key === "slot1" ? 4 : 2);
     const index = Number(slot.dataset.index);
     state[key] = index < state[key] ? index : Math.min(max, index + 1);
     renderState();
     saveState();
-  }
-
-  const filter = event.target.closest("[data-spell-filter]");
-  if (filter) {
-    document.querySelectorAll("[data-spell-filter]").forEach((button) => button.classList.remove("active"));
-    filter.classList.add("active");
-    renderSpells(filter.dataset.spellFilter);
   }
 
   const condition = event.target.closest("[data-condition-index]");
@@ -420,10 +415,12 @@ document.querySelector("#portentTwo").addEventListener("change", (event) => {
 });
 
 document.querySelector("#longRest").addEventListener("click", () => {
-  state.hp = 20;
+  state.hp = state.maxHp;
   state.tempHp = 0;
-  state.slot1 = 4;
-  state.slot2 = 2;
+  const slotMaximums = window.currentSlotMaximums || { slot1: 4, slot2: 2 };
+  Object.entries(slotMaximums).forEach(([key, max]) => {
+    state[key] = max;
+  });
   state.conditions = [];
   renderState();
   saveState();
@@ -431,7 +428,11 @@ document.querySelector("#longRest").addEventListener("click", () => {
 
 document.querySelector("#resetButton").addEventListener("click", () => {
   if (!window.confirm("将 Charlie 的当前生命、法术位、预兆骰与状态恢复为初始值？")) return;
-  state = { ...defaults, conditions: [] };
+  const maxHp = state.maxHp;
+  state = { ...defaults, maxHp, hp: maxHp, conditions: [] };
+  Object.entries(window.currentSlotMaximums || { slot1: 4, slot2: 2 }).forEach(([key, max]) => {
+    state[key] = max;
+  });
   renderState();
   saveState();
 });
@@ -474,6 +475,4 @@ observedSections.forEach((section) => observer.observe(section));
 
 renderAbilities();
 renderFeatures();
-renderInventory();
-renderSpells();
 renderState();
