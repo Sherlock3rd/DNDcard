@@ -252,6 +252,11 @@ const defaults = {
   conditions: [],
 };
 
+const commonConditions = [
+  "专注", "目盲", "魅惑", "耳聋", "恐慌", "擒抱", "失能",
+  "隐形", "麻痹", "石化", "中毒", "倒地", "束缚", "震慑", "昏迷",
+];
+
 let state = loadState();
 
 function signed(value) {
@@ -369,7 +374,19 @@ function renderConditions() {
   document.querySelector("#conditionList").innerHTML = state.conditions
     .map(
       (condition, index) =>
-        `<button class="condition-chip" type="button" data-condition-index="${index}" title="点击移除">${condition} ×</button>`,
+        `<button class="condition-chip" type="button" data-condition-index="${index}" title="点击移除">${String(condition).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")} ×</button>`,
+    )
+    .join("");
+  renderConditionPresets();
+}
+
+function renderConditionPresets() {
+  const container = document.querySelector("#conditionPresets");
+  if (!container) return;
+  container.innerHTML = commonConditions
+    .map(
+      (condition) =>
+        `<button class="${state.conditions.includes(condition) ? "active" : ""}" type="button" data-condition-preset="${condition}">${condition}</button>`,
     )
     .join("");
 }
@@ -397,6 +414,18 @@ document.addEventListener("click", (event) => {
   const condition = event.target.closest("[data-condition-index]");
   if (condition) {
     state.conditions.splice(Number(condition.dataset.conditionIndex), 1);
+    renderConditions();
+    saveState();
+  }
+
+  const preset = event.target.closest("[data-condition-preset]");
+  if (preset) {
+    const value = preset.dataset.conditionPreset;
+    if (state.conditions.includes(value)) {
+      state.conditions = state.conditions.filter((conditionName) => conditionName !== value);
+    } else {
+      state.conditions.push(value);
+    }
     renderConditions();
     saveState();
   }
@@ -440,6 +469,7 @@ document.querySelector("#resetButton").addEventListener("click", () => {
 const conditionDialog = document.querySelector("#conditionDialog");
 document.querySelector("#conditionButton").addEventListener("click", () => {
   document.querySelector("#conditionInput").value = "";
+  renderConditionPresets();
   conditionDialog.showModal();
   window.setTimeout(() => document.querySelector("#conditionInput").focus(), 0);
 });
@@ -452,7 +482,7 @@ document.querySelector("#addCondition").addEventListener("click", (event) => {
     input.focus();
     return;
   }
-  state.conditions.push(value);
+  if (!state.conditions.includes(value)) state.conditions.push(value);
   renderConditions();
   saveState();
 });

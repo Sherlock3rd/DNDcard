@@ -45,6 +45,47 @@ const classNames = {
   Wizard: "法师",
 };
 
+const itemTypeNames = {
+  "Adventuring Gear": "冒险装备",
+  Ammunition: "弹药",
+  Armor: "护甲",
+  "Mounts and Vehicles": "坐骑与载具",
+  Potion: "药水",
+  Ring: "戒指",
+  Rod: "权杖",
+  Scroll: "卷轴",
+  Staff: "法杖",
+  Tools: "工具",
+  Wand: "魔杖",
+  Weapon: "武器",
+  "Wondrous Items": "奇物",
+};
+
+const itemRarityNames = {
+  Artifact: "神器",
+  Common: "普通",
+  Legendary: "传说",
+  Rare: "稀有",
+  Uncommon: "非普通",
+  Varies: "不定",
+  "Very Rare": "非常稀有",
+};
+
+function displayItemType(value) {
+  return itemTypeNames[value] || value || "物品";
+}
+
+function displayItemRarity(value) {
+  return itemRarityNames[value] || value || "普通";
+}
+
+function displayItemDamage(value) {
+  return String(value || "")
+    .replaceAll("Bludgeoning", "钝击")
+    .replaceAll("Piercing", "穿刺")
+    .replaceAll("Slashing", "挥砍");
+}
+
 const spellAliases = {
   "fire-bolt": "火焰箭",
   "mage-hand": "法师之手",
@@ -96,7 +137,8 @@ const managerDefaults = {
   customItems: [
     {
       id: "custom-item-astrolabe",
-      name: "黄铜星盘",
+      name: "Brass Astrolabe",
+      nameZh: "黄铜星盘",
       type: "奥术法器",
       category: "Wonder",
       cost: "",
@@ -111,7 +153,8 @@ const managerDefaults = {
     },
     {
       id: "custom-item-letter",
-      name: "导师未写完的信",
+      name: "Unfinished Letter from the Mentor",
+      nameZh: "导师未写完的信",
       type: "纪念物",
       category: "Document",
       cost: "",
@@ -149,16 +192,29 @@ let itemFilters = { search: "", type: "all", rarity: "all" };
 function loadManagerState() {
   try {
     const saved = JSON.parse(localStorage.getItem("charlie-5e-manager") || "{}");
-    return {
+    const loaded = {
       ...structuredClone(managerDefaults),
       ...saved,
       abilities: { ...managerDefaults.abilities, ...(saved.abilities || {}) },
       spellOverrides: saved.spellOverrides || {},
       itemOverrides: saved.itemOverrides || {},
-      customSpells: saved.customSpells || [],
+      customSpells: [],
       customItems: saved.customItems || managerDefaults.customItems,
       inventory: saved.inventory || managerDefaults.inventory,
     };
+    loaded.customItems = loaded.customItems.map((item) => {
+      if (item.id === "custom-item-astrolabe" && item.name === "黄铜星盘") {
+        return { ...item, name: "Brass Astrolabe", nameZh: "黄铜星盘", descriptionZh: item.descriptionZh || item.description };
+      }
+      if (item.id === "custom-item-letter" && item.name === "导师未写完的信") {
+        return { ...item, name: "Unfinished Letter from the Mentor", nameZh: "导师未写完的信", descriptionZh: item.descriptionZh || item.description };
+      }
+      return { ...item, nameZh: item.nameZh || item.name, descriptionZh: item.descriptionZh || item.description || "" };
+    });
+    const validSpellIds = new Set(srdCatalog.spells.map((spell) => spell.id));
+    loaded.spellbook = loaded.spellbook.filter((id) => validSpellIds.has(id));
+    loaded.prepared = loaded.prepared.filter((id) => validSpellIds.has(id));
+    return loaded;
   } catch {
     return structuredClone(managerDefaults);
   }
@@ -219,8 +275,13 @@ function maxSpellLevel(level = managerState.level) {
 }
 
 function displaySpellName(spell) {
-  const alias = spell.alias || spellAliases[spell.id];
-  return alias ? `${alias} · ${spell.name}` : spell.name;
+  const chinese = spell.alias || spell.nameZh || spellAliases[spell.id] || spell.name;
+  return chinese === spell.name ? spell.name : `${chinese}（${spell.name}）`;
+}
+
+function displayItemName(item) {
+  const chinese = item.nameZh || item.alias || item.name;
+  return chinese === item.name ? item.name : `${chinese}（${item.name}）`;
 }
 
 function allManagerSpells() {
@@ -229,7 +290,7 @@ function allManagerSpells() {
     ...(managerState.spellOverrides[spell.id] || {}),
     custom: false,
   }));
-  return [...catalog, ...managerState.customSpells.map((spell) => ({ ...spell, custom: true }))];
+  return catalog;
 }
 
 function allManagerItems() {
@@ -335,6 +396,8 @@ function renderSpellManager() {
   document.querySelectorAll("[data-spell-view]").forEach((button) => {
     button.classList.toggle("active", button.dataset.spellView === spellView);
   });
+  const copyButton = document.querySelector("#copySpellButton");
+  copyButton.textContent = spellView === "catalog" ? "← 返回法表" : "＋ 抄录法术";
   renderSpellSummary();
   const workspace = document.querySelector("#spellWorkspace");
   if (spellView === "catalog") {
@@ -360,24 +423,81 @@ function renderSpellManager() {
     `;
     renderSpellResults();
     bindSpellFilters();
+  } else if (spellView === "prepared") {
+    workspace.innerHTML = renderPreparedLoadout();
   } else {
-    const ids =
-      spellView === "prepared"
-        ? managerState.spellbook.filter((id) => {
-            const spell = findManagerSpell(id);
-            return spell && (spell.level === 0 || managerState.prepared.includes(id));
-          })
-        : managerState.spellbook;
-    const cards = ids
-      .map(findManagerSpell)
-      .filter(Boolean)
-      .sort((a, b) => a.level - b.level || a.name.localeCompare(b.name))
-      .map((spell) => renderSpellCard(spell, spellView))
-      .join("");
-    workspace.innerHTML = cards
-      ? `<div class="catalog-grid spell-catalog-grid">${cards}</div>`
-      : `<div class="empty-state"><strong>这里还没有法术</strong><p>前往“全部法术”添加，或创建一个自定义法术。</p></div>`;
+    workspace.innerHTML = renderSpellbookByLevel();
   }
+}
+
+function renderPreparedLoadout() {
+  const preparedIds = preparedLeveledSpellIds();
+  const preparedSpells = preparedIds.map(findManagerSpell).filter(Boolean);
+  const maximum = maxPreparedSpells();
+  const slots = Array.from({ length: maximum }, (_, index) => {
+    const spell = preparedSpells[index];
+    return spell
+      ? `<button class="prepared-slot filled" type="button" data-prepare-spell="${spell.id}" title="点击卸下 ${escapeManagerHtml(displaySpellName(spell))}">
+          ${spellIcon(spell)}
+          <span><strong>${escapeManagerHtml(spell.nameZh || spell.alias || spell.name)}</strong><small>${spell.level} 环</small></span>
+          <i>×</i>
+        </button>`
+      : `<div class="prepared-slot empty" aria-label="空的准备法术栏位"><span>✧</span><small>空栏位</small></div>`;
+  }).join("");
+  const known = managerState.spellbook.map(findManagerSpell).filter(Boolean);
+  const cantrips = known.filter((spell) => spell.level === 0);
+  const leveled = known.filter((spell) => spell.level > 0);
+  const levels = [...new Set(leveled.map((spell) => spell.level))].sort((a, b) => a - b);
+
+  return `
+    <section class="spell-loadout">
+      <div class="loadout-heading">
+        <div><p>PREPARED SPELLS</p><h3>今日准备法术</h3></div>
+        <strong>${preparedSpells.length} / ${maximum}</strong>
+      </div>
+      <p class="loadout-help">点击下方法术将其放入准备栏；点击上方已准备法术可将其卸下。戏法始终可用，不占准备栏位。</p>
+      <div class="prepared-tray">${slots}</div>
+      ${
+        cantrips.length
+          ? `<section class="spell-level-shelf cantrip-shelf"><header><span>戏法</span><small>始终可用</small></header><div class="loadout-grid">${cantrips.map((spell) => renderLoadoutTile(spell, true)).join("")}</div></section>`
+          : ""
+      }
+      ${levels
+        .map((level) => {
+          const spellsAtLevel = leveled.filter((spell) => spell.level === level);
+          return `<section class="spell-level-shelf"><header><span>${level} 环法术</span><small>${spellsAtLevel.filter((spell) => managerState.prepared.includes(spell.id)).length} 已准备 · ${spellsAtLevel.length} 已抄录</small></header><div class="loadout-grid">${spellsAtLevel.map((spell) => renderLoadoutTile(spell, false)).join("")}</div></section>`;
+        })
+        .join("")}
+    </section>`;
+}
+
+function renderLoadoutTile(spell, alwaysAvailable) {
+  const prepared = alwaysAvailable || managerState.prepared.includes(spell.id);
+  if (alwaysAvailable) {
+    return `<div class="loadout-spell always-prepared">${spellIcon(spell)}<span><strong>${escapeManagerHtml(spell.nameZh || spell.alias || spell.name)}</strong><small>${escapeManagerHtml(spell.name)}</small></span><i>∞</i></div>`;
+  }
+  return `<button class="loadout-spell ${prepared ? "active" : ""}" type="button" data-prepare-spell="${spell.id}" aria-pressed="${prepared}">
+    ${spellIcon(spell)}
+    <span><strong>${escapeManagerHtml(spell.nameZh || spell.alias || spell.name)}</strong><small>${escapeManagerHtml(spell.name)}</small></span>
+    <i>${prepared ? "✓" : "+"}</i>
+  </button>`;
+}
+
+function renderSpellbookByLevel() {
+  const known = managerState.spellbook
+    .map(findManagerSpell)
+    .filter(Boolean)
+    .sort((a, b) => a.level - b.level || (a.nameZh || a.name).localeCompare(b.nameZh || b.name, "zh-CN"));
+  const levels = [...new Set(known.map((spell) => spell.level))].sort((a, b) => a - b);
+  if (!levels.length) {
+    return `<div class="empty-state"><strong>法术书尚未记录法术</strong><p>点击“抄录法术”前往法术目录。</p></div>`;
+  }
+  return `<div class="spellbook-level-list">${levels
+    .map((level) => {
+      const cards = known.filter((spell) => spell.level === level).map((spell) => renderSpellCard(spell, "spellbook")).join("");
+      return `<section class="spellbook-level"><header><span>${level === 0 ? "戏法" : `${level} 环`}</span><small>${known.filter((spell) => spell.level === level).length} 个法术</small></header><div class="catalog-grid spell-catalog-grid">${cards}</div></section>`;
+    })
+    .join("")}</div>`;
 }
 
 function bindSpellFilters() {
@@ -407,7 +527,7 @@ function filteredCatalogSpells() {
   const query = spellFilters.search.trim().toLowerCase();
   return allManagerSpells()
     .filter((spell) => {
-      const haystack = `${spell.name} ${spell.alias || ""} ${spell.school} ${spell.description}`.toLowerCase();
+      const haystack = `${spell.name} ${spell.nameZh || ""} ${spell.alias || ""} ${spell.school} ${spell.descriptionZh || ""}`.toLowerCase();
       return (
         (!query || haystack.includes(query)) &&
         (spellFilters.level === "all" || `${spell.level}` === spellFilters.level) &&
@@ -422,7 +542,7 @@ function renderSpellResults() {
   const matches = filteredCatalogSpells();
   const visible = matches.slice(0, spellCatalogLimit);
   document.querySelector("#spellCatalogStatus").textContent =
-    `共 ${matches.length} 个法术 · 当前显示 ${visible.length} 个 · SRD 5.1 + 自定义`;
+    `共 ${matches.length} 个法术 · 当前显示 ${visible.length} 个 · SRD 5.1`;
   document.querySelector("#spellResults").innerHTML = visible
     .map((spell) => renderSpellCard(spell, "catalog"))
     .join("");
@@ -437,11 +557,12 @@ function renderSpellCard(spell, context) {
   const classes = (spell.classes || []).map((name) => classNames[name] || name).join("、");
   let primaryAction = "";
   if (context === "catalog") {
+    const canCopy = spell.classes?.includes("Wizard");
     primaryAction = known
-      ? `<button class="text-button danger" type="button" data-remove-spell="${spell.id}">移出法术书</button>`
-      : `<button class="text-button" type="button" data-add-spell="${spell.id}">加入法术书</button>`;
-  } else if (spell.level > 0) {
-    primaryAction = `<button class="prepare-toggle ${prepared ? "active" : ""}" type="button" data-prepare-spell="${spell.id}" aria-pressed="${prepared}">${prepared ? "已准备" : "准备"}</button>`;
+      ? `<button class="text-button" type="button" disabled>已抄录</button>`
+      : canCopy
+        ? `<button class="text-button" type="button" data-add-spell="${spell.id}">抄录法术</button>`
+        : `<button class="text-button" type="button" disabled>非本职业法术</button>`;
   }
 
   return `
@@ -451,29 +572,26 @@ function renderSpellCard(spell, context) {
         <div class="catalog-title">
           <span>${spell.level === 0 ? "戏法" : `${spell.level} 环`} · ${escapeManagerHtml(school)}</span>
           <h3>${escapeManagerHtml(displaySpellName(spell))}</h3>
-          <small>${escapeManagerHtml(classes || "自定义列表")}</small>
+          <small>${escapeManagerHtml(classes || "法术列表")}</small>
         </div>
       </header>
       <div class="catalog-tags">
         ${spell.ritual ? "<span>仪式</span>" : ""}
         ${spell.concentration ? "<span>专注</span>" : ""}
-        <span>${escapeManagerHtml(spell.castingTime || "自定义")}</span>
-        <span>${escapeManagerHtml(spell.range || "自定义")}</span>
+        <span>${escapeManagerHtml(spell.castingTimeZh || spell.castingTime || "—")}</span>
+        <span>${escapeManagerHtml(spell.rangeZh || spell.range || "—")}</span>
       </div>
       <details>
         <summary>法术详情</summary>
-        <p>${escapeManagerHtml(spell.description || "暂无说明").replaceAll("\n", "<br>")}</p>
-        ${spell.higherLevel ? `<p><strong>升环：</strong>${escapeManagerHtml(spell.higherLevel)}</p>` : ""}
+        <p>${escapeManagerHtml(spell.descriptionZh || "暂无中文说明").replaceAll("\n", "<br>")}</p>
+        ${spell.higherLevelZh ? `<p><strong>升环：</strong>${escapeManagerHtml(spell.higherLevelZh)}</p>` : ""}
         <dl>
-          <div><dt>持续</dt><dd>${escapeManagerHtml(spell.duration || "—")}</dd></div>
-          <div><dt>成分</dt><dd>${escapeManagerHtml(spell.components || "—")}</dd></div>
+          <div><dt>持续</dt><dd>${escapeManagerHtml(spell.durationZh || spell.duration || "—")}</dd></div>
+          <div><dt>成分</dt><dd>${escapeManagerHtml(spell.componentsZh || spell.components || "—")}</dd></div>
         </dl>
+        ${context === "spellbook" ? `<div class="detail-danger-zone"><button class="text-button danger" type="button" data-remove-spell="${spell.id}">从法术书移除</button></div>` : ""}
       </details>
-      <footer class="catalog-actions">
-        ${primaryAction}
-        <button class="text-button" type="button" data-edit-spell="${spell.id}">编辑</button>
-        ${context !== "catalog" ? `<button class="text-button danger" type="button" data-remove-spell="${spell.id}">移除</button>` : ""}
-      </footer>
+      ${primaryAction ? `<footer class="catalog-actions">${primaryAction}</footer>` : ""}
     </article>`;
 }
 
@@ -486,6 +604,14 @@ function addSpellToBook(id) {
 }
 
 function removeSpellFromBook(id) {
+  const spell = findManagerSpell(id);
+  if (
+    !window.confirm(
+      `确定要将“${spell ? displaySpellName(spell) : "该法术"}”从 Charlie 的法术书中移除吗？\n\n已准备状态也会一并清除。`,
+    )
+  ) {
+    return;
+  }
   managerState.spellbook = managerState.spellbook.filter((spellId) => spellId !== id);
   managerState.prepared = managerState.prepared.filter((spellId) => spellId !== id);
   saveManagerState();
@@ -511,30 +637,29 @@ function togglePreparedSpell(id) {
 function openSpellEditor(id = null) {
   const dialog = document.querySelector("#spellEditorDialog");
   const spell = id ? findManagerSpell(id) : null;
-  const isCustom = spell?.custom;
+  if (!spell) return;
   dialog.innerHTML = `
     <form method="dialog" id="spellEditorForm">
       <div class="dialog-heading">
-        <div><p>ARCANE ENTRY</p><h2>${spell ? "编辑法术" : "创建自定义法术"}</h2></div>
+        <div><p>ARCANE INDEX ENTRY</p><h2>编辑法术总览资料</h2></div>
         <button value="cancel" aria-label="关闭">×</button>
       </div>
       <div class="editor-grid">
-        <label class="wide">显示名称<input name="alias" value="${escapeManagerHtml(spell?.alias || spellAliases[spell?.id] || "")}" placeholder="例如：霜火箭" /></label>
-        <label class="wide">英文 / 原始名称<input name="name" required value="${escapeManagerHtml(spell?.name || "")}" placeholder="Spell name" /></label>
+        <label class="wide">中文名称<input name="nameZh" required value="${escapeManagerHtml(spell.nameZh || spell.alias || spellAliases[spell.id] || "")}" /></label>
+        <label class="wide">英文名称<input name="name" required value="${escapeManagerHtml(spell.name)}" /></label>
         <label>环级<select name="level">${Array.from({ length: 10 }, (_, level) => `<option value="${level}" ${spell?.level === level ? "selected" : ""}>${level === 0 ? "戏法" : `${level} 环`}</option>`).join("")}</select></label>
         <label>学派<select name="school">${Object.entries(schoolNames).map(([value, label]) => `<option value="${value}" ${spell?.school === value ? "selected" : ""}>${label}</option>`).join("")}</select></label>
-        <label>施法时间<input name="castingTime" value="${escapeManagerHtml(spell?.castingTime || "1 action")}" /></label>
-        <label>距离<input name="range" value="${escapeManagerHtml(spell?.range || "")}" /></label>
-        <label>持续时间<input name="duration" value="${escapeManagerHtml(spell?.duration || "")}" /></label>
-        <label>成分<input name="components" value="${escapeManagerHtml(spell?.components || "V, S")}" /></label>
+        <label>施法时间<input name="castingTimeZh" value="${escapeManagerHtml(spell.castingTimeZh || spell.castingTime)}" /></label>
+        <label>距离<input name="rangeZh" value="${escapeManagerHtml(spell.rangeZh || spell.range)}" /></label>
+        <label>持续时间<input name="durationZh" value="${escapeManagerHtml(spell.durationZh || spell.duration)}" /></label>
+        <label>成分<input name="componentsZh" value="${escapeManagerHtml(spell.componentsZh || spell.components)}" /></label>
         <label class="wide">职业列表<input name="classes" value="${escapeManagerHtml((spell?.classes || ["Wizard"]).join(", "))}" placeholder="Wizard, Sorcerer" /></label>
         <label class="check-label"><input type="checkbox" name="ritual" ${spell?.ritual ? "checked" : ""} /> 仪式</label>
         <label class="check-label"><input type="checkbox" name="concentration" ${spell?.concentration ? "checked" : ""} /> 专注</label>
-        <label class="wide">说明<textarea name="description" rows="6">${escapeManagerHtml(spell?.description || "")}</textarea></label>
-        <label class="wide">升环效果<textarea name="higherLevel" rows="3">${escapeManagerHtml(spell?.higherLevel || "")}</textarea></label>
+        <label class="wide">中文说明<textarea name="descriptionZh" rows="7">${escapeManagerHtml(spell.descriptionZh || "")}</textarea></label>
+        <label class="wide">中文升环效果<textarea name="higherLevelZh" rows="3">${escapeManagerHtml(spell.higherLevelZh || "")}</textarea></label>
       </div>
       <menu>
-        ${isCustom ? `<button type="button" class="ghost-button danger" data-delete-custom-spell="${spell.id}">删除条目</button>` : ""}
         <span></span>
         <button value="cancel" class="ghost-button">取消</button>
         <button value="default" class="primary-button">保存</button>
@@ -555,9 +680,10 @@ function openSpellEditor(id = null) {
     const form = new FormData(event.currentTarget);
     const entry = {
       ...(spell || {}),
-      id: spell?.id || `custom-spell-${Date.now()}`,
+      id: spell.id,
       name: form.get("name").trim(),
-      alias: form.get("alias").trim(),
+      nameZh: form.get("nameZh").trim(),
+      alias: "",
       level: Number(form.get("level")),
       school: form.get("school"),
       classes: form
@@ -565,35 +691,23 @@ function openSpellEditor(id = null) {
         .split(",")
         .map((value) => value.trim())
         .filter(Boolean),
-      castingTime: form.get("castingTime").trim(),
-      range: form.get("range").trim(),
-      duration: form.get("duration").trim(),
-      components: form.get("components").trim(),
+      castingTimeZh: form.get("castingTimeZh").trim(),
+      rangeZh: form.get("rangeZh").trim(),
+      durationZh: form.get("durationZh").trim(),
+      componentsZh: form.get("componentsZh").trim(),
       ritual: form.get("ritual") === "on",
       concentration: form.get("concentration") === "on",
-      description: form.get("description").trim(),
-      higherLevel: form.get("higherLevel").trim(),
-      custom: spell ? Boolean(spell.custom) : true,
+      descriptionZh: form.get("descriptionZh").trim(),
+      higherLevelZh: form.get("higherLevelZh").trim(),
+      custom: false,
     };
-    if (entry.custom) {
-      const index = managerState.customSpells.findIndex((item) => item.id === entry.id);
-      if (index >= 0) managerState.customSpells[index] = entry;
-      else managerState.customSpells.push(entry);
-      if (!managerState.spellbook.includes(entry.id)) managerState.spellbook.push(entry.id);
-    } else {
-      managerState.spellOverrides[entry.id] = entry;
-    }
+    managerState.spellOverrides[entry.id] = entry;
     saveManagerState();
     renderSpellManager();
+    if (location.hash === "#spell-library" && typeof renderSpellLibrary === "function") renderSpellLibrary();
     dialog.close();
   });
   dialog.showModal();
-}
-
-function deleteCustomSpell(id) {
-  managerState.customSpells = managerState.customSpells.filter((spell) => spell.id !== id);
-  removeSpellFromBook(id);
-  document.querySelector("#spellEditorDialog").close();
 }
 
 function renderInventorySummary() {
@@ -625,8 +739,8 @@ function renderInventoryManager() {
     workspace.innerHTML = `
       <div class="catalog-controls item-controls">
         <label class="search-field"><span>搜索</span><input id="itemSearch" value="${escapeManagerHtml(itemFilters.search)}" placeholder="名称、类别或说明" /></label>
-        <label><span>类别</span><select id="itemTypeFilter"><option value="all">全部</option>${itemTypes.map((value) => `<option value="${escapeManagerHtml(value)}" ${itemFilters.type === value ? "selected" : ""}>${escapeManagerHtml(value)}</option>`).join("")}</select></label>
-        <label><span>稀有度</span><select id="itemRarityFilter"><option value="all">全部</option>${rarities.map((value) => `<option value="${escapeManagerHtml(value)}" ${itemFilters.rarity === value ? "selected" : ""}>${escapeManagerHtml(value)}</option>`).join("")}</select></label>
+        <label><span>类别</span><select id="itemTypeFilter"><option value="all">全部</option>${itemTypes.map((value) => `<option value="${escapeManagerHtml(value)}" ${itemFilters.type === value ? "selected" : ""}>${escapeManagerHtml(displayItemType(value))}</option>`).join("")}</select></label>
+        <label><span>稀有度</span><select id="itemRarityFilter"><option value="all">全部</option>${rarities.map((value) => `<option value="${escapeManagerHtml(value)}" ${itemFilters.rarity === value ? "selected" : ""}>${escapeManagerHtml(displayItemRarity(value))}</option>`).join("")}</select></label>
       </div>
       <div class="catalog-status" id="itemCatalogStatus"></div>
       <div class="catalog-grid item-catalog-grid" id="itemResults"></div>
@@ -668,7 +782,7 @@ function filteredCatalogItems() {
   const query = itemFilters.search.trim().toLowerCase();
   return allManagerItems()
     .filter((item) => {
-      const haystack = `${item.name} ${item.type} ${item.category} ${item.description}`.toLowerCase();
+      const haystack = `${item.name} ${item.nameZh || ""} ${item.type} ${item.category} ${item.descriptionZh || ""}`.toLowerCase();
       return (
         (!query || haystack.includes(query)) &&
         (itemFilters.type === "all" || item.type === itemFilters.type) &&
@@ -694,18 +808,18 @@ function renderCatalogItemCard(item) {
       <header>
         ${itemIcon(item)}
         <div class="catalog-title">
-          <span>${escapeManagerHtml(item.rarity || "Common")} · ${escapeManagerHtml(item.type)}</span>
-          <h3>${escapeManagerHtml(item.name)}</h3>
+          <span>${escapeManagerHtml(displayItemRarity(item.rarity))} · ${escapeManagerHtml(displayItemType(item.type))}</span>
+          <h3>${escapeManagerHtml(displayItemName(item))}</h3>
           <small>${escapeManagerHtml(item.category || "Equipment")}</small>
         </div>
       </header>
       <div class="catalog-tags">
         ${item.cost ? `<span>${escapeManagerHtml(item.cost)}</span>` : ""}
         ${item.weight ? `<span>${item.weight} 磅</span>` : ""}
-        ${item.damage ? `<span>${escapeManagerHtml(item.damage)}</span>` : ""}
+        ${item.damage ? `<span>${escapeManagerHtml(displayItemDamage(item.damage))}</span>` : ""}
         ${item.armorClass ? `<span>AC ${item.armorClass}</span>` : ""}
       </div>
-      <details><summary>物品详情</summary><p>${escapeManagerHtml(item.description || "暂无说明").replaceAll("\n", "<br>")}</p></details>
+      <details><summary>物品说明</summary><p>${escapeManagerHtml(item.descriptionZh || "暂无中文说明").replaceAll("\n", "<br>")}</p></details>
       <footer class="catalog-actions">
         <button class="text-button" type="button" data-add-item="${item.id}">${inventoryEntry ? `增加数量（${inventoryEntry.quantity}）` : "加入背包"}</button>
         <button class="text-button" type="button" data-edit-item="${item.id}">编辑</button>
@@ -719,9 +833,9 @@ function renderInventoryCard(item, entry) {
       <header>
         ${itemIcon(item)}
         <div class="catalog-title">
-          <span>${entry.equipped ? "已装备" : escapeManagerHtml(item.rarity || "Common")}</span>
-          <h3>${escapeManagerHtml(item.name)}</h3>
-          <small>${escapeManagerHtml(item.type)}${entry.notes ? ` · ${escapeManagerHtml(entry.notes)}` : ""}</small>
+          <span>${entry.equipped ? "已装备" : escapeManagerHtml(displayItemRarity(item.rarity))}</span>
+          <h3>${escapeManagerHtml(displayItemName(item))}</h3>
+          <small>${escapeManagerHtml(displayItemType(item.type))}${entry.notes ? ` · ${escapeManagerHtml(entry.notes)}` : ""}</small>
         </div>
       </header>
       <div class="inventory-actions">
@@ -732,6 +846,7 @@ function renderInventoryCard(item, entry) {
         </div>
         <button class="equip-toggle ${entry.equipped ? "active" : ""}" type="button" data-equip-item="${item.id}">${entry.equipped ? "卸下" : "装备"}</button>
       </div>
+      <details><summary>物品说明</summary><p>${escapeManagerHtml(item.descriptionZh || item.description || "暂无说明").replaceAll("\n", "<br>")}</p></details>
       <footer class="catalog-actions">
         <button class="text-button" type="button" data-edit-item="${item.id}">编辑</button>
         <button class="text-button danger" type="button" data-remove-item="${item.id}">移除</button>
@@ -776,7 +891,8 @@ function openItemEditor(id = null) {
         <button value="cancel" aria-label="关闭">×</button>
       </div>
       <div class="editor-grid">
-        <label class="wide">名称<input name="name" required value="${escapeManagerHtml(item?.name || "")}" /></label>
+        <label class="wide">中文名称<input name="nameZh" required value="${escapeManagerHtml(item?.nameZh || (item?.custom ? item?.name : "") || "")}" /></label>
+        <label class="wide">英文名称<input name="name" required value="${escapeManagerHtml(item?.name || "")}" /></label>
         <label>类别<input name="type" value="${escapeManagerHtml(item?.type || "Adventuring Gear")}" /></label>
         <label>子类别<input name="category" value="${escapeManagerHtml(item?.category || "")}" /></label>
         <label>稀有度<input name="rarity" value="${escapeManagerHtml(item?.rarity || "Common")}" /></label>
@@ -786,7 +902,7 @@ function openItemEditor(id = null) {
         <label>护甲等级<input name="armorClass" type="number" min="0" value="${item?.armorClass || ""}" /></label>
         <label class="wide">属性标签<input name="properties" value="${escapeManagerHtml((item?.properties || []).join(", "))}" placeholder="Light, Finesse, Story" /></label>
         <label class="wide">背包备注<input name="notes" value="${escapeManagerHtml(inventoryEntry?.notes || "")}" /></label>
-        <label class="wide">说明<textarea name="description" rows="6">${escapeManagerHtml(item?.description || "")}</textarea></label>
+        <label class="wide">中文说明<textarea name="descriptionZh" rows="6">${escapeManagerHtml(item?.descriptionZh || item?.description || "")}</textarea></label>
         <label class="check-label"><input type="checkbox" name="magic" ${item?.magic ? "checked" : ""} /> 魔法物品</label>
       </div>
       <menu>
@@ -813,6 +929,7 @@ function openItemEditor(id = null) {
       ...(item || {}),
       id: item?.id || `custom-item-${Date.now()}`,
       name: form.get("name").trim(),
+      nameZh: form.get("nameZh").trim(),
       type: form.get("type").trim(),
       category: form.get("category").trim(),
       rarity: form.get("rarity").trim(),
@@ -825,7 +942,7 @@ function openItemEditor(id = null) {
         .split(",")
         .map((value) => value.trim())
         .filter(Boolean),
-      description: form.get("description").trim(),
+      descriptionZh: form.get("descriptionZh").trim(),
       magic: form.get("magic") === "on",
       custom: item ? Boolean(item.custom) : true,
     };
@@ -1077,9 +1194,6 @@ document.addEventListener("click", (event) => {
   const editSpellButton = event.target.closest("[data-edit-spell]");
   if (editSpellButton) openSpellEditor(editSpellButton.dataset.editSpell);
 
-  const deleteSpellButton = event.target.closest("[data-delete-custom-spell]");
-  if (deleteSpellButton) deleteCustomSpell(deleteSpellButton.dataset.deleteCustomSpell);
-
   const addItemButton = event.target.closest("[data-add-item]");
   if (addItemButton) addItemToInventory(addItemButton.dataset.addItem);
 
@@ -1108,7 +1222,10 @@ document.addEventListener("click", (event) => {
   if (deleteItemButton) deleteCustomItem(deleteItemButton.dataset.deleteCustomItem);
 });
 
-document.querySelector("#newSpellButton").addEventListener("click", () => openSpellEditor());
+document.querySelector("#copySpellButton").addEventListener("click", () => {
+  spellView = spellView === "catalog" ? "prepared" : "catalog";
+  renderSpellManager();
+});
 document.querySelector("#newItemButton").addEventListener("click", () => openItemEditor());
 document.querySelector("#levelUpButton").addEventListener("click", openLevelUpDialog);
 
@@ -1125,6 +1242,13 @@ document.querySelector("#inventoryWorkspace").addEventListener("click", (event) 
     renderItemResults();
   }
 });
+
+const characterMain = document.querySelector("#characterApp main");
+const spellSection = document.querySelector("#spells");
+const equipmentSection = document.querySelector("#equipment");
+const featureSection = document.querySelector("#features");
+characterMain.insertBefore(spellSection, featureSection);
+characterMain.insertBefore(equipmentSection, featureSection);
 
 syncCharacterSheet();
 renderSpellManager();

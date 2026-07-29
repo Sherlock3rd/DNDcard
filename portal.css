@@ -644,6 +644,14 @@ body[data-route="rules"] .archive-backdrop {
   line-height: 1.65;
 }
 
+.library-detail-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(181, 150, 88, 0.18);
+}
+
 .library-more {
   display: block;
   width: min(420px, 100%);

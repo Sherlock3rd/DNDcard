@@ -295,7 +295,7 @@ function archiveHeader(active, title, subtitle) {
       <nav aria-label="规则资料库">
         ${links.map(([route, label]) => `<button class="${active === route ? "active" : ""}" type="button" data-portal-route="${route}">${label}</button>`).join("")}
       </nav>
-      <button class="ghost-button" type="button" data-portal-route="character">进入 Charlie</button>
+      <button class="ghost-button" type="button" data-portal-route="portal">返回主页</button>
     </header>
     <section class="archive-heading">
       <p>${subtitle}</p>
@@ -429,7 +429,7 @@ function spellLibraryMatches(spell) {
   const level = archiveApp.querySelector("#librarySpellLevel").value;
   const school = archiveApp.querySelector("#librarySpellSchool").value;
   const className = archiveApp.querySelector("#librarySpellClass").value;
-  const haystack = `${spell.name} ${spell.description} ${spell.damageType} ${spell.school}`.toLowerCase();
+  const haystack = `${spell.name} ${spell.nameZh || ""} ${spell.descriptionZh || ""} ${spell.damageType} ${spell.school}`.toLowerCase();
   return (
     (!query || haystack.includes(query)) &&
     (level === "all" || `${spell.level}` === level) &&
@@ -439,16 +439,16 @@ function spellLibraryMatches(spell) {
 }
 
 function renderSpellLibraryResults() {
-  const matches = portalCatalog.spells.filter(spellLibraryMatches);
+  const matches = allManagerSpells().filter(spellLibraryMatches);
   const limit = Number(archiveApp.dataset.limit || 48);
   archiveApp.querySelector("#librarySpellCount").textContent = `找到 ${matches.length} 个法术 · 当前显示 ${Math.min(limit, matches.length)} 个`;
   archiveApp.querySelector("#librarySpellGrid").innerHTML = matches.slice(0, limit).map((spell) => `
     <article class="library-card spell">
       <span class="catalog-icon spell-icon" style="${portalIconStyle(spell.id)}" aria-hidden="true"><i></i></span>
-      <div class="library-card-heading"><p>${spell.level ? `${spell.level} 环` : "戏法"} · ${portalEscape(portalSchoolNames[spell.school] || spell.school)}</p><h2>${portalEscape(spell.name)}</h2></div>
+      <div class="library-card-heading"><p>${spell.level ? `${spell.level} 环` : "戏法"} · ${portalEscape(portalSchoolNames[spell.school] || spell.school)}</p><h2>${portalEscape(displaySpellName(spell))}</h2></div>
       <div class="library-badges">${spell.ritual ? "<span>仪式</span>" : ""}${spell.concentration ? "<span>专注</span>" : ""}<span>${portalEscape(spell.classes.map((name) => portalClassNames[name] || name).join("、"))}</span></div>
-      <dl><div><dt>施法</dt><dd>${portalEscape(spell.castingTime)}</dd></div><div><dt>距离</dt><dd>${portalEscape(spell.range)}</dd></div><div><dt>持续</dt><dd>${portalEscape(spell.duration)}</dd></div><div><dt>成分</dt><dd>${portalEscape(spell.components)}</dd></div></dl>
-      <details><summary>阅读法术说明</summary><p>${portalEscape(spell.description)}</p>${spell.higherLevel ? `<p><strong>升环：</strong>${portalEscape(spell.higherLevel)}</p>` : ""}</details>
+      <dl><div><dt>施法</dt><dd>${portalEscape(spell.castingTimeZh || spell.castingTime)}</dd></div><div><dt>距离</dt><dd>${portalEscape(spell.rangeZh || spell.range)}</dd></div><div><dt>持续</dt><dd>${portalEscape(spell.durationZh || spell.duration)}</dd></div><div><dt>成分</dt><dd>${portalEscape(spell.componentsZh || spell.components)}</dd></div></dl>
+      <details><summary>阅读法术说明</summary><p>${portalEscape(spell.descriptionZh || "暂无中文说明")}</p>${spell.higherLevelZh ? `<p><strong>升环：</strong>${portalEscape(spell.higherLevelZh)}</p>` : ""}<div class="library-detail-actions"><button class="text-button" type="button" data-edit-spell="${spell.id}">编辑总览资料</button></div></details>
     </article>`).join("") || `<div class="archive-empty">没有符合条件的法术。</div>`;
   archiveApp.querySelector("#librarySpellMore").hidden = limit >= matches.length;
 }
@@ -462,8 +462,8 @@ function renderItemLibrary() {
       ${archiveHeader("item-library", "道具与魔法物品", `RELIQUARY INDEX · ${portalCatalog.items.length} SRD ITEMS`)}
       <div class="archive-filterbar item">
         <label class="archive-search"><span>搜索</span><input id="libraryItemSearch" placeholder="名称、类型、属性或说明" /></label>
-        <label><span>类别</span><select id="libraryItemType"><option value="all">全部</option>${types.map((type) => `<option value="${portalEscape(type)}">${portalEscape(type)}</option>`).join("")}</select></label>
-        <label><span>稀有度</span><select id="libraryItemRarity"><option value="all">全部</option>${rarities.map((rarity) => `<option value="${portalEscape(rarity)}">${portalEscape(rarity)}</option>`).join("")}</select></label>
+        <label><span>类别</span><select id="libraryItemType"><option value="all">全部</option>${types.map((type) => `<option value="${portalEscape(type)}">${portalEscape(displayItemType(type))}</option>`).join("")}</select></label>
+        <label><span>稀有度</span><select id="libraryItemRarity"><option value="all">全部</option>${rarities.map((rarity) => `<option value="${portalEscape(rarity)}">${portalEscape(displayItemRarity(rarity))}</option>`).join("")}</select></label>
       </div>
       <p class="archive-count" id="libraryItemCount"></p>
       <section class="library-grid item" id="libraryItemGrid"></section>
@@ -488,7 +488,7 @@ function itemLibraryMatches(item) {
   const query = archiveApp.querySelector("#libraryItemSearch").value.trim().toLowerCase();
   const type = archiveApp.querySelector("#libraryItemType").value;
   const rarity = archiveApp.querySelector("#libraryItemRarity").value;
-  const haystack = `${item.name} ${item.type} ${item.category} ${item.rarity} ${item.description} ${(item.properties || []).join(" ")}`.toLowerCase();
+  const haystack = `${item.name} ${item.nameZh || ""} ${item.type} ${item.category} ${item.rarity} ${item.descriptionZh || ""} ${(item.properties || []).join(" ")}`.toLowerCase();
   return (!query || haystack.includes(query)) && (type === "all" || item.type === type) && (rarity === "all" || item.rarity === rarity);
 }
 
@@ -499,10 +499,10 @@ function renderItemLibraryResults() {
   archiveApp.querySelector("#libraryItemGrid").innerHTML = matches.slice(0, limit).map((item) => `
     <article class="library-card item">
       <span class="catalog-icon item-icon" style="${portalIconStyle(item.id)}" aria-hidden="true"><i></i></span>
-      <div class="library-card-heading"><p>${portalEscape(item.rarity || "Common")} · ${portalEscape(item.type || item.category)}</p><h2>${portalEscape(item.name)}</h2></div>
+      <div class="library-card-heading"><p>${portalEscape(displayItemRarity(item.rarity))} · ${portalEscape(displayItemType(item.type || item.category))}</p><h2>${portalEscape(item.nameZh ? `${item.nameZh}（${item.name}）` : item.name)}</h2></div>
       <div class="library-badges">${item.magic ? "<span>魔法</span>" : "<span>普通</span>"}${item.cost ? `<span>${portalEscape(item.cost)}</span>` : ""}${item.weight ? `<span>${portalEscape(item.weight)} 磅</span>` : ""}</div>
-      ${(item.damage || item.armorClass) ? `<dl>${item.damage ? `<div><dt>伤害</dt><dd>${portalEscape(item.damage)}</dd></div>` : ""}${item.armorClass ? `<div><dt>AC</dt><dd>${portalEscape(item.armorClass)}</dd></div>` : ""}</dl>` : ""}
-      <details><summary>阅读物品说明</summary><p>${portalEscape(item.description || "该物品没有额外规则说明。")}</p></details>
+      ${(item.damage || item.armorClass) ? `<dl>${item.damage ? `<div><dt>伤害</dt><dd>${portalEscape(displayItemDamage(item.damage))}</dd></div>` : ""}${item.armorClass ? `<div><dt>AC</dt><dd>${portalEscape(item.armorClass)}</dd></div>` : ""}</dl>` : ""}
+      <details><summary>阅读物品说明</summary><p>${portalEscape(item.descriptionZh || "该物品暂无中文规则说明。")}</p></details>
     </article>`).join("") || `<div class="archive-empty">没有符合条件的物品。</div>`;
   archiveApp.querySelector("#libraryItemMore").hidden = limit >= matches.length;
 }

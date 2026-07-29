@@ -732,6 +732,39 @@ td {
   cursor: pointer;
 }
 
+.condition-presets {
+  margin-top: 18px;
+}
+
+.condition-presets > span {
+  display: block;
+  margin-bottom: 9px;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.condition-presets > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.condition-presets button {
+  min-height: 34px;
+  border: 1px solid rgba(181, 150, 88, 0.28);
+  padding: 0 10px;
+  color: var(--muted);
+  background: rgba(0, 0, 0, 0.28);
+  cursor: pointer;
+}
+
+.condition-presets button:hover,
+.condition-presets button.active {
+  border-color: rgba(128, 115, 230, 0.72);
+  color: #ddd9ff;
+  background: rgba(128, 115, 230, 0.18);
+}
+
 .feature-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1295,6 +1328,224 @@ dialog menu {
   background: rgba(128, 115, 230, 0.16);
 }
 
+.spell-loadout {
+  display: grid;
+  gap: 18px;
+}
+
+.loadout-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  padding-bottom: 13px;
+  border-bottom: 1px solid rgba(181, 150, 88, 0.34);
+}
+
+.loadout-heading p,
+.loadout-heading h3 {
+  margin: 0;
+}
+
+.loadout-heading p {
+  color: var(--gold);
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+}
+
+.loadout-heading h3 {
+  margin-top: 4px;
+  font-size: 1.5rem;
+  font-weight: 400;
+}
+
+.loadout-heading > strong {
+  color: var(--gold-bright);
+  font-size: 1.45rem;
+  font-weight: 400;
+}
+
+.loadout-help {
+  margin: -6px 0 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.6;
+}
+
+.prepared-tray {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(152px, 1fr));
+  gap: 9px;
+  padding: 14px;
+  border: 1px solid rgba(128, 115, 230, 0.42);
+  background:
+    radial-gradient(circle at 50% 0, rgba(128, 115, 230, 0.18), transparent 62%),
+    rgba(6, 6, 10, 0.72);
+}
+
+.prepared-slot {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr) auto;
+  align-items: center;
+  min-height: 58px;
+  border: 1px solid rgba(181, 150, 88, 0.26);
+  padding: 5px 8px 5px 5px;
+  color: var(--ink);
+  text-align: left;
+  background: rgba(15, 14, 20, 0.9);
+}
+
+button.prepared-slot {
+  cursor: pointer;
+}
+
+.prepared-slot.filled:hover {
+  border-color: #b88492;
+  background: rgba(62, 27, 40, 0.72);
+}
+
+.prepared-slot.empty {
+  grid-template-columns: 1fr;
+  place-items: center;
+  border-style: dashed;
+  color: var(--faint);
+  text-align: center;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.prepared-slot.empty > span {
+  font-size: 1.2rem;
+}
+
+.prepared-slot.empty small {
+  font-size: 0.62rem;
+}
+
+.prepared-slot .catalog-icon {
+  width: 46px;
+  box-shadow: none;
+}
+
+.prepared-slot > span:not(.catalog-icon),
+.loadout-spell > span:not(.catalog-icon) {
+  min-width: 0;
+  padding-inline: 8px;
+}
+
+.prepared-slot strong,
+.prepared-slot small,
+.loadout-spell strong,
+.loadout-spell small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.prepared-slot strong,
+.loadout-spell strong {
+  font-size: 0.78rem;
+  font-weight: 400;
+}
+
+.prepared-slot small,
+.loadout-spell small {
+  margin-top: 3px;
+  color: var(--faint);
+  font-size: 0.62rem;
+}
+
+.prepared-slot > i,
+.loadout-spell > i {
+  color: var(--gold);
+  font-style: normal;
+}
+
+.spell-level-shelf,
+.spellbook-level {
+  border: 1px solid rgba(181, 150, 88, 0.22);
+  background: rgba(7, 7, 10, 0.42);
+}
+
+.spell-level-shelf > header,
+.spellbook-level > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 14px;
+  border-bottom: 1px solid rgba(181, 150, 88, 0.2);
+  color: var(--gold-bright);
+  background: linear-gradient(90deg, rgba(181, 150, 88, 0.12), transparent);
+}
+
+.spell-level-shelf > header small,
+.spellbook-level > header small {
+  color: var(--muted);
+  font-size: 0.68rem;
+}
+
+.loadout-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 8px;
+  padding: 12px;
+}
+
+.loadout-spell {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) auto;
+  align-items: center;
+  min-width: 0;
+  min-height: 64px;
+  border: 1px solid rgba(181, 150, 88, 0.2);
+  padding: 5px 9px 5px 5px;
+  color: var(--ink);
+  text-align: left;
+  background: rgba(14, 13, 18, 0.86);
+}
+
+button.loadout-spell {
+  cursor: pointer;
+}
+
+button.loadout-spell:hover {
+  border-color: var(--gold);
+}
+
+.loadout-spell.active {
+  border-color: rgba(128, 115, 230, 0.75);
+  background: linear-gradient(135deg, rgba(48, 39, 81, 0.92), rgba(13, 12, 20, 0.94));
+  box-shadow: inset 0 0 22px rgba(128, 115, 230, 0.1);
+}
+
+.loadout-spell.always-prepared {
+  border-color: rgba(105, 153, 151, 0.48);
+  background: rgba(28, 50, 51, 0.52);
+}
+
+.loadout-spell .catalog-icon {
+  width: 52px;
+  box-shadow: none;
+}
+
+.spellbook-level-list {
+  display: grid;
+  gap: 18px;
+}
+
+.spellbook-level .catalog-grid {
+  padding: 12px;
+}
+
+.detail-danger-zone {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(196, 96, 112, 0.2);
+}
+
 .load-more {
   display: block;
   width: min(320px, 100%);
@@ -1590,6 +1841,10 @@ dialog menu {
   .level-spell-picker {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .prepared-tray {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 760px), (orientation: portrait) and (max-width: 900px) {
@@ -1786,6 +2041,14 @@ dialog menu {
   .character-facts {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .prepared-tray {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .loadout-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 430px) {
@@ -1853,6 +2116,14 @@ dialog menu {
     grid-template-columns: repeat(5, minmax(48px, 1fr));
     overflow-x: auto;
   }
+
+  .prepared-tray {
+    grid-template-columns: 1fr;
+  }
+
+  .loadout-heading {
+    align-items: flex-start;
+  }
 }
 
 @media (orientation: landscape) and (max-height: 560px) {
@@ -1876,6 +2147,10 @@ dialog menu {
 
   .identity-panel {
     padding: 30px;
+  }
+
+  .prepared-tray {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 

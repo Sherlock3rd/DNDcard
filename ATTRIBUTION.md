@@ -9,3 +9,10 @@ available at https://creativecommons.org/licenses/by/4.0/legalcode.
 
 Structured SRD data is generated from the
 [5e-bits/5e-database](https://github.com/5e-bits/5e-database) project.
+
+Chinese names and descriptive text are adapted from the unofficial
+[SagiriWWW/DND.SRD.zh-CN](https://github.com/SagiriWWW/DND.SRD.zh-CN)
+translation of SRD 5.1, also distributed under CC BY 4.0. That project states
+that much of its text is machine translated and should be checked against the
+English source for rules adjudication. Additional equipment labels and concise
+descriptions in this project were normalized for the character-sheet interface.

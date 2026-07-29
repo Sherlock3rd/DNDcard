@@ -108,9 +108,9 @@
         <nav class="section-nav" aria-label="角色卡章节">
           <a class="active" href="#abilities">属性</a>
           <a href="#combat">战斗</a>
-          <a href="#features">特性</a>
-          <a href="#equipment">装备</a>
           <a href="#spells">法术</a>
+          <a href="#equipment">装备</a>
+          <a href="#features">特性</a>
           <a href="#story">人物</a>
         </nav>
 
@@ -227,7 +227,7 @@
 
         <section class="content-section" id="features">
           <div class="section-heading">
-            <span>03</span>
+            <span>05</span>
             <div>
               <p>TRAITS & FEATURES</p>
               <h2>种族、职业与背景特性</h2>
@@ -259,7 +259,7 @@
 
         <section class="content-section" id="spells">
           <div class="section-heading">
-            <span>05</span>
+            <span>03</span>
             <div>
               <p>ARCANE GRIMOIRE</p>
               <h2>法术书</h2>
@@ -268,11 +268,10 @@
           <div class="manager-shell" id="spellManager">
             <div class="manager-toolbar">
               <div class="manager-tabs" role="tablist" aria-label="法术管理视图">
-                <button class="active" type="button" data-spell-view="prepared">已准备</button>
+                <button class="active" type="button" data-spell-view="prepared">配置法表</button>
                 <button type="button" data-spell-view="spellbook">法术书</button>
-                <button type="button" data-spell-view="catalog">全部法术</button>
               </div>
-              <button class="primary-button compact" type="button" id="newSpellButton">＋ 自定义法术</button>
+              <button class="primary-button compact" type="button" id="copySpellButton">＋ 抄录法术</button>
             </div>
             <div class="spell-summary" id="spellSummary"></div>
             <div id="spellWorkspace"></div>
@@ -336,6 +335,10 @@
           状态名称
           <input id="conditionInput" placeholder="例如：专注、倒地、中毒" maxlength="24" />
         </label>
+        <div class="condition-presets" aria-label="常用状态">
+          <span>常用状态</span>
+          <div id="conditionPresets"></div>
+        </div>
         <menu>
           <button value="cancel" class="ghost-button">取消</button>
           <button value="default" id="addCondition" class="primary-button">添加</button>
