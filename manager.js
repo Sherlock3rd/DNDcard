@@ -130,6 +130,7 @@ const initialPrepared = [
 const managerDefaults = {
   level: 3,
   abilities: { STR: 9, DEX: 15, CON: 14, INT: 16, WIS: 13, CHA: 11 },
+  coins: { cp: 0, sp: 0, ep: 0, gp: 10, pp: 0 },
   spellbook: initialSpellbook,
   prepared: initialPrepared,
   customSpells: [],
@@ -196,12 +197,16 @@ function loadManagerState() {
       ...structuredClone(managerDefaults),
       ...saved,
       abilities: { ...managerDefaults.abilities, ...(saved.abilities || {}) },
+      coins: { ...managerDefaults.coins, ...(saved.coins || {}) },
       spellOverrides: saved.spellOverrides || {},
       itemOverrides: saved.itemOverrides || {},
       customSpells: [],
       customItems: saved.customItems || managerDefaults.customItems,
       inventory: saved.inventory || managerDefaults.inventory,
     };
+    Object.keys(loaded.coins).forEach((key) => {
+      loaded.coins[key] = Math.max(0, Math.floor(Number(loaded.coins[key]) || 0));
+    });
     loaded.customItems = loaded.customItems.map((item) => {
       if (item.id === "custom-item-astrolabe" && item.name === "黄铜星盘") {
         return { ...item, name: "Brass Astrolabe", nameZh: "黄铜星盘", descriptionZh: item.descriptionZh || item.description };
@@ -720,6 +725,7 @@ function renderInventorySummary() {
     0,
   );
   document.querySelector("#inventorySummary").innerHTML = `
+    ${renderCoinLedger()}
     <div class="inventory-overview">
       <div><span>条目</span><strong>${entries.length}</strong></div>
       <div><span>总重量</span><strong>${totalWeight.toFixed(1)} 磅</strong></div>
@@ -728,10 +734,63 @@ function renderInventorySummary() {
     </div>`;
 }
 
+const coinDefinitions = [
+  { key: "cp", short: "CP", name: "铜币", copper: 1, tone: "copper" },
+  { key: "sp", short: "SP", name: "银币", copper: 10, tone: "silver" },
+  { key: "ep", short: "EP", name: "琥珀金币", copper: 50, tone: "electrum" },
+  { key: "gp", short: "GP", name: "金币", copper: 100, tone: "gold" },
+  { key: "pp", short: "PP", name: "铂金币", copper: 1000, tone: "platinum" },
+];
+
+function totalCoinCopper() {
+  return coinDefinitions.reduce(
+    (total, coin) => total + Math.max(0, Number(managerState.coins[coin.key]) || 0) * coin.copper,
+    0,
+  );
+}
+
+function formattedGoldValue() {
+  return new Intl.NumberFormat("zh-CN", { maximumFractionDigits: 2 }).format(totalCoinCopper() / 100);
+}
+
+function updateCoinTotalDisplay() {
+  const total = document.querySelector(".coin-total strong");
+  if (total) total.textContent = `${formattedGoldValue()} GP`;
+}
+
+function renderCoinLedger() {
+  return `
+    <section class="coin-ledger" aria-labelledby="coinLedgerTitle">
+      <header>
+        <div class="coin-ledger-title">
+          <span class="coin-purse-sigil" aria-hidden="true">◇</span>
+          <div><p>COIN PURSE</p><h3 id="coinLedgerTitle">钱袋账本</h3></div>
+        </div>
+        <div class="coin-total"><span>折合金币</span><strong>${formattedGoldValue()} GP</strong></div>
+      </header>
+      <div class="coin-controls">
+        ${coinDefinitions
+          .map((coin) => {
+            const amount = managerState.coins[coin.key];
+            return `<div class="coin-control ${coin.tone}">
+              <span class="coin-medallion" aria-hidden="true">${coin.short}</span>
+              <label for="coin-${coin.key}"><strong>${coin.name}</strong><small>${coin.short}</small></label>
+              <div class="coin-stepper">
+                <button type="button" data-coin-step="${coin.key}" data-delta="-1" aria-label="${coin.name}减一">−</button>
+                <input id="coin-${coin.key}" data-coin-input="${coin.key}" type="number" min="0" step="1" inputmode="numeric" value="${amount}" aria-label="${coin.name}数量" />
+                <button type="button" data-coin-step="${coin.key}" data-delta="1" aria-label="${coin.name}加一">＋</button>
+              </div>
+            </div>`;
+          })
+          .join("")}
+      </div>
+      <p class="coin-exchange-note">1 PP = 10 GP · 1 GP = 2 EP = 10 SP = 100 CP</p>
+    </section>`;
+}
+
 function renderInventoryManager() {
-  document.querySelectorAll("[data-inventory-view]").forEach((button) => {
-    button.classList.toggle("active", button.dataset.inventoryView === inventoryView);
-  });
+  const addItemButton = document.querySelector("#addItemButton");
+  addItemButton.textContent = inventoryView === "catalog" ? "← 返回背包" : "＋ 添加物品";
   renderInventorySummary();
   const workspace = document.querySelector("#inventoryWorkspace");
   if (inventoryView === "catalog") {
@@ -757,7 +816,7 @@ function renderInventoryManager() {
       .join("");
     workspace.innerHTML = cards
       ? `<div class="catalog-grid item-catalog-grid">${cards}</div>`
-      : `<div class="empty-state"><strong>背包是空的</strong><p>前往“全部物品”添加，或创建自定义物品。</p></div>`;
+      : `<div class="empty-state"><strong>背包是空的</strong><p>点击“添加物品”前往全物品目录。</p></div>`;
   }
 }
 
@@ -797,7 +856,7 @@ function renderItemResults() {
   const matches = filteredCatalogItems();
   const visible = matches.slice(0, itemCatalogLimit);
   document.querySelector("#itemCatalogStatus").textContent =
-    `共 ${matches.length} 件物品 · 当前显示 ${visible.length} 件 · SRD 5.1 + 自定义`;
+    `共 ${matches.length} 件物品 · 当前显示 ${visible.length} 件 · SRD 5.1 + 角色自有物品`;
   document.querySelector("#itemResults").innerHTML = visible.map(renderCatalogItemCard).join("");
   document.querySelector("#itemLoadMore").hidden = visible.length >= matches.length;
 }
@@ -1177,12 +1236,6 @@ document.addEventListener("click", (event) => {
     renderSpellManager();
   }
 
-  const inventoryViewButton = event.target.closest("[data-inventory-view]");
-  if (inventoryViewButton) {
-    inventoryView = inventoryViewButton.dataset.inventoryView;
-    renderInventoryManager();
-  }
-
   const addSpellButton = event.target.closest("[data-add-spell]");
   if (addSpellButton) addSpellToBook(addSpellButton.dataset.addSpell);
 
@@ -1216,6 +1269,15 @@ document.addEventListener("click", (event) => {
     }
   }
 
+  const coinStepButton = event.target.closest("[data-coin-step]");
+  if (coinStepButton) {
+    const key = coinStepButton.dataset.coinStep;
+    const delta = Number(coinStepButton.dataset.delta);
+    managerState.coins[key] = Math.max(0, Math.min(9999999, managerState.coins[key] + delta));
+    saveManagerState();
+    renderInventorySummary();
+  }
+
   const editItemButton = event.target.closest("[data-edit-item]");
   if (editItemButton) openItemEditor(editItemButton.dataset.editItem);
 
@@ -1227,8 +1289,29 @@ document.querySelector("#copySpellButton").addEventListener("click", () => {
   spellView = spellView === "catalog" ? "prepared" : "catalog";
   renderSpellManager();
 });
-document.querySelector("#newItemButton").addEventListener("click", () => openItemEditor());
+document.querySelector("#addItemButton").addEventListener("click", () => {
+  inventoryView = inventoryView === "catalog" ? "carried" : "catalog";
+  renderInventoryManager();
+});
 document.querySelector("#levelUpButton").addEventListener("click", openLevelUpDialog);
+
+document.querySelector("#inventorySummary").addEventListener("change", (event) => {
+  const input = event.target.closest("[data-coin-input]");
+  if (!input) return;
+  const key = input.dataset.coinInput;
+  managerState.coins[key] = Math.max(0, Math.min(9999999, Math.floor(Number(input.value) || 0)));
+  saveManagerState();
+  renderInventorySummary();
+});
+
+document.querySelector("#inventorySummary").addEventListener("input", (event) => {
+  const input = event.target.closest("[data-coin-input]");
+  if (!input) return;
+  const key = input.dataset.coinInput;
+  managerState.coins[key] = Math.max(0, Math.min(9999999, Math.floor(Number(input.value) || 0)));
+  saveManagerState();
+  updateCoinTotalDisplay();
+});
 
 document.querySelector("#spellWorkspace").addEventListener("click", (event) => {
   if (event.target.closest("#spellLoadMore")) {
