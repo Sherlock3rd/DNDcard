@@ -434,6 +434,69 @@ body[data-route="rules"] .archive-backdrop {
   line-height: 1.8;
 }
 
+.archive-catalog-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 0 12px;
+}
+
+.archive-create-button {
+  display: inline-flex;
+  min-width: min(100%, 310px);
+  min-height: 58px;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border: 1px solid rgba(213, 176, 96, 0.55);
+  color: var(--gold-bright);
+  text-align: left;
+  background:
+    linear-gradient(135deg, rgba(105, 74, 35, 0.34), rgba(12, 12, 17, 0.94)),
+    rgba(10, 10, 15, 0.92);
+  box-shadow: inset 0 0 24px rgba(206, 158, 65, 0.06), 0 12px 30px rgba(0, 0, 0, 0.28);
+  cursor: pointer;
+}
+
+.archive-create-button > span:first-child {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  place-items: center;
+  border: 1px solid rgba(213, 176, 96, 0.48);
+  border-radius: 50%;
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.archive-create-button > span:last-child {
+  display: grid;
+  gap: 2px;
+}
+
+.archive-create-button strong {
+  font-family: var(--display);
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+}
+
+.archive-create-button small {
+  color: var(--muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+}
+
+.archive-create-button:hover,
+.archive-create-button:focus-visible {
+  border-color: var(--gold-bright);
+  background:
+    linear-gradient(135deg, rgba(129, 92, 43, 0.48), rgba(18, 18, 24, 0.96)),
+    rgba(10, 10, 15, 0.94);
+  outline: none;
+  transform: translateY(-1px);
+}
+
 .archive-search,
 .archive-filterbar label {
   display: grid;
@@ -995,6 +1058,11 @@ body[data-route="rules"] .archive-backdrop {
 
   .archive-heading h1 {
     font-size: 2.65rem;
+  }
+
+  .archive-catalog-actions,
+  .archive-create-button {
+    width: 100%;
   }
 
   .archive-filterbar,

@@ -200,7 +200,7 @@ function loadManagerState() {
       coins: { ...managerDefaults.coins, ...(saved.coins || {}) },
       spellOverrides: saved.spellOverrides || {},
       itemOverrides: saved.itemOverrides || {},
-      customSpells: [],
+      customSpells: saved.customSpells || [],
       customItems: saved.customItems || managerDefaults.customItems,
       inventory: saved.inventory || managerDefaults.inventory,
     };
@@ -216,7 +216,10 @@ function loadManagerState() {
       }
       return { ...item, nameZh: item.nameZh || item.name, descriptionZh: item.descriptionZh || item.description || "" };
     });
-    const validSpellIds = new Set(srdCatalog.spells.map((spell) => spell.id));
+    const validSpellIds = new Set([
+      ...srdCatalog.spells.map((spell) => spell.id),
+      ...loaded.customSpells.map((spell) => spell.id),
+    ]);
     loaded.spellbook = loaded.spellbook.filter((id) => validSpellIds.has(id));
     loaded.prepared = loaded.prepared.filter((id) => validSpellIds.has(id));
     return loaded;
@@ -295,7 +298,7 @@ function allManagerSpells() {
     ...(managerState.spellOverrides[spell.id] || {}),
     custom: false,
   }));
-  return catalog;
+  return [...catalog, ...managerState.customSpells.map((spell) => ({ ...spell, custom: true }))];
 }
 
 function allManagerItems() {
@@ -643,29 +646,31 @@ function togglePreparedSpell(id) {
 function openSpellEditor(id = null) {
   const dialog = document.querySelector("#spellEditorDialog");
   const spell = id ? findManagerSpell(id) : null;
-  if (!spell) return;
+  if (id && !spell) return;
+  const isCustom = Boolean(spell?.custom);
   dialog.innerHTML = `
     <form method="dialog" id="spellEditorForm">
       <div class="dialog-heading">
-        <div><p>ARCANE INDEX ENTRY</p><h2>编辑法术总览资料</h2></div>
+        <div><p>ARCANE INDEX ENTRY</p><h2>${spell ? "编辑法术总览资料" : "添加自定义法术"}</h2></div>
         <button value="cancel" aria-label="关闭">×</button>
       </div>
       <div class="editor-grid">
-        <label class="wide">中文名称<input name="nameZh" required value="${escapeManagerHtml(spell.nameZh || spell.alias || spellAliases[spell.id] || "")}" /></label>
-        <label class="wide">英文名称<input name="name" required value="${escapeManagerHtml(spell.name)}" /></label>
+        <label class="wide">中文名称<input name="nameZh" required value="${escapeManagerHtml(spell?.nameZh || spell?.alias || (spell ? spellAliases[spell.id] : "") || "")}" /></label>
+        <label class="wide">英文名称<input name="name" required value="${escapeManagerHtml(spell?.name || "")}" /></label>
         <label>环级<select name="level">${Array.from({ length: 10 }, (_, level) => `<option value="${level}" ${spell?.level === level ? "selected" : ""}>${level === 0 ? "戏法" : `${level} 环`}</option>`).join("")}</select></label>
         <label>学派<select name="school">${Object.entries(schoolNames).map(([value, label]) => `<option value="${value}" ${spell?.school === value ? "selected" : ""}>${label}</option>`).join("")}</select></label>
-        <label>施法时间<input name="castingTimeZh" value="${escapeManagerHtml(spell.castingTimeZh || spell.castingTime)}" /></label>
-        <label>距离<input name="rangeZh" value="${escapeManagerHtml(spell.rangeZh || spell.range)}" /></label>
-        <label>持续时间<input name="durationZh" value="${escapeManagerHtml(spell.durationZh || spell.duration)}" /></label>
-        <label>成分<input name="componentsZh" value="${escapeManagerHtml(spell.componentsZh || spell.components)}" /></label>
+        <label>施法时间<input name="castingTimeZh" value="${escapeManagerHtml(spell?.castingTimeZh || spell?.castingTime || "")}" /></label>
+        <label>距离<input name="rangeZh" value="${escapeManagerHtml(spell?.rangeZh || spell?.range || "")}" /></label>
+        <label>持续时间<input name="durationZh" value="${escapeManagerHtml(spell?.durationZh || spell?.duration || "")}" /></label>
+        <label>成分<input name="componentsZh" value="${escapeManagerHtml(spell?.componentsZh || spell?.components || "")}" /></label>
         <label class="wide">职业列表<input name="classes" value="${escapeManagerHtml((spell?.classes || ["Wizard"]).join(", "))}" placeholder="Wizard, Sorcerer" /></label>
         <label class="check-label"><input type="checkbox" name="ritual" ${spell?.ritual ? "checked" : ""} /> 仪式</label>
         <label class="check-label"><input type="checkbox" name="concentration" ${spell?.concentration ? "checked" : ""} /> 专注</label>
-        <label class="wide">中文说明<textarea name="descriptionZh" rows="7">${escapeManagerHtml(spell.descriptionZh || "")}</textarea></label>
-        <label class="wide">中文升环效果<textarea name="higherLevelZh" rows="3">${escapeManagerHtml(spell.higherLevelZh || "")}</textarea></label>
+        <label class="wide">中文说明<textarea name="descriptionZh" rows="7">${escapeManagerHtml(spell?.descriptionZh || "")}</textarea></label>
+        <label class="wide">中文升环效果<textarea name="higherLevelZh" rows="3">${escapeManagerHtml(spell?.higherLevelZh || "")}</textarea></label>
       </div>
       <menu>
+        ${isCustom ? `<button type="button" class="ghost-button danger" data-delete-custom-spell="${spell.id}">删除条目</button>` : ""}
         <span></span>
         <button value="cancel" class="ghost-button">取消</button>
         <button value="default" class="primary-button">保存</button>
@@ -686,7 +691,7 @@ function openSpellEditor(id = null) {
     const form = new FormData(event.currentTarget);
     const entry = {
       ...(spell || {}),
-      id: spell.id,
+      id: spell?.id || `custom-spell-${Date.now()}`,
       name: form.get("name").trim(),
       nameZh: form.get("nameZh").trim(),
       alias: "",
@@ -705,15 +710,36 @@ function openSpellEditor(id = null) {
       concentration: form.get("concentration") === "on",
       descriptionZh: form.get("descriptionZh").trim(),
       higherLevelZh: form.get("higherLevelZh").trim(),
-      custom: false,
+      custom: spell ? Boolean(spell.custom) : true,
     };
-    managerState.spellOverrides[entry.id] = entry;
+    if (entry.custom) {
+      const index = managerState.customSpells.findIndex((candidate) => candidate.id === entry.id);
+      if (index >= 0) managerState.customSpells[index] = entry;
+      else managerState.customSpells.push(entry);
+    } else {
+      managerState.spellOverrides[entry.id] = entry;
+    }
     saveManagerState();
     renderSpellManager();
     if (location.hash === "#spell-library" && typeof renderSpellLibrary === "function") renderSpellLibrary();
     dialog.close();
   });
   dialog.showModal();
+}
+
+function deleteCustomSpell(id) {
+  const spell = findManagerSpell(id);
+  if (!spell?.custom) return;
+  if (!window.confirm(`确定要永久删除自定义法术“${displaySpellName(spell)}”吗？\n\n若 Charlie 已抄录该法术，也会一并移除。`)) {
+    return;
+  }
+  managerState.customSpells = managerState.customSpells.filter((entry) => entry.id !== id);
+  managerState.spellbook = managerState.spellbook.filter((spellId) => spellId !== id);
+  managerState.prepared = managerState.prepared.filter((spellId) => spellId !== id);
+  saveManagerState();
+  renderSpellManager();
+  document.querySelector("#spellEditorDialog").close();
+  if (location.hash === "#spell-library" && typeof renderSpellLibrary === "function") renderSpellLibrary();
 }
 
 function renderInventorySummary() {
@@ -882,7 +908,6 @@ function renderCatalogItemCard(item) {
       <details><summary>物品说明</summary><p>${escapeManagerHtml(item.descriptionZh || "暂无中文说明").replaceAll("\n", "<br>")}</p></details>
       <footer class="catalog-actions">
         <button class="text-button" type="button" data-add-item="${item.id}">${inventoryEntry ? `增加数量（${inventoryEntry.quantity}）` : "加入背包"}</button>
-        <button class="text-button" type="button" data-edit-item="${item.id}">编辑</button>
       </footer>
     </article>`;
 }
@@ -906,11 +931,11 @@ function renderInventoryCard(item, entry) {
         </div>
         <button class="equip-toggle ${entry.equipped ? "active" : ""}" type="button" data-equip-item="${item.id}">${entry.equipped ? "卸下" : "装备"}</button>
       </div>
-      <details><summary>物品说明</summary><p>${escapeManagerHtml(item.descriptionZh || item.description || "暂无说明").replaceAll("\n", "<br>")}</p></details>
-      <footer class="catalog-actions">
-        <button class="text-button" type="button" data-edit-item="${item.id}">编辑</button>
-        <button class="text-button danger" type="button" data-remove-item="${item.id}">移除</button>
-      </footer>
+      <details>
+        <summary>物品说明</summary>
+        <p>${escapeManagerHtml(item.descriptionZh || item.description || "暂无说明").replaceAll("\n", "<br>")}</p>
+        <div class="detail-danger-zone"><button class="text-button danger" type="button" data-remove-item="${item.id}">从背包移除</button></div>
+      </details>
     </article>`;
 }
 
@@ -923,6 +948,15 @@ function addItemToInventory(id) {
 }
 
 function removeItemFromInventory(id) {
+  const item = findManagerItem(id);
+  const entry = managerState.inventory.find((candidate) => candidate.id === id);
+  if (
+    !window.confirm(
+      `确定要将“${item ? displayItemName(item) : "该物品"}”从 Charlie 的背包中移除吗？\n\n当前持有的 ${entry?.quantity || 1} 件会一并移除。`,
+    )
+  ) {
+    return;
+  }
   managerState.inventory = managerState.inventory.filter((entry) => entry.id !== id);
   saveManagerState();
   renderInventoryManager();
@@ -931,9 +965,10 @@ function removeItemFromInventory(id) {
 function updateItemQuantity(id, delta) {
   const entry = managerState.inventory.find((item) => item.id === id);
   if (!entry) return;
-  entry.quantity = Math.max(0, entry.quantity + delta);
-  if (entry.quantity === 0) removeItemFromInventory(id);
+  const nextQuantity = Math.max(0, entry.quantity + delta);
+  if (nextQuantity === 0) removeItemFromInventory(id);
   else {
+    entry.quantity = nextQuantity;
     saveManagerState();
     renderInventoryManager();
   }
@@ -943,11 +978,10 @@ function openItemEditor(id = null) {
   const dialog = document.querySelector("#itemEditorDialog");
   const item = id ? findManagerItem(id) : null;
   const isCustom = item?.custom;
-  const inventoryEntry = item ? managerState.inventory.find((entry) => entry.id === item.id) : null;
   dialog.innerHTML = `
     <form method="dialog" id="itemEditorForm">
       <div class="dialog-heading">
-        <div><p>INVENTORY ENTRY</p><h2>${item ? "编辑物品" : "创建自定义物品"}</h2></div>
+        <div><p>RELIQUARY INDEX ENTRY</p><h2>${item ? "编辑道具总览资料" : "添加自定义物品"}</h2></div>
         <button value="cancel" aria-label="关闭">×</button>
       </div>
       <div class="editor-grid">
@@ -961,7 +995,6 @@ function openItemEditor(id = null) {
         <label>伤害<input name="damage" value="${escapeManagerHtml(item?.damage || "")}" /></label>
         <label>护甲等级<input name="armorClass" type="number" min="0" value="${item?.armorClass || ""}" /></label>
         <label class="wide">属性标签<input name="properties" value="${escapeManagerHtml((item?.properties || []).join(", "))}" placeholder="Light, Finesse, Story" /></label>
-        <label class="wide">背包备注<input name="notes" value="${escapeManagerHtml(inventoryEntry?.notes || "")}" /></label>
         <label class="wide">中文说明<textarea name="descriptionZh" rows="6">${escapeManagerHtml(item?.descriptionZh || item?.description || "")}</textarea></label>
         <label class="check-label"><input type="checkbox" name="magic" ${item?.magic ? "checked" : ""} /> 魔法物品</label>
       </div>
@@ -1013,23 +1046,26 @@ function openItemEditor(id = null) {
     } else {
       managerState.itemOverrides[entry.id] = entry;
     }
-    let inventoryEntry = managerState.inventory.find((candidate) => candidate.id === entry.id);
-    if (!inventoryEntry) {
-      inventoryEntry = { id: entry.id, quantity: 1, equipped: false, notes: "" };
-      managerState.inventory.push(inventoryEntry);
-    }
-    inventoryEntry.notes = form.get("notes").trim();
     saveManagerState();
     renderInventoryManager();
+    if (location.hash === "#item-library" && typeof renderItemLibrary === "function") renderItemLibrary();
     dialog.close();
   });
   dialog.showModal();
 }
 
 function deleteCustomItem(id) {
+  const item = findManagerItem(id);
+  if (!item?.custom) return;
+  if (!window.confirm(`确定要永久删除自定义物品“${displayItemName(item)}”吗？\n\n若 Charlie 已持有该物品，也会一并移除。`)) {
+    return;
+  }
   managerState.customItems = managerState.customItems.filter((item) => item.id !== id);
-  removeItemFromInventory(id);
+  managerState.inventory = managerState.inventory.filter((entry) => entry.id !== id);
+  saveManagerState();
+  renderInventoryManager();
   document.querySelector("#itemEditorDialog").close();
+  if (location.hash === "#item-library" && typeof renderItemLibrary === "function") renderItemLibrary();
 }
 
 function levelFeatureSummary(level) {
@@ -1247,6 +1283,9 @@ document.addEventListener("click", (event) => {
 
   const editSpellButton = event.target.closest("[data-edit-spell]");
   if (editSpellButton) openSpellEditor(editSpellButton.dataset.editSpell);
+
+  const deleteSpellButton = event.target.closest("[data-delete-custom-spell]");
+  if (deleteSpellButton) deleteCustomSpell(deleteSpellButton.dataset.deleteCustomSpell);
 
   const addItemButton = event.target.closest("[data-add-item]");
   if (addItemButton) addItemToInventory(addItemButton.dataset.addItem);

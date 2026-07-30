@@ -395,10 +395,17 @@ function renderClassSearch(event) {
 }
 
 function renderSpellLibrary() {
+  const spellCount = allManagerSpells().length;
   archiveApp.innerHTML = `
     <div class="archive-backdrop" aria-hidden="true"></div>
     <div class="archive-shell">
-      ${archiveHeader("spell-library", "法术总目录", `ARCANE INDEX · ${portalCatalog.spells.length} SRD SPELLS`)}
+      ${archiveHeader("spell-library", "法术总目录", `ARCANE INDEX · ${spellCount} SPELLS`)}
+      <div class="archive-catalog-actions">
+        <button class="archive-create-button" id="createCustomSpellButton" type="button">
+          <span aria-hidden="true">＋</span>
+          <span><strong>添加自定义法术</strong><small>建立新的全局法术资料</small></span>
+        </button>
+      </div>
       <div class="archive-filterbar">
         <label class="archive-search"><span>搜索</span><input id="librarySpellSearch" placeholder="法术名、描述或伤害类型" /></label>
         <label><span>环级</span><select id="librarySpellLevel"><option value="all">全部</option>${Array.from({ length: 10 }, (_, level) => `<option value="${level}">${level ? `${level} 环` : "戏法"}</option>`).join("")}</select></label>
@@ -410,6 +417,7 @@ function renderSpellLibrary() {
       <button class="library-more" id="librarySpellMore" type="button">显示更多法术</button>
       <footer class="archive-footer">查询目录不会改变 Charlie 的法术书；要配置角色，请登录角色后进入“法术”章节。</footer>
     </div>`;
+  archiveApp.querySelector("#createCustomSpellButton").addEventListener("click", () => openSpellEditor());
   archiveApp.querySelectorAll("#librarySpellSearch, #librarySpellLevel, #librarySpellSchool, #librarySpellClass").forEach((control) => {
     control.addEventListener("input", () => {
       archiveApp.dataset.limit = "48";
@@ -434,7 +442,7 @@ function spellLibraryMatches(spell) {
     (!query || haystack.includes(query)) &&
     (level === "all" || `${spell.level}` === level) &&
     (school === "all" || spell.school === school) &&
-    (className === "all" || spell.classes.includes(className))
+    (className === "all" || (spell.classes || []).includes(className))
   );
 }
 
@@ -446,7 +454,7 @@ function renderSpellLibraryResults() {
     <article class="library-card spell">
       <span class="catalog-icon spell-icon" style="${portalIconStyle(spell.id)}" aria-hidden="true"><i></i></span>
       <div class="library-card-heading"><p>${spell.level ? `${spell.level} 环` : "戏法"} · ${portalEscape(portalSchoolNames[spell.school] || spell.school)}</p><h2>${portalEscape(displaySpellName(spell))}</h2></div>
-      <div class="library-badges">${spell.ritual ? "<span>仪式</span>" : ""}${spell.concentration ? "<span>专注</span>" : ""}<span>${portalEscape(spell.classes.map((name) => portalClassNames[name] || name).join("、"))}</span></div>
+      <div class="library-badges">${spell.ritual ? "<span>仪式</span>" : ""}${spell.concentration ? "<span>专注</span>" : ""}<span>${portalEscape((spell.classes || []).map((name) => portalClassNames[name] || name).join("、") || "自定义")}</span></div>
       <dl><div><dt>施法</dt><dd>${portalEscape(spell.castingTimeZh || spell.castingTime)}</dd></div><div><dt>距离</dt><dd>${portalEscape(spell.rangeZh || spell.range)}</dd></div><div><dt>持续</dt><dd>${portalEscape(spell.durationZh || spell.duration)}</dd></div><div><dt>成分</dt><dd>${portalEscape(spell.componentsZh || spell.components)}</dd></div></dl>
       <details><summary>阅读法术说明</summary><p>${portalEscape(spell.descriptionZh || "暂无中文说明")}</p>${spell.higherLevelZh ? `<p><strong>升环：</strong>${portalEscape(spell.higherLevelZh)}</p>` : ""}<div class="library-detail-actions"><button class="text-button" type="button" data-edit-spell="${spell.id}">编辑总览资料</button></div></details>
     </article>`).join("") || `<div class="archive-empty">没有符合条件的法术。</div>`;
@@ -454,12 +462,19 @@ function renderSpellLibraryResults() {
 }
 
 function renderItemLibrary() {
-  const types = [...new Set(portalCatalog.items.map((item) => item.type).filter(Boolean))].sort();
-  const rarities = [...new Set(portalCatalog.items.map((item) => item.rarity).filter(Boolean))].sort();
+  const items = allManagerItems();
+  const types = [...new Set(items.map((item) => item.type).filter(Boolean))].sort();
+  const rarities = [...new Set(items.map((item) => item.rarity).filter(Boolean))].sort();
   archiveApp.innerHTML = `
     <div class="archive-backdrop" aria-hidden="true"></div>
     <div class="archive-shell">
-      ${archiveHeader("item-library", "道具与魔法物品", `RELIQUARY INDEX · ${portalCatalog.items.length} SRD ITEMS`)}
+      ${archiveHeader("item-library", "道具与魔法物品", `RELIQUARY INDEX · ${items.length} ITEMS`)}
+      <div class="archive-catalog-actions">
+        <button class="archive-create-button" id="createCustomItemButton" type="button">
+          <span aria-hidden="true">＋</span>
+          <span><strong>添加自定义物品</strong><small>建立新的全局道具资料</small></span>
+        </button>
+      </div>
       <div class="archive-filterbar item">
         <label class="archive-search"><span>搜索</span><input id="libraryItemSearch" placeholder="名称、类型、属性或说明" /></label>
         <label><span>类别</span><select id="libraryItemType"><option value="all">全部</option>${types.map((type) => `<option value="${portalEscape(type)}">${portalEscape(displayItemType(type))}</option>`).join("")}</select></label>
@@ -468,8 +483,9 @@ function renderItemLibrary() {
       <p class="archive-count" id="libraryItemCount"></p>
       <section class="library-grid item" id="libraryItemGrid"></section>
       <button class="library-more" id="libraryItemMore" type="button">显示更多物品</button>
-      <footer class="archive-footer">查询目录不会改变 Charlie 的背包；自制物品可在角色内的“装备”章节创建。</footer>
+      <footer class="archive-footer">查询目录不会改变 Charlie 的背包；新建资料后，可在角色“装备”章节通过“添加物品”加入背包。</footer>
     </div>`;
+  archiveApp.querySelector("#createCustomItemButton").addEventListener("click", () => openItemEditor());
   archiveApp.querySelectorAll("#libraryItemSearch, #libraryItemType, #libraryItemRarity").forEach((control) => {
     control.addEventListener("input", () => {
       archiveApp.dataset.limit = "48";
@@ -493,7 +509,7 @@ function itemLibraryMatches(item) {
 }
 
 function renderItemLibraryResults() {
-  const matches = portalCatalog.items.filter(itemLibraryMatches);
+  const matches = allManagerItems().filter(itemLibraryMatches);
   const limit = Number(archiveApp.dataset.limit || 48);
   archiveApp.querySelector("#libraryItemCount").textContent = `找到 ${matches.length} 件物品 · 当前显示 ${Math.min(limit, matches.length)} 件`;
   archiveApp.querySelector("#libraryItemGrid").innerHTML = matches.slice(0, limit).map((item) => `
@@ -502,7 +518,7 @@ function renderItemLibraryResults() {
       <div class="library-card-heading"><p>${portalEscape(displayItemRarity(item.rarity))} · ${portalEscape(displayItemType(item.type || item.category))}</p><h2>${portalEscape(item.nameZh ? `${item.nameZh}（${item.name}）` : item.name)}</h2></div>
       <div class="library-badges">${item.magic ? "<span>魔法</span>" : "<span>普通</span>"}${item.cost ? `<span>${portalEscape(item.cost)}</span>` : ""}${item.weight ? `<span>${portalEscape(item.weight)} 磅</span>` : ""}</div>
       ${(item.damage || item.armorClass) ? `<dl>${item.damage ? `<div><dt>伤害</dt><dd>${portalEscape(displayItemDamage(item.damage))}</dd></div>` : ""}${item.armorClass ? `<div><dt>AC</dt><dd>${portalEscape(item.armorClass)}</dd></div>` : ""}</dl>` : ""}
-      <details><summary>阅读物品说明</summary><p>${portalEscape(item.descriptionZh || "该物品暂无中文规则说明。")}</p></details>
+      <details><summary>阅读物品说明</summary><p>${portalEscape(item.descriptionZh || "该物品暂无中文规则说明。")}</p><div class="library-detail-actions"><button class="text-button" type="button" data-edit-item="${item.id}">编辑总览资料</button></div></details>
     </article>`).join("") || `<div class="archive-empty">没有符合条件的物品。</div>`;
   archiveApp.querySelector("#libraryItemMore").hidden = limit >= matches.length;
 }
