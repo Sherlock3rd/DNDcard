@@ -298,7 +298,24 @@ function renderPortal() {
         <h1>DNDcard</h1>
         <span>选择角色档案，或先查阅规则资料库</span>
       </header>
-      <section class="portal-relationship" aria-labelledby="relationshipTitle">
+      <button class="relationship-entry" id="openRelationshipButton" type="button" aria-haspopup="dialog" aria-controls="relationshipDialog">
+        <span class="relationship-entry-copy">
+          <small>RELATIONSHIP CHRONICLE · TODAY</small>
+          <strong>今日关系图谱</strong>
+          <em>冒险团与矮人村事件 · 12 个节点</em>
+        </span>
+        <span class="relationship-entry-faces" aria-hidden="true">
+          <img src="./assets/images/gandalf-bladesinger.png?v=20260823-human-high-guard" alt="" />
+          <img src="./assets/images/relationship-chief.png?v=20260823-relationship-portraits" alt="" />
+          <img src="./assets/images/relationship-pazu.png?v=20260823-relationship-portraits" alt="" />
+          <b>+9</b>
+        </span>
+        <span class="relationship-entry-action">查看关系图 <b aria-hidden="true">→</b></span>
+      </button>
+      <dialog class="relationship-dialog" id="relationshipDialog" aria-labelledby="relationshipTitle">
+        <div class="relationship-dialog-shell">
+          <button class="relationship-dialog-close" type="button" data-close-relationship aria-label="关闭关系图">×</button>
+          <section class="portal-relationship" aria-labelledby="relationshipTitle">
         <header class="relationship-heading">
           <div>
             <p>RELATIONSHIP CHRONICLE · TODAY</p>
@@ -320,7 +337,7 @@ function renderPortal() {
               </g>
               <path class="story-link" d="M326 310 C460 310 590 310 745 310" />
               <path class="story-link" d="M810 270 C780 205 730 155 682 112" />
-              <path class="rescue-link" d="M320 292 C525 155 745 96 1008 112" />
+              <path class="rescue-link" d="M320 292 C505 42 780 42 1008 112" />
               <path class="loss-link" d="M324 330 C535 460 758 508 1030 500" />
               <path class="mine-loss-link" d="M790 350 C765 405 725 455 684 492" />
               <path class="story-link soft" d="M850 305 C925 265 970 195 1005 135" />
@@ -328,7 +345,7 @@ function renderPortal() {
               <g class="relationship-labels">
                 <text x="494" y="294">今日进入矮人村</text>
                 <text x="726" y="177">村庄领袖</text>
-                <text x="625" y="121">被冒险团救下</text>
+                <text x="800" y="66">被冒险团救下</text>
                 <text class="loss-text" x="630" y="486">被误认为叛徒 · 误杀</text>
                 <text class="mine-loss-text" x="692" y="420">矿坑遇难者之一</text>
               </g>
@@ -336,32 +353,35 @@ function renderPortal() {
 
             <article class="relationship-node protagonist" style="--x:22%; --y:50%">
               <div class="relationship-avatar"><img src="./assets/images/gandalf-bladesinger.png?v=20260823-human-high-guard" alt="甘阿·道夫" /></div>
-              <span>玩家角色</span><strong>甘阿·道夫</strong><small>人类 · 剑咏法师</small>
+              <span>玩家角色</span><strong>甘阿·道夫</strong><small><b>种族</b> 人类</small><small><b>职业</b> 法师（剑咏）</small>
             </article>
             ${Array.from({ length: 6 }, (_, index) => {
               const positions = [[7.5, 18], [22, 13], [36.5, 19], [7.5, 82], [22, 87], [36.5, 81]];
               const [x, y] = positions[index];
-              return `<article class="relationship-node party-placeholder" style="--x:${x}%; --y:${y}%"><div class="relationship-avatar"><b>${String(index + 1).padStart(2, "0")}</b></div><span>冒险团成员</span><strong>待补充</strong><small>姓名 · 职业 · 肖像</small></article>`;
+              const number = String(index + 1).padStart(2, "0");
+              return `<article class="relationship-node party-placeholder" style="--x:${x}%; --y:${y}%"><div class="relationship-avatar"><b>${number}</b></div><span>冒险团成员</span><strong>占位成员 ${number}</strong><small><b>种族</b> 待补充</small><small><b>职业</b> 待补充</small></article>`;
             }).join("")}
 
             <article class="relationship-node location" style="--x:69%; --y:50%">
-              <div class="relationship-avatar"><b>村</b></div><span>今日地点</span><strong>矮人村</strong><small>本次剧情中心</small>
+              <div class="relationship-avatar"><img src="./assets/images/relationship-dwarf-village.png?v=20260823-relationship-portraits" alt="地下矮人村" /></div><span>今日地点</span><strong>矮人村</strong><small><b>类型</b> 矮人聚落</small><small><b>事件</b> 矿坑事故</small>
             </article>
             <article class="relationship-node story-character" style="--x:58%; --y:18%">
-              <div class="relationship-avatar"><b>长</b></div><span>剧情角色</span><strong>村长</strong><small>矮人村领袖</small>
+              <div class="relationship-avatar"><img src="./assets/images/relationship-chief.png?v=20260823-relationship-portraits" alt="矮人村村长" /></div><span>剧情角色</span><strong>村长</strong><small><b>种族</b> 矮人</small><small><b>职业</b> 村长</small>
             </article>
             <article class="relationship-node story-character rescued" style="--x:86%; --y:18%">
-              <div class="relationship-avatar"><b>帕</b></div><span>已救援</span><strong>帕主</strong><small>被冒险团救下的爱人</small>
+              <div class="relationship-avatar"><img src="./assets/images/relationship-pazu.png?v=20260823-relationship-portraits" alt="被救下的帕主" /></div><span>已救援</span><strong>帕主</strong><small><b>种族</b> 待确认</small><small><b>职业</b> 待确认</small>
             </article>
-            <article class="relationship-node story-character deceased" style="--x:88%; --y:81%">
-              <div class="relationship-avatar"><b>马</b></div><span>已故</span><strong>马鲁克</strong><small>被当作叛徒误杀的矮人</small>
+            <article class="relationship-node story-character deceased" style="--x:88%; --y:81%" aria-label="马鲁克，矮人，职业待确认，已故">
+              <div class="relationship-avatar"><img src="./assets/images/relationship-maruk.png?v=20260823-relationship-portraits" alt="马鲁克" /><em class="death-mark">† 已故</em></div><span>被误认为叛徒 · 误杀</span><strong>马鲁克</strong><small><b>种族</b> 矮人</small><small><b>职业</b> 待确认</small>
             </article>
-            <article class="relationship-node story-character deceased mine-casualty" style="--x:58%; --y:81%">
-              <div class="relationship-avatar"><b>墨</b></div><span>矿坑遇难</span><strong>墨里斯</strong><small>矿坑遇难者之一</small>
+            <article class="relationship-node story-character deceased mine-casualty" style="--x:58%; --y:81%" aria-label="墨里斯，矮人，职业待确认，已故">
+              <div class="relationship-avatar"><img src="./assets/images/relationship-morris.png?v=20260823-relationship-portraits" alt="墨里斯" /><em class="death-mark">† 已故</em></div><span>矿坑遇难者之一</span><strong>墨里斯</strong><small><b>种族</b> 矮人</small><small><b>职业</b> 待确认</small>
             </article>
           </div>
         </div>
-      </section>
+          </section>
+        </div>
+      </dialog>
       <section class="portal-character-panel" aria-labelledby="portalCharacterTitle">
         <div class="portal-portrait">
           <img src="./assets/images/gandalf-bladesinger.png?v=20260823-human-high-guard" alt="以老法师外貌示人的人类剑咏者甘阿·道夫，持剑采用古典高位架势，旧牌收在衣兜里" />
@@ -398,6 +418,12 @@ function renderPortal() {
       </button>
       <footer class="portal-footer">SRD 5.1 · CC BY 4.0 · 所有角色状态保存在当前浏览器</footer>
     </main>`;
+  const relationshipDialog = portalApp.querySelector("#relationshipDialog");
+  portalApp.querySelector("#openRelationshipButton")?.addEventListener("click", () => relationshipDialog?.showModal());
+  relationshipDialog?.querySelector("[data-close-relationship]")?.addEventListener("click", () => relationshipDialog.close());
+  relationshipDialog?.addEventListener("click", (event) => {
+    if (event.target === relationshipDialog) relationshipDialog.close();
+  });
 }
 
 function renderClasses() {

@@ -85,9 +85,140 @@ body[data-route="rules"] {
   letter-spacing: 0.12em;
 }
 
+.relationship-entry {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  width: min(980px, 100%);
+  min-height: 112px;
+  margin: 0 auto clamp(24px, 4vw, 46px);
+  padding: 18px 24px;
+  align-items: center;
+  gap: 24px;
+  border: 1px solid rgba(181, 150, 88, 0.42);
+  color: var(--ink);
+  text-align: left;
+  background:
+    linear-gradient(110deg, rgba(18, 16, 25, 0.96), rgba(9, 9, 14, 0.9)),
+    url("./assets/images/arcane-ui-sheet.png") center / cover;
+  box-shadow: 0 18px 54px rgba(0, 0, 0, 0.42), inset 0 0 0 4px rgba(4, 4, 7, 0.55);
+  cursor: pointer;
+  clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0 calc(100% - 10px), 0 10px);
+  transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+
+.relationship-entry:hover,
+.relationship-entry:focus-visible {
+  border-color: var(--gold-bright);
+  outline: none;
+  transform: translateY(-2px);
+  box-shadow: 0 22px 64px rgba(0, 0, 0, 0.52), 0 0 28px rgba(128, 107, 219, 0.1);
+}
+
+.relationship-entry-copy {
+  display: grid;
+  gap: 3px;
+}
+
+.relationship-entry-copy small {
+  color: var(--gold-bright);
+  font-size: 0.64rem;
+  letter-spacing: 0.18em;
+}
+
+.relationship-entry-copy strong {
+  font-family: var(--display);
+  font-size: clamp(1.45rem, 2.7vw, 2.1rem);
+  font-weight: 400;
+}
+
+.relationship-entry-copy em {
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-style: normal;
+}
+
+.relationship-entry-faces {
+  display: flex;
+  align-items: center;
+  padding-left: 14px;
+}
+
+.relationship-entry-faces img,
+.relationship-entry-faces b {
+  width: 48px;
+  height: 48px;
+  margin-left: -14px;
+  border: 2px solid #15121d;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px rgba(211, 181, 116, 0.36);
+}
+
+.relationship-entry-faces b {
+  display: grid;
+  place-items: center;
+  color: #c9b57d;
+  background: #211c29;
+  font-size: 0.72rem;
+  font-weight: 500;
+}
+
+.relationship-entry-action {
+  color: #d8c68e;
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.relationship-dialog {
+  width: min(1340px, calc(100vw - 24px));
+  max-width: none;
+  max-height: calc(100vh - 24px);
+  padding: 0;
+  border: 0;
+  color: var(--ink);
+  background: transparent;
+  overflow: hidden;
+}
+
+.relationship-dialog::backdrop {
+  background: rgba(3, 3, 6, 0.86);
+  backdrop-filter: blur(8px);
+}
+
+.relationship-dialog-shell {
+  position: relative;
+  max-height: calc(100vh - 24px);
+  padding: 12px;
+  overflow: auto;
+}
+
+.relationship-dialog-close {
+  position: sticky;
+  top: 8px;
+  z-index: 20;
+  display: grid;
+  width: 42px;
+  height: 42px;
+  margin: 0 8px -50px auto;
+  place-items: center;
+  border: 1px solid rgba(221, 194, 132, 0.46);
+  border-radius: 50%;
+  color: #ead8a9;
+  background: rgba(9, 8, 13, 0.92);
+  cursor: pointer;
+  font-size: 1.45rem;
+}
+
+.relationship-dialog-close:hover,
+.relationship-dialog-close:focus-visible {
+  border-color: var(--gold-bright);
+  outline: none;
+}
+
 .portal-relationship {
   width: min(1240px, 100%);
-  margin: 0 auto clamp(24px, 4vw, 46px);
+  margin: 0 auto;
   padding: clamp(20px, 3vw, 32px);
   border: 1px solid rgba(181, 150, 88, 0.36);
   background:
@@ -166,7 +297,7 @@ body[data-route="rules"] {
   position: relative;
   width: 100%;
   min-width: 1080px;
-  height: 620px;
+  height: 660px;
   margin-top: 8px;
   background:
     radial-gradient(circle at 18% 50%, rgba(103, 87, 196, 0.11), transparent 24%),
@@ -300,6 +431,11 @@ body[data-route="rules"] {
   white-space: nowrap;
 }
 
+.relationship-node > small b {
+  color: #aaa087;
+  font-weight: 500;
+}
+
 .relationship-node.protagonist .relationship-avatar {
   width: 94px;
   height: 94px;
@@ -334,6 +470,23 @@ body[data-route="rules"] {
 .relationship-node.deceased > span { color: #d0707b; }
 .relationship-node.mine-casualty .relationship-avatar { border-color: #98745d; color: #cba98f; }
 .relationship-node.mine-casualty > span { color: #ba9074; }
+
+.death-mark {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  z-index: 2;
+  padding: 2px 5px;
+  border: 1px solid rgba(238, 151, 160, 0.72);
+  border-radius: 9px;
+  color: #ffe0e3;
+  background: rgba(103, 24, 34, 0.9);
+  font-family: sans-serif;
+  font-size: 0.5rem;
+  font-style: normal;
+  line-height: 1;
+  white-space: nowrap;
+}
 
 .portal-character-panel {
   display: grid;
@@ -1193,6 +1346,14 @@ body[data-route="rules"] .archive-backdrop {
     gap: 12px;
   }
 
+  .relationship-entry {
+    grid-template-columns: 1fr auto;
+  }
+
+  .relationship-entry-action {
+    grid-column: 1 / -1;
+  }
+
   .relationship-legend {
     justify-content: flex-start;
   }
@@ -1275,13 +1436,37 @@ body[data-route="rules"] .archive-backdrop {
     padding: 18px 14px;
   }
 
+  .relationship-entry {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding: 18px;
+  }
+
+  .relationship-entry-faces {
+    padding-left: 14px;
+  }
+
+  .relationship-entry-action {
+    grid-column: auto;
+  }
+
+  .relationship-dialog {
+    width: 100vw;
+    max-height: 100vh;
+  }
+
+  .relationship-dialog-shell {
+    max-height: 100vh;
+    padding: 6px;
+  }
+
   .relationship-intro {
     font-size: 0.76rem;
   }
 
   .relationship-stage {
     min-width: 980px;
-    height: 580px;
+    height: 640px;
     transform-origin: top left;
   }
 
