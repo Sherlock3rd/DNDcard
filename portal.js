@@ -344,7 +344,7 @@ function renderPortal() {
               <path class="story-link soft" d="M850 305 C925 265 970 195 1005 135" />
               <path class="story-link soft" d="M850 330 C920 390 970 455 1020 492" />
               <g class="relationship-labels">
-                <text x="494" y="294">与矮人村关联</text>
+                <text x="494" y="294">与铁环村关联</text>
                 <text x="726" y="177">村庄领袖</text>
                 <text x="800" y="66">被冒险团救下</text>
                 <text class="loss-text" x="630" y="486">被误认为叛徒 · 误杀</text>
@@ -368,13 +368,13 @@ function renderPortal() {
             <div class="relationship-party-hub" aria-label="冒险团共同关系枢纽"><span>ADVENTURING</span><strong>冒险团</strong><small>七名平级成员</small></div>
 
             <article class="relationship-node location" style="--x:69%; --y:50%">
-              <div class="relationship-avatar"><img src="./assets/images/relationship-dwarf-village.png?v=20260823-relationship-portraits" alt="地下矮人村" /></div><span>关联地点</span><strong>矮人村</strong><small><b>类型</b> 矮人聚落</small><small><b>状态</b> 矿坑事故</small>
+              <div class="relationship-avatar"><img src="./assets/images/relationship-dwarf-village.png?v=20260823-relationship-portraits" alt="地下矮人村铁环村" /></div><span>关联地点</span><strong>铁环村</strong><small><b>类型</b> 矮人聚落</small><small><b>状态</b> 矿坑事故</small>
             </article>
-            <article class="relationship-node story-character" style="--x:58%; --y:18%">
-              <div class="relationship-avatar"><img src="./assets/images/relationship-chief.png?v=20260823-relationship-portraits" alt="矮人村村长" /></div><span>矮人村</span><strong>村长</strong><small><b>种族</b> 矮人</small><small><b>职业</b> 村长</small>
+            <article class="relationship-node story-character" style="--x:58%; --y:18%" aria-label="艾德诺根，矮人，铁环村村长">
+              <div class="relationship-avatar"><img src="./assets/images/relationship-chief.png?v=20260823-relationship-portraits" alt="铁环村村长艾德诺根" /></div><span>铁环村</span><strong>艾德诺根</strong><small><b>种族</b> 矮人</small><small><b>备注</b> 村长</small>
             </article>
-            <article class="relationship-node story-character rescued" style="--x:86%; --y:18%">
-              <div class="relationship-avatar"><img src="./assets/images/relationship-pazu.png?v=20260823-relationship-portraits" alt="被救下的帕主" /></div><span>已救援</span><strong>帕主</strong><small><b>种族</b> 待确认</small><small><b>职业</b> 待确认</small>
+            <article class="relationship-node story-character rescued" style="--x:86%; --y:18%" aria-label="帕祖，种族待确认，职业待确认，已救援">
+              <div class="relationship-avatar"><img src="./assets/images/relationship-pazu.png?v=20260823-relationship-portraits" alt="被救下的帕祖" /></div><span>已救援</span><strong>帕祖</strong><small><b>种族</b> 待确认</small><small><b>职业</b> 待确认</small>
             </article>
             <article class="relationship-node story-character deceased" style="--x:88%; --y:81%" aria-label="马鲁克，矮人，职业待确认，已故">
               <div class="relationship-avatar"><img src="./assets/images/relationship-maruk.png?v=20260823-relationship-portraits" alt="马鲁克" /><em class="death-mark">† 已故</em></div><span>被误认为叛徒 · 误杀</span><strong>马鲁克</strong><small><b>种族</b> 矮人</small><small><b>职业</b> 待确认</small>
