@@ -184,6 +184,7 @@ const managerDefaults = {
     { id: "equipment-playing-card-set", quantity: 1, equipped: true, notes: "母亲遗物 · 边角磨白" },
     { id: "magic-hat-of-disguise", quantity: 1, equipped: true, notes: "导师赠予 · 已同调" },
   ],
+  feats: [],
   levelHistory: [],
 };
 
@@ -209,6 +210,7 @@ function loadManagerState() {
       customSpells: saved.customSpells || managerDefaults.customSpells,
       customItems: saved.customItems || managerDefaults.customItems,
       inventory: saved.inventory || managerDefaults.inventory,
+      feats: Array.isArray(saved.feats) ? saved.feats : [],
     };
     if (Number(saved.profileVersion || 0) < managerDefaults.profileVersion) {
       loaded.profileVersion = managerDefaults.profileVersion;
@@ -1100,9 +1102,97 @@ function deleteCustomItem(id) {
   if (location.hash === "#item-library" && typeof renderItemLibrary === "function") renderItemLibrary();
 }
 
+function renderFeatManager() {
+  const list = document.querySelector("#featList");
+  if (!managerState.feats.length) {
+    list.innerHTML = `<div class="feat-empty"><strong>暂无专长</strong><p>甘阿·道夫目前为 3 级；2014 版专长属于可选规则，通常在属性值提升等级经 DM 允许后选择。</p></div>`;
+    return;
+  }
+  list.innerHTML = managerState.feats
+    .map(
+      (feat) => `
+        <article class="feat-card">
+          <div class="feat-card-heading"><span>${escapeManagerHtml(feat.source || "自定义专长")}</span><small>${Number(feat.acquiredAtLevel) ? `${Number(feat.acquiredAtLevel)} 级获得` : "手动设置"}</small></div>
+          <h4>${escapeManagerHtml(feat.name)}</h4>
+          ${feat.prerequisite ? `<p class="feat-prerequisite"><strong>先决条件：</strong>${escapeManagerHtml(feat.prerequisite)}</p>` : ""}
+          <p>${escapeManagerHtml(feat.description || "暂无效果说明").replaceAll("\n", "<br>")}</p>
+        </article>`,
+    )
+    .join("");
+}
+
+function openFeatDialog() {
+  const dialog = document.querySelector("#featDialog");
+  dialog.innerHTML = `
+    <form method="dialog" id="featForm">
+      <div class="dialog-heading">
+        <div><p>OPTIONAL CHARACTER RULE</p><h2>专长设置</h2></div>
+        <button value="cancel" aria-label="关闭专长设置">×</button>
+      </div>
+      <p class="dialog-note">2014 版专长属于可选规则，是否可用及具体来源由 DM 决定。此处只保存角色已获得的专长，不会自动修改属性或战斗数值。</p>
+      <div class="feat-dialog-list">
+        ${
+          managerState.feats.length
+            ? managerState.feats
+                .map(
+                  (feat) => `<article><div><strong>${escapeManagerHtml(feat.name)}</strong><small>${escapeManagerHtml(feat.source || "自定义专长")} · ${Number(feat.acquiredAtLevel) || managerState.level} 级</small></div><button class="text-button danger" type="button" data-remove-feat="${feat.id}">移除</button></article>`,
+                )
+                .join("")
+            : `<div class="feat-dialog-empty">当前没有已记录的专长。</div>`
+        }
+      </div>
+      <fieldset>
+        <legend>添加已获得专长</legend>
+        <div class="editor-grid">
+          <label>专长名称<input name="name" required maxlength="60" /></label>
+          <label>获得等级<input name="acquiredAtLevel" type="number" min="1" max="20" value="${managerState.level}" /></label>
+          <label class="wide">规则来源<input name="source" value="2014 可选专长 · DM 许可" maxlength="100" /></label>
+          <label class="wide">先决条件<input name="prerequisite" placeholder="没有则留空" maxlength="160" /></label>
+          <label class="wide">效果说明<textarea name="description" rows="5" required placeholder="记录该专长对角色产生的规则效果"></textarea></label>
+        </div>
+      </fieldset>
+      <menu><button value="cancel" class="ghost-button">关闭</button><button value="default" class="primary-button">保存专长</button></menu>
+    </form>`;
+
+  dialog.querySelectorAll('[value="cancel"]').forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
+      dialog.close();
+    });
+  });
+  dialog.querySelectorAll("[data-remove-feat]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const feat = managerState.feats.find((entry) => entry.id === button.dataset.removeFeat);
+      if (!feat || !window.confirm(`确定移除专长“${feat.name}”吗？`)) return;
+      managerState.feats = managerState.feats.filter((entry) => entry.id !== feat.id);
+      saveManagerState();
+      renderFeatManager();
+      dialog.close();
+      openFeatDialog();
+    });
+  });
+  dialog.querySelector("#featForm").addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (event.submitter?.value === "cancel") return;
+    const formData = new FormData(event.currentTarget);
+    managerState.feats.push({
+      id: `feat-${Date.now()}`,
+      name: String(formData.get("name") || "").trim(),
+      source: String(formData.get("source") || "").trim(),
+      prerequisite: String(formData.get("prerequisite") || "").trim(),
+      description: String(formData.get("description") || "").trim(),
+      acquiredAtLevel: Math.max(1, Math.min(20, Number(formData.get("acquiredAtLevel")) || managerState.level)),
+    });
+    saveManagerState();
+    renderFeatManager();
+    dialog.close();
+  });
+  dialog.showModal();
+}
+
 function levelFeatureSummary(level) {
   const messages = [];
-  if ([4, 8, 12, 16, 19].includes(level)) messages.push("获得属性值提升：选择两次 +1，可叠加到同一属性。");
+  if ([4, 8, 12, 16, 19].includes(level)) messages.push("获得属性值提升；若 DM 允许可选专长规则，也可改为选择一个专长。");
   if ([4, 10].includes(level)) messages.push("额外学会 1 个法师戏法。");
   if (level === 6) messages.push("剑咏：额外攻击。");
   if (level === 10) messages.push("剑咏：防御之歌。");
@@ -1182,7 +1272,22 @@ function openLevelUpDialog() {
       }
       ${
         gainsAsi
-          ? `<fieldset><legend>属性值提升</legend><p class="field-help">选择两次 +1；选择同一属性即为该属性 +2，单项不能超过 20。</p><div class="asi-grid">${["STR", "DEX", "CON", "INT", "WIS", "CHA"].map((key) => `<label>${key}<select name="asi${key}"><option value="0">+0</option><option value="1">+1</option><option value="2">+2</option></select></label>`).join("")}</div><p class="selection-count" id="asiCount">已分配 0 / 2</p></fieldset>`
+          ? `<fieldset class="advancement-choice"><legend>属性值提升或专长</legend>
+              <p class="field-help">2014 版可选规则：选择属性值提升，或经 DM 允许后改为获得一个专长。</p>
+              <div class="advancement-mode" role="radiogroup" aria-label="成长方式">
+                <label><input type="radio" name="advancementMode" value="asi" checked /> 属性值提升</label>
+                <label><input type="radio" name="advancementMode" value="feat" /> 选择专长</label>
+              </div>
+              <div id="asiAdvancementFields"><p class="field-help">选择两次 +1；选择同一属性即为该属性 +2，单项不能超过 20。</p><div class="asi-grid">${["STR", "DEX", "CON", "INT", "WIS", "CHA"].map((key) => `<label>${key}<select name="asi${key}"><option value="0">+0</option><option value="1">+1</option><option value="2">+2</option></select></label>`).join("")}</div><p class="selection-count" id="asiCount">已分配 0 / 2</p></div>
+              <div class="level-feat-fields" id="featAdvancementFields" hidden>
+                <div class="editor-grid">
+                  <label>专长名称<input name="featName" maxlength="60" /></label>
+                  <label>规则来源<input name="featSource" value="2014 可选专长 · DM 许可" maxlength="100" /></label>
+                  <label class="wide">先决条件<input name="featPrerequisite" placeholder="没有则留空" maxlength="160" /></label>
+                  <label class="wide">效果说明<textarea name="featDescription" rows="4" placeholder="记录专长产生的规则效果"></textarea></label>
+                </div>
+              </div>
+            </fieldset>`
           : ""
       }
       ${
@@ -1216,6 +1321,12 @@ function openLevelUpDialog() {
   });
 
   if (gainsAsi) {
+    const syncAdvancementMode = () => {
+      const mode = form.querySelector('[name="advancementMode"]:checked').value;
+      dialog.querySelector("#asiAdvancementFields").hidden = mode !== "asi";
+      dialog.querySelector("#featAdvancementFields").hidden = mode !== "feat";
+    };
+    form.querySelectorAll('[name="advancementMode"]').forEach((input) => input.addEventListener("change", syncAdvancementMode));
     const updateAsiCount = () => {
       const total = [...form.querySelectorAll('[name^="asi"]')].reduce(
         (sum, select) => sum + Number(select.value),
@@ -1240,22 +1351,41 @@ function openLevelUpDialog() {
     }
 
     const oldAbilities = { ...managerState.abilities };
+    let gainedFeat = null;
     if (gainsAsi) {
-      const total = ["STR", "DEX", "CON", "INT", "WIS", "CHA"].reduce(
-        (sum, key) => sum + Number(formData.get(`asi${key}`) || 0),
-        0,
-      );
-      if (total !== 2) {
-        window.alert("请正好分配 2 点属性值。");
-        return;
-      }
-      for (const key of ["STR", "DEX", "CON", "INT", "WIS", "CHA"]) {
-        const nextScore = managerState.abilities[key] + Number(formData.get(`asi${key}`) || 0);
-        if (nextScore > 20) {
-          window.alert(`${key} 不能超过 20。`);
+      const advancementMode = formData.get("advancementMode") || "asi";
+      if (advancementMode === "feat") {
+        const featName = String(formData.get("featName") || "").trim();
+        const featDescription = String(formData.get("featDescription") || "").trim();
+        if (!featName || !featDescription) {
+          window.alert("选择专长时必须填写专长名称和效果说明。");
           return;
         }
-        managerState.abilities[key] = nextScore;
+        gainedFeat = {
+          id: `feat-${Date.now()}`,
+          name: featName,
+          source: String(formData.get("featSource") || "").trim(),
+          prerequisite: String(formData.get("featPrerequisite") || "").trim(),
+          description: featDescription,
+          acquiredAtLevel: nextLevel,
+        };
+      } else {
+        const total = ["STR", "DEX", "CON", "INT", "WIS", "CHA"].reduce(
+          (sum, key) => sum + Number(formData.get(`asi${key}`) || 0),
+          0,
+        );
+        if (total !== 2) {
+          window.alert("请正好分配 2 点属性值。");
+          return;
+        }
+        for (const key of ["STR", "DEX", "CON", "INT", "WIS", "CHA"]) {
+          const nextScore = managerState.abilities[key] + Number(formData.get(`asi${key}`) || 0);
+          if (nextScore > 20) {
+            window.alert(`${key} 不能超过 20。`);
+            return;
+          }
+          managerState.abilities[key] = nextScore;
+        }
       }
     }
 
@@ -1277,11 +1407,13 @@ function openLevelUpDialog() {
     managerState.level = nextLevel;
     managerState.spellbook.push(...learned);
     if (gainsCantrip) managerState.spellbook.push(formData.get("newCantrip"));
+    if (gainedFeat) managerState.feats.push(gainedFeat);
     managerState.levelHistory.push({
       level: nextLevel,
       hpGain,
       spells: learned,
       cantrip: gainsCantrip ? formData.get("newCantrip") : null,
+      feat: gainedFeat,
       abilities: { ...managerState.abilities },
       at: new Date().toISOString(),
     });
@@ -1292,6 +1424,7 @@ function openLevelUpDialog() {
     syncCharacterSheet();
     renderSpellManager();
     renderInventoryManager();
+    renderFeatManager();
     dialog.close();
   });
   dialog.showModal();
@@ -1378,6 +1511,7 @@ document.querySelector("#addItemButton").addEventListener("click", () => {
   renderInventoryManager();
 });
 document.querySelector("#levelUpButton").addEventListener("click", openLevelUpDialog);
+document.querySelector("#manageFeatButton").addEventListener("click", openFeatDialog);
 
 document.querySelector("#inventorySummary").addEventListener("change", (event) => {
   const input = event.target.closest("[data-coin-input]");
@@ -1421,3 +1555,4 @@ characterMain.insertBefore(equipmentSection, featureSection);
 syncCharacterSheet();
 renderSpellManager();
 renderInventoryManager();
+renderFeatManager();

@@ -9,8 +9,8 @@
       content="甘阿·道夫 — D&D 5e 三级龙裔剑咏法师角色卡"
     />
     <title>DNDcard · 奥术档案馆</title>
-    <link rel="stylesheet" href="./styles.css?v=20260823-semantic-icons" />
-    <link rel="stylesheet" href="./portal.css?v=20260823-semantic-icons" />
+    <link rel="stylesheet" href="./styles.css?v=20260823-feats" />
+    <link rel="stylesheet" href="./portal.css?v=20260823-feats" />
   </head>
   <body>
     <div class="portal-view" id="portalApp" hidden></div>
@@ -258,6 +258,13 @@
               <h2>种族、职业与背景特性</h2>
             </div>
           </div>
+          <div class="feat-manager" id="featManager">
+            <div class="feat-manager-heading">
+              <div><p>OPTIONAL FEATS · 2014</p><h3>当前专长</h3></div>
+              <button class="primary-button compact" type="button" id="manageFeatButton">管理专长</button>
+            </div>
+            <div class="feat-list" id="featList"></div>
+          </div>
           <div class="feature-grid" id="featureGrid"></div>
         </section>
 
@@ -373,12 +380,13 @@
     <dialog class="manager-dialog" id="spellEditorDialog"></dialog>
     <dialog class="manager-dialog spell-detail-dialog" id="spellDetailDialog"></dialog>
     <dialog class="manager-dialog" id="itemEditorDialog"></dialog>
+    <dialog class="manager-dialog feat-dialog" id="featDialog"></dialog>
     <dialog class="manager-dialog level-dialog" id="levelUpDialog"></dialog>
 
-    <script src="./data/srd-catalog.js?v=20260823-semantic-icons"></script>
-    <script src="./icon-map.js?v=20260823-semantic-icons"></script>
-    <script src="./app.js?v=20260823-semantic-icons"></script>
-    <script src="./manager.js?v=20260823-semantic-icons"></script>
-    <script src="./portal.js?v=20260823-semantic-icons"></script>
+    <script src="./data/srd-catalog.js?v=20260823-feats"></script>
+    <script src="./icon-map.js?v=20260823-feats"></script>
+    <script src="./app.js?v=20260823-feats"></script>
+    <script src="./manager.js?v=20260823-feats"></script>
+    <script src="./portal.js?v=20260823-feats"></script>
   </body>
 </html>

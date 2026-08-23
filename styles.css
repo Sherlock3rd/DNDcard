@@ -960,6 +960,137 @@ td {
   gap: 14px;
 }
 
+.feat-manager {
+  margin-bottom: 18px;
+  border: 1px solid rgba(128, 115, 230, 0.36);
+  padding: 18px;
+  background: linear-gradient(135deg, rgba(38, 31, 62, 0.7), rgba(8, 8, 12, 0.82));
+}
+
+.feat-manager-heading,
+.feat-card-heading,
+.feat-dialog-list article {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.feat-manager-heading p,
+.feat-manager-heading h3 {
+  margin: 0;
+}
+
+.feat-manager-heading p {
+  color: var(--gold);
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+}
+
+.feat-manager-heading h3 {
+  margin-top: 4px;
+  font-size: 1.35rem;
+  font-weight: 400;
+}
+
+.feat-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.feat-empty,
+.feat-card {
+  border: 1px solid rgba(181, 150, 88, 0.2);
+  padding: 14px;
+  background: rgba(4, 4, 7, 0.36);
+}
+
+.feat-empty {
+  grid-column: 1 / -1;
+}
+
+.feat-empty p,
+.feat-card p {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.65;
+}
+
+.feat-card-heading span {
+  color: var(--gold-bright);
+  font-size: 0.66rem;
+}
+
+.feat-card-heading small {
+  color: var(--faint);
+}
+
+.feat-card h4 {
+  margin: 12px 0 0;
+  font-size: 1.05rem;
+  font-weight: 400;
+}
+
+.feat-prerequisite strong {
+  color: var(--ink);
+}
+
+.dialog-note {
+  margin: 0 0 16px;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.feat-dialog-list {
+  display: grid;
+  gap: 7px;
+  margin-bottom: 18px;
+}
+
+.feat-dialog-list article,
+.feat-dialog-empty {
+  border: 1px solid rgba(181, 150, 88, 0.2);
+  padding: 11px;
+  background: rgba(0, 0, 0, 0.24);
+}
+
+.feat-dialog-list strong,
+.feat-dialog-list small {
+  display: block;
+}
+
+.feat-dialog-list small {
+  margin-top: 3px;
+  color: var(--faint);
+}
+
+.advancement-mode {
+  display: flex;
+  gap: 9px;
+  margin-top: 12px;
+}
+
+.advancement-mode label {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  border: 1px solid rgba(181, 150, 88, 0.24);
+  padding: 9px 12px;
+  background: rgba(0, 0, 0, 0.24);
+}
+
+.advancement-mode input {
+  width: 17px;
+  min-height: 17px;
+}
+
+.level-feat-fields {
+  margin-top: 12px;
+}
+
 .feature-card {
   min-height: 230px;
 }
@@ -2352,6 +2483,18 @@ button.loadout-spell:hover {
 
   .app-shell {
     padding: 0 14px;
+  }
+
+  .feat-list {
+    grid-template-columns: 1fr;
+  }
+
+  .feat-manager-heading {
+    align-items: flex-start;
+  }
+
+  .advancement-mode {
+    flex-direction: column;
   }
 
   .topbar {
