@@ -42,6 +42,7 @@
 | 2026-07-30 | 重构添加物品并补齐钱袋账本 | `index.html`、`manager.js`、`styles.css` | 移除角色页自定义物品入口；添加物品与抄录法术同构；五币种支持增减、直输、持久化和 GP 换算 |
 | 2026-07-30 | 收拢装备资料权限并恢复总览自定义入口 | `manager.js`、`portal.js`、`portal.css` | 角色装备不再编辑资料；详情内确认移除；法术/道具总览统一新增自定义入口 |
 | 2026-08-23 | 依据本地人设替换默认角色为甘阿·道夫 | `index.html`、`app.js`、`manager.js`、`portal.js`、`styles.css`、`assets/images/gandalf-bladesinger.png` | 同步截图属性、剑咏/赌客身份、法术、遗物、易容帽、人物故事与原创立绘；隔离旧 Charlie 浏览器存档键 |
+| 2026-08-23 | 剑歌模式联动角色属性 | `index.html`、`app.js`、`styles.css` | 开关实时联动 AC、速度、杂技优势和专注豁免，并保留次数消耗、长休恢复与本地存档 |
 
 ## 下一步
 

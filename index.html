@@ -56,20 +56,20 @@
             </blockquote>
 
             <div class="hero-metrics">
-              <article>
+              <article id="armorClassMetric">
                 <span>护甲等级</span>
-                <strong>14</strong>
-                <small>轻甲 · 剑歌 17</small>
+                <strong id="armorClassValue">14</strong>
+                <small id="armorClassMeta">轻甲 · 剑歌 17</small>
               </article>
               <article>
                 <span>先攻</span>
                 <strong>+2</strong>
                 <small>敏捷</small>
               </article>
-              <article>
+              <article id="speedMetric">
                 <span>速度</span>
-                <strong>30</strong>
-                <small>尺</small>
+                <strong id="speedValue">30</strong>
+                <small id="speedMeta">尺</small>
               </article>
               <article>
                 <span>熟练加值</span>
@@ -232,7 +232,13 @@
                 <div class="portent-row bladesong-row">
                   <label>剩余 <output id="bladesongUses">2</output> / 2</label>
                   <span id="bladesongStatus">未开启 · 基础 AC 14</span>
-                  <button type="button" id="toggleBladesong">开启剑歌</button>
+                  <button type="button" id="toggleBladesong" aria-pressed="false">开启剑歌</button>
+                </div>
+                <div class="bladesong-effects" id="bladesongEffects" aria-live="polite">
+                  <span id="bladesongAcEffect">AC 14</span>
+                  <span id="bladesongSpeedEffect">速度 30 尺</span>
+                  <span id="bladesongAcrobaticsEffect">杂技正常</span>
+                  <span id="bladesongConcentrationEffect">专注豁免 +2</span>
                 </div>
               </div>
               <div class="conditions">

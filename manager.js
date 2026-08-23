@@ -341,7 +341,7 @@ function syncCharacterSheet() {
       skill.value = mod + (skill.proficient ? proficiency : 0);
     });
   });
-  renderAbilities();
+  renderState();
   renderManagerSlots();
 }
 

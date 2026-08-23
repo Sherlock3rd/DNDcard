@@ -288,7 +288,7 @@ function renderAbilities() {
               ? `<ul>${ability.skills
                   .map(
                     (skill) =>
-                      `<li class="${skill.proficient ? "proficient" : ""}">${skill.name} ${signed(skill.value)}</li>`,
+                      `<li class="${skill.proficient ? "proficient" : ""}" ${skill.name === "杂技" ? 'id="acrobaticsSkill"' : ""}>${skill.name} ${signed(skill.value)}${skill.name === "杂技" && state.bladesongActive ? " · 优势" : ""}</li>`,
                   )
                   .join("")}</ul>`
               : `<ul><li>体质检定 ${signed(ability.mod)}</li></ul>`
@@ -345,11 +345,29 @@ function renderSpells(filter = "all") {
 }
 
 function renderState() {
+  const intMod = abilities.find((ability) => ability.key === "INT")?.mod ?? 0;
+  const conMod = abilities.find((ability) => ability.key === "CON")?.mod ?? 0;
+  const armorClass = 14 + (state.bladesongActive ? intMod : 0);
+  const speed = 30 + (state.bladesongActive ? 10 : 0);
+  const concentrationSave = conMod + (state.bladesongActive ? intMod : 0);
   document.querySelector("#hpValue").value = state.hp;
   document.querySelector("#tempHpValue").value = state.tempHp;
   document.querySelector("#bladesongUses").value = state.bladesongUses;
-  document.querySelector("#bladesongStatus").textContent = state.bladesongActive ? "剑歌进行中 · AC 17" : "未开启 · 基础 AC 14";
-  document.querySelector("#toggleBladesong").textContent = state.bladesongActive ? "结束剑歌" : "开启剑歌";
+  document.querySelector("#armorClassValue").textContent = armorClass;
+  document.querySelector("#armorClassMeta").textContent = state.bladesongActive ? `剑歌中 · 智力 +${intMod}` : `轻甲 · 剑歌 ${14 + intMod}`;
+  document.querySelector("#speedValue").textContent = speed;
+  document.querySelector("#speedMeta").textContent = state.bladesongActive ? "尺 · 剑歌 +10" : "尺";
+  document.querySelector("#bladesongStatus").textContent = state.bladesongActive ? `剑歌进行中 · AC ${armorClass}` : "未开启 · 基础 AC 14";
+  document.querySelector("#bladesongAcEffect").textContent = `AC ${armorClass}`;
+  document.querySelector("#bladesongSpeedEffect").textContent = `速度 ${speed} 尺`;
+  document.querySelector("#bladesongAcrobaticsEffect").textContent = state.bladesongActive ? "杂技检定优势" : "杂技正常";
+  document.querySelector("#bladesongConcentrationEffect").textContent = `专注豁免 ${signed(concentrationSave)}${state.bladesongActive ? `（剑歌 +${intMod}）` : ""}`;
+  const bladesongButton = document.querySelector("#toggleBladesong");
+  bladesongButton.textContent = state.bladesongActive ? "结束剑歌" : "开启剑歌";
+  bladesongButton.setAttribute("aria-pressed", String(state.bladesongActive));
+  bladesongButton.disabled = !state.bladesongActive && state.bladesongUses <= 0;
+  document.body.classList.toggle("bladesong-active", state.bladesongActive);
+  renderAbilities();
   renderSlots("slot1", 4);
   renderSlots("slot2", 2);
   window.renderDynamicSlots?.();
