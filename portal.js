@@ -300,9 +300,9 @@ function renderPortal() {
       </header>
       <button class="relationship-entry" id="openRelationshipButton" type="button" aria-haspopup="dialog" aria-controls="relationshipDialog">
         <span class="relationship-entry-copy">
-          <small>RELATIONSHIP CHRONICLE · TODAY</small>
-          <strong>今日关系图谱</strong>
-          <em>冒险团与矮人村事件 · 12 个节点</em>
+          <small>RELATIONSHIP NETWORK</small>
+          <strong>人物关系网</strong>
+          <em>人物身份、状态与关系 · 12 个节点</em>
         </span>
         <span class="relationship-entry-faces" aria-hidden="true">
           <img src="./assets/images/gandalf-bladesinger.png?v=20260823-human-high-guard" alt="" />
@@ -318,17 +318,18 @@ function renderPortal() {
           <section class="portal-relationship" aria-labelledby="relationshipTitle">
         <header class="relationship-heading">
           <div>
-            <p>RELATIONSHIP CHRONICLE · TODAY</p>
-            <h2 id="relationshipTitle">冒险团关系图</h2>
+            <p>RELATIONSHIP NETWORK</p>
+            <h2 id="relationshipTitle">人物关系网</h2>
           </div>
           <div class="relationship-legend" aria-label="关系图图例">
             <span><i class="party"></i>冒险团</span>
-            <span><i class="story"></i>今日剧情</span>
-            <span><i class="loss"></i>死亡事件</span>
+            <span><i class="story"></i>人物关系</span>
+            <span><i class="loss"></i>已故状态</span>
           </div>
         </header>
-        <p class="relationship-intro">以当前角色为视角记录队伍成员与本次矮人村事件；六名队友暂留占位，等待补充姓名与肖像。</p>
-        <div class="relationship-scroll" role="region" aria-label="可横向滚动的人物关系图" tabindex="0">
+        <p class="relationship-intro">记录人物身份、存亡状态与已知关系；六名冒险团成员暂留占位，等待补充姓名与肖像。</p>
+        <p class="relationship-pan-hint"><span aria-hidden="true">✥</span> 按住并拖动查看完整关系网</p>
+        <div class="relationship-scroll" role="region" aria-label="可拖动浏览的人物关系图" tabindex="0">
           <div class="relationship-stage">
             <svg class="relationship-lines" viewBox="0 0 1180 620" aria-hidden="true">
               <g class="party-links">
@@ -343,7 +344,7 @@ function renderPortal() {
               <path class="story-link soft" d="M850 305 C925 265 970 195 1005 135" />
               <path class="story-link soft" d="M850 330 C920 390 970 455 1020 492" />
               <g class="relationship-labels">
-                <text x="494" y="294">今日进入矮人村</text>
+                <text x="494" y="294">与矮人村关联</text>
                 <text x="726" y="177">村庄领袖</text>
                 <text x="800" y="66">被冒险团救下</text>
                 <text class="loss-text" x="630" y="486">被误认为叛徒 · 误杀</text>
@@ -363,10 +364,10 @@ function renderPortal() {
             }).join("")}
 
             <article class="relationship-node location" style="--x:69%; --y:50%">
-              <div class="relationship-avatar"><img src="./assets/images/relationship-dwarf-village.png?v=20260823-relationship-portraits" alt="地下矮人村" /></div><span>今日地点</span><strong>矮人村</strong><small><b>类型</b> 矮人聚落</small><small><b>事件</b> 矿坑事故</small>
+              <div class="relationship-avatar"><img src="./assets/images/relationship-dwarf-village.png?v=20260823-relationship-portraits" alt="地下矮人村" /></div><span>关联地点</span><strong>矮人村</strong><small><b>类型</b> 矮人聚落</small><small><b>状态</b> 矿坑事故</small>
             </article>
             <article class="relationship-node story-character" style="--x:58%; --y:18%">
-              <div class="relationship-avatar"><img src="./assets/images/relationship-chief.png?v=20260823-relationship-portraits" alt="矮人村村长" /></div><span>剧情角色</span><strong>村长</strong><small><b>种族</b> 矮人</small><small><b>职业</b> 村长</small>
+              <div class="relationship-avatar"><img src="./assets/images/relationship-chief.png?v=20260823-relationship-portraits" alt="矮人村村长" /></div><span>矮人村</span><strong>村长</strong><small><b>种族</b> 矮人</small><small><b>职业</b> 村长</small>
             </article>
             <article class="relationship-node story-character rescued" style="--x:86%; --y:18%">
               <div class="relationship-avatar"><img src="./assets/images/relationship-pazu.png?v=20260823-relationship-portraits" alt="被救下的帕主" /></div><span>已救援</span><strong>帕主</strong><small><b>种族</b> 待确认</small><small><b>职业</b> 待确认</small>
@@ -419,11 +420,52 @@ function renderPortal() {
       <footer class="portal-footer">SRD 5.1 · CC BY 4.0 · 所有角色状态保存在当前浏览器</footer>
     </main>`;
   const relationshipDialog = portalApp.querySelector("#relationshipDialog");
-  portalApp.querySelector("#openRelationshipButton")?.addEventListener("click", () => relationshipDialog?.showModal());
+  const relationshipScroller = portalApp.querySelector(".relationship-scroll");
+  const centerRelationshipView = () => {
+    const protagonist = relationshipScroller?.querySelector(".relationship-node.protagonist");
+    if (!relationshipScroller || !protagonist) return;
+    relationshipScroller.scrollLeft = Math.max(0, protagonist.offsetLeft - relationshipScroller.clientWidth / 2);
+    relationshipScroller.scrollTop = Math.max(0, protagonist.offsetTop - relationshipScroller.clientHeight / 2);
+  };
+  portalApp.querySelector("#openRelationshipButton")?.addEventListener("click", () => {
+    relationshipDialog?.showModal();
+    requestAnimationFrame(centerRelationshipView);
+  });
   relationshipDialog?.querySelector("[data-close-relationship]")?.addEventListener("click", () => relationshipDialog.close());
   relationshipDialog?.addEventListener("click", (event) => {
     if (event.target === relationshipDialog) relationshipDialog.close();
   });
+  if (relationshipScroller) {
+    let panState = null;
+    relationshipScroller.addEventListener("dragstart", (event) => event.preventDefault());
+    relationshipScroller.addEventListener("pointerdown", (event) => {
+      if (event.pointerType === "mouse" && event.button !== 0) return;
+      panState = {
+        id: event.pointerId,
+        x: event.clientX,
+        y: event.clientY,
+        left: relationshipScroller.scrollLeft,
+        top: relationshipScroller.scrollTop,
+      };
+      relationshipScroller.setPointerCapture(event.pointerId);
+      relationshipScroller.classList.add("is-dragging");
+      event.preventDefault();
+    });
+    relationshipScroller.addEventListener("pointermove", (event) => {
+      if (!panState || panState.id !== event.pointerId) return;
+      relationshipScroller.scrollLeft = panState.left - (event.clientX - panState.x);
+      relationshipScroller.scrollTop = panState.top - (event.clientY - panState.y);
+      event.preventDefault();
+    });
+    const finishPan = (event) => {
+      if (!panState || panState.id !== event.pointerId) return;
+      if (relationshipScroller.hasPointerCapture(event.pointerId)) relationshipScroller.releasePointerCapture(event.pointerId);
+      panState = null;
+      relationshipScroller.classList.remove("is-dragging");
+    };
+    relationshipScroller.addEventListener("pointerup", finishPan);
+    relationshipScroller.addEventListener("pointercancel", finishPan);
+  }
 }
 
 function renderClasses() {

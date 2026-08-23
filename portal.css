@@ -282,11 +282,29 @@ body[data-route="rules"] {
   line-height: 1.6;
 }
 
-.relationship-scroll {
-  overflow-x: auto;
-  overflow-y: hidden;
-  scrollbar-color: rgba(181, 150, 88, 0.42) rgba(0, 0, 0, 0.18);
+.relationship-pan-hint {
+  margin: 6px 0 0;
+  color: #8178a8;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
 }
+
+.relationship-pan-hint span {
+  color: var(--gold-bright);
+}
+
+.relationship-scroll {
+  max-height: min(660px, calc(100dvh - 228px));
+  overflow: auto;
+  scrollbar-color: rgba(181, 150, 88, 0.42) rgba(0, 0, 0, 0.18);
+  overscroll-behavior: contain;
+  touch-action: none;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.relationship-scroll.is-dragging { cursor: grabbing; }
 
 .relationship-scroll:focus-visible {
   outline: 1px solid var(--gold-bright);
@@ -316,7 +334,7 @@ body[data-route="rules"] {
 }
 
 .relationship-stage::before { content: "ADVENTURING PARTY"; left: 12px; }
-.relationship-stage::after { content: "DWARVEN VILLAGE · TODAY"; left: 48%; }
+.relationship-stage::after { content: "DWARVEN VILLAGE"; left: 48%; }
 
 .relationship-lines {
   position: absolute;
@@ -1456,8 +1474,55 @@ body[data-route="rules"] .archive-backdrop {
   }
 
   .relationship-dialog-shell {
+    height: 100dvh;
     max-height: 100vh;
     padding: 6px;
+    overflow: hidden;
+  }
+
+  .relationship-dialog-close {
+    top: 10px;
+    right: 6px;
+  }
+
+  .portal-relationship {
+    display: flex;
+    height: calc(100dvh - 12px);
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .relationship-heading {
+    flex: 0 0 auto;
+    padding-right: 46px;
+    padding-bottom: 10px;
+  }
+
+  .relationship-heading h2 {
+    font-size: 1.65rem;
+  }
+
+  .relationship-heading p,
+  .relationship-legend {
+    font-size: 0.6rem;
+  }
+
+  .relationship-intro {
+    flex: 0 0 auto;
+    margin-top: 10px;
+    line-height: 1.45;
+  }
+
+  .relationship-pan-hint {
+    flex: 0 0 auto;
+  }
+
+  .relationship-scroll {
+    min-height: 0;
+    max-height: none;
+    flex: 1 1 auto;
+    margin-top: 6px;
+    border-top: 1px solid rgba(181, 150, 88, 0.12);
   }
 
   .relationship-intro {
@@ -1465,8 +1530,9 @@ body[data-route="rules"] .archive-backdrop {
   }
 
   .relationship-stage {
-    min-width: 980px;
-    height: 640px;
+    width: 1080px;
+    min-width: 1080px;
+    height: 660px;
     transform-origin: top left;
   }
 
