@@ -1554,6 +1554,55 @@ dialog menu {
   font-weight: 400;
 }
 
+.loadout-heading-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.loadout-heading-actions > strong {
+  color: var(--gold-bright);
+  font-size: 1.45rem;
+  font-weight: 400;
+}
+
+.prepare-mode-toggle {
+  display: grid;
+  min-width: 116px;
+  min-height: 42px;
+  border: 1px solid rgba(181, 150, 88, 0.38);
+  padding: 5px 12px;
+  color: var(--ink);
+  background: rgba(9, 8, 12, 0.76);
+  cursor: pointer;
+}
+
+.prepare-mode-toggle span,
+.prepare-mode-toggle i {
+  display: block;
+  font-style: normal;
+}
+
+.prepare-mode-toggle span {
+  font-size: 0.72rem;
+}
+
+.prepare-mode-toggle i {
+  margin-top: 2px;
+  color: var(--faint);
+  font-size: 0.58rem;
+}
+
+.prepare-mode-toggle.active {
+  border-color: rgba(128, 115, 230, 0.85);
+  background: rgba(63, 49, 102, 0.56);
+  box-shadow: 0 0 18px rgba(128, 115, 230, 0.18);
+}
+
+.prepare-mode-toggle.active i {
+  color: #d2cdff;
+}
+
 .loadout-help {
   margin: -6px 0 0;
   color: var(--muted);
@@ -1589,6 +1638,10 @@ button.prepared-slot {
 }
 
 .prepared-slot.filled:hover {
+  border-color: var(--gold);
+}
+
+.preparation-mode .prepared-slot.filled:hover {
   border-color: #b88492;
   background: rgba(62, 27, 40, 0.72);
 }
@@ -1711,6 +1764,63 @@ button.loadout-spell:hover {
 .loadout-spell.always-prepared {
   border-color: rgba(105, 153, 151, 0.48);
   background: rgba(28, 50, 51, 0.52);
+}
+
+.preparation-mode .loadout-spell:not(.always-prepared) {
+  outline: 1px solid rgba(128, 115, 230, 0.16);
+  outline-offset: -4px;
+}
+
+.spell-detail-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 16px;
+}
+
+.spell-detail-tags span {
+  border: 1px solid rgba(181, 150, 88, 0.25);
+  padding: 5px 8px;
+  color: var(--gold-bright);
+  background: rgba(181, 150, 88, 0.08);
+  font-size: 0.68rem;
+}
+
+.spell-detail-copy {
+  color: var(--muted);
+  line-height: 1.75;
+}
+
+.spell-detail-copy p {
+  margin: 0 0 12px;
+}
+
+.spell-detail-copy strong {
+  color: var(--ink);
+}
+
+.spell-detail-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 18px 0 0;
+}
+
+.spell-detail-stats div {
+  border: 1px solid rgba(181, 150, 88, 0.18);
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.spell-detail-stats dt {
+  color: var(--faint);
+  font-size: 0.62rem;
+}
+
+.spell-detail-stats dd {
+  margin: 5px 0 0;
+  color: var(--ink);
+  font-size: 0.78rem;
 }
 
 .loadout-spell .catalog-icon {

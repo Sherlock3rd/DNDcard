@@ -50,7 +50,7 @@
           <div class="identity-panel">
             <p class="eyebrow">三级角色档案 · 2014 版 5e</p>
             <h1 id="characterName">甘阿·道夫</h1>
-            <p class="character-line">龙裔 · <span id="levelLabel">法师 3</span> · 剑咏 · 赌客</p>
+            <p class="character-line">龙裔 · <span id="levelLabel">法师 3</span> · 剑咏 · 自定义背景（赌客）</p>
             <blockquote>
               “牌桌上的犹豫会出卖一个人，剑锋停下的位置也一样。”
             </blockquote>
@@ -150,7 +150,7 @@
               </div>
               <dl class="detail-list">
                 <div><dt>豁免熟练</dt><dd id="savingThrowLine">智力 +5、感知 +3</dd></div>
-                <div><dt>技能熟练</dt><dd>奥秘、历史、宗教、洞悉</dd></div>
+                <div><dt>技能熟练</dt><dd>奥秘、历史（法师）；宗教、洞悉（自定义赌客）</dd></div>
                 <div><dt>武器</dt><dd>匕首、飞镖、投石索、长棍、轻弩、长剑</dd></div>
                 <div><dt>工具</dt><dd>无</dd></div>
                 <div><dt>护甲</dt><dd>轻型护甲</dd></div>
@@ -170,7 +170,7 @@
                 <div><span>被动洞悉</span><strong>13</strong></div>
               </div>
               <p class="note">
-                轻甲 AC 14；开启剑歌后 AC 17。护盾术可临时提升 5 点 AC，并免疫魔法飞弹。
+                轻甲 AC 14；开启剑歌后 AC 17；剑歌中使用护盾术可达 AC 22。法师护甲与镶钉皮甲不能叠加。
               </p>
             </article>
           </div>
@@ -228,7 +228,7 @@
                 </div>
               </div>
               <div class="slot-group">
-                <div class="slot-title"><span>剑歌</span><small>长休恢复 2 次</small></div>
+                <div class="slot-title"><span>剑歌</span><small>塔莎修订版 · 长休恢复 2 次</small></div>
                 <div class="portent-row bladesong-row">
                   <label>剩余 <output id="bladesongUses">2</output> / 2</label>
                   <span id="bladesongStatus">未开启 · 基础 AC 14</span>
@@ -335,7 +335,7 @@
             <div><span>年龄</span><strong>20</strong></div>
             <div><span>真实种族</span><strong>龙裔</strong></div>
             <div><span>常用外貌</span><strong>白发旅行老法师</strong></div>
-            <div><span>背景</span><strong>赌客</strong></div>
+            <div><span>背景</span><strong>自定义背景（赌客）</strong></div>
             <div><span>故乡</span><strong>费伦</strong></div>
             <div><span>信仰</span><strong>密斯特拉</strong></div>
             <div><span>经验值</span><strong>900 / 2,700</strong></div>
@@ -371,6 +371,7 @@
     </dialog>
 
     <dialog class="manager-dialog" id="spellEditorDialog"></dialog>
+    <dialog class="manager-dialog spell-detail-dialog" id="spellDetailDialog"></dialog>
     <dialog class="manager-dialog" id="itemEditorDialog"></dialog>
     <dialog class="manager-dialog level-dialog" id="levelUpDialog"></dialog>
 

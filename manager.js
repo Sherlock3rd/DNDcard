@@ -119,15 +119,16 @@ const initialSpellbook = [
 ];
 
 const initialPrepared = [
-  "mage-armor",
   "shield",
   "custom-spell-absorb-elements",
   "magic-missile",
   "thunderwave",
+  "mirror-image",
   "misty-step",
 ];
 
 const managerDefaults = {
+  profileVersion: 10,
   level: 3,
   abilities: { STR: 16, DEX: 15, CON: 14, INT: 17, WIS: 13, CHA: 6 },
   coins: { cp: 0, sp: 0, ep: 0, gp: 10, pp: 0 },
@@ -173,9 +174,10 @@ const managerDefaults = {
   customItems: [],
   itemOverrides: {},
   inventory: [
-    { id: "equipment-longsword", quantity: 1, equipped: true, notes: "父亲遗物 · 剑咏施法媒介" },
+    { id: "equipment-longsword", quantity: 1, equipped: true, notes: "父亲遗物" },
     { id: "equipment-quarterstaff", quantity: 1, equipped: false, notes: "" },
     { id: "equipment-crossbow-light", quantity: 1, equipped: false, notes: "" },
+    { id: "equipment-crossbow-bolt", quantity: 1, equipped: false, notes: "1 包 · 共 20 支 · 轻弩弹药" },
     { id: "equipment-studded-leather-armor", quantity: 1, equipped: true, notes: "基础 AC 14" },
     { id: "equipment-component-pouch", quantity: 1, equipped: true, notes: "" },
     { id: "equipment-spellbook", quantity: 1, equipped: true, notes: "记录 10 个一环及以上法术" },
@@ -187,6 +189,7 @@ const managerDefaults = {
 
 let managerState = loadManagerState();
 let spellView = "prepared";
+let spellPreparationMode = false;
 let inventoryView = "carried";
 let spellCatalogLimit = 48;
 let itemCatalogLimit = 48;
@@ -207,6 +210,16 @@ function loadManagerState() {
       customItems: saved.customItems || managerDefaults.customItems,
       inventory: saved.inventory || managerDefaults.inventory,
     };
+    if (Number(saved.profileVersion || 0) < managerDefaults.profileVersion) {
+      loaded.profileVersion = managerDefaults.profileVersion;
+      loaded.prepared = [...initialPrepared];
+      loaded.inventory = loaded.inventory.map((entry) =>
+        entry.id === "equipment-longsword" ? { ...entry, notes: "父亲遗物" } : entry,
+      );
+      if (!loaded.inventory.some((entry) => entry.id === "equipment-crossbow-bolt")) {
+        loaded.inventory.push({ id: "equipment-crossbow-bolt", quantity: 1, equipped: false, notes: "1 包 · 共 20 支 · 轻弩弹药" });
+      }
+    }
     Object.keys(loaded.coins).forEach((key) => {
       loaded.coins[key] = Math.max(0, Math.floor(Number(loaded.coins[key]) || 0));
     });
@@ -445,10 +458,10 @@ function renderPreparedLoadout() {
   const slots = Array.from({ length: maximum }, (_, index) => {
     const spell = preparedSpells[index];
     return spell
-      ? `<button class="prepared-slot filled" type="button" data-prepare-spell="${spell.id}" title="点击卸下 ${escapeManagerHtml(displaySpellName(spell))}">
+      ? `<button class="prepared-slot filled" type="button" data-loadout-spell="${spell.id}" title="${spellPreparationMode ? "点击卸下" : "点击查看"} ${escapeManagerHtml(displaySpellName(spell))}">
           ${spellIcon(spell)}
           <span><strong>${escapeManagerHtml(spell.nameZh || spell.alias || spell.name)}</strong><small>${spell.level} 环</small></span>
-          <i>×</i>
+          <i>${spellPreparationMode ? "×" : "⌕"}</i>
         </button>`
       : `<div class="prepared-slot empty" aria-label="空的准备法术栏位"><span>✧</span><small>空栏位</small></div>`;
   }).join("");
@@ -458,12 +471,17 @@ function renderPreparedLoadout() {
   const levels = [...new Set(leveled.map((spell) => spell.level))].sort((a, b) => a - b);
 
   return `
-    <section class="spell-loadout">
+    <section class="spell-loadout ${spellPreparationMode ? "preparation-mode" : ""}">
       <div class="loadout-heading">
         <div><p>PREPARED SPELLS</p><h3>今日准备法术</h3></div>
-        <strong>${preparedSpells.length} / ${maximum}</strong>
+        <div class="loadout-heading-actions">
+          <strong>${preparedSpells.length} / ${maximum}</strong>
+          <button class="prepare-mode-toggle ${spellPreparationMode ? "active" : ""}" type="button" data-toggle-preparation-mode aria-pressed="${spellPreparationMode}">
+            <span>调配模式</span><i>${spellPreparationMode ? "已开启" : "已关闭"}</i>
+          </button>
+        </div>
       </div>
-      <p class="loadout-help">点击下方法术将其放入准备栏；点击上方已准备法术可将其卸下。戏法始终可用，不占准备栏位。</p>
+      <p class="loadout-help">${spellPreparationMode ? "调配模式已开启：点击一环及以上法术可快捷准备或卸下；戏法始终可用，不占准备栏位。" : "点击任意法术查看详情。需要准备或卸下法术时，请先开启调配模式。"}</p>
       <div class="prepared-tray">${slots}</div>
       ${
         cantrips.length
@@ -482,13 +500,45 @@ function renderPreparedLoadout() {
 function renderLoadoutTile(spell, alwaysAvailable) {
   const prepared = alwaysAvailable || managerState.prepared.includes(spell.id);
   if (alwaysAvailable) {
-    return `<div class="loadout-spell always-prepared">${spellIcon(spell)}<span><strong>${escapeManagerHtml(spell.nameZh || spell.alias || spell.name)}</strong><small>${escapeManagerHtml(spell.name)}</small></span><i>∞</i></div>`;
+    return `<button class="loadout-spell always-prepared" type="button" data-loadout-spell="${spell.id}" title="点击查看 ${escapeManagerHtml(displaySpellName(spell))}">${spellIcon(spell)}<span><strong>${escapeManagerHtml(spell.nameZh || spell.alias || spell.name)}</strong><small>${escapeManagerHtml(spell.name)}</small></span><i>${spellPreparationMode ? "∞" : "⌕"}</i></button>`;
   }
-  return `<button class="loadout-spell ${prepared ? "active" : ""}" type="button" data-prepare-spell="${spell.id}" aria-pressed="${prepared}">
+  return `<button class="loadout-spell ${prepared ? "active" : ""}" type="button" data-loadout-spell="${spell.id}" aria-label="${spellPreparationMode ? (prepared ? "卸下" : "准备") : "查看"} ${escapeManagerHtml(displaySpellName(spell))}">
     ${spellIcon(spell)}
     <span><strong>${escapeManagerHtml(spell.nameZh || spell.alias || spell.name)}</strong><small>${escapeManagerHtml(spell.name)}</small></span>
-    <i>${prepared ? "✓" : "+"}</i>
+    <i>${spellPreparationMode ? (prepared ? "×" : "+") : "⌕"}</i>
   </button>`;
+}
+
+function openSpellDetail(id) {
+  const spell = findManagerSpell(id);
+  if (!spell) return;
+  const dialog = document.querySelector("#spellDetailDialog");
+  const school = schoolNames[spell.school] || spell.school || "自定义";
+  const classes = (spell.classes || []).map((name) => classNames[name] || name).join("、") || "法术列表";
+  dialog.innerHTML = `
+    <form method="dialog">
+      <div class="dialog-heading">
+        <div><p>${spell.level === 0 ? "戏法" : `${spell.level} 环`} · ${escapeManagerHtml(school)}</p><h2>${escapeManagerHtml(displaySpellName(spell))}</h2></div>
+        <button value="cancel" aria-label="关闭法术详情">×</button>
+      </div>
+      <div class="spell-detail-tags">
+        ${spell.ritual ? "<span>仪式</span>" : ""}
+        ${spell.concentration ? "<span>专注</span>" : ""}
+        <span>${escapeManagerHtml(classes)}</span>
+      </div>
+      <div class="spell-detail-copy">
+        <p>${escapeManagerHtml(spell.descriptionZh || "暂无中文说明").replaceAll("\n", "<br>")}</p>
+        ${spell.higherLevelZh ? `<p><strong>升环：</strong>${escapeManagerHtml(spell.higherLevelZh)}</p>` : ""}
+      </div>
+      <dl class="spell-detail-stats">
+        <div><dt>施法时间</dt><dd>${escapeManagerHtml(spell.castingTimeZh || spell.castingTime || "—")}</dd></div>
+        <div><dt>距离</dt><dd>${escapeManagerHtml(spell.rangeZh || spell.range || "—")}</dd></div>
+        <div><dt>持续时间</dt><dd>${escapeManagerHtml(spell.durationZh || spell.duration || "—")}</dd></div>
+        <div><dt>成分</dt><dd>${escapeManagerHtml(spell.componentsZh || spell.components || "—")}</dd></div>
+      </dl>
+      <menu><span></span><button value="cancel" class="primary-button">关闭</button></menu>
+    </form>`;
+  dialog.showModal();
 }
 
 function renderSpellbookByLevel() {
@@ -1277,8 +1327,21 @@ document.addEventListener("click", (event) => {
   const removeSpellButton = event.target.closest("[data-remove-spell]");
   if (removeSpellButton) removeSpellFromBook(removeSpellButton.dataset.removeSpell);
 
-  const prepareButton = event.target.closest("[data-prepare-spell]");
-  if (prepareButton) togglePreparedSpell(prepareButton.dataset.prepareSpell);
+  const preparationModeButton = event.target.closest("[data-toggle-preparation-mode]");
+  if (preparationModeButton) {
+    spellPreparationMode = !spellPreparationMode;
+    renderSpellManager();
+  }
+
+  const loadoutSpellButton = event.target.closest("[data-loadout-spell]");
+  if (loadoutSpellButton) {
+    const spell = findManagerSpell(loadoutSpellButton.dataset.loadoutSpell);
+    if (spellPreparationMode && spell?.level > 0) {
+      togglePreparedSpell(spell.id);
+    } else {
+      openSpellDetail(spell?.id);
+    }
+  }
 
   const editSpellButton = event.target.closest("[data-edit-spell]");
   if (editSpellButton) openSpellEditor(editSpellButton.dataset.editSpell);

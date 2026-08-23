@@ -320,7 +320,7 @@ function renderPortal() {
         <div class="portal-character-copy">
           <p>AVAILABLE CHARACTER</p>
           <h2 id="portalCharacterTitle">甘阿·道夫</h2>
-          <div class="portal-tags"><span>龙裔</span><span>法师 ${currentLevel}</span><span>剑咏</span><span>赌客</span></div>
+          <div class="portal-tags"><span>龙裔</span><span>法师 ${currentLevel}</span><span>剑咏</span><span>自定义赌客</span></div>
           <p class="portal-quote">“牌桌上的犹豫会出卖一个人，剑锋停下的位置也一样。”</p>
           <dl>
             <div><dt>当前生命</dt><dd>${state.hp} / ${state.maxHp}</dd></div>
