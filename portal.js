@@ -300,12 +300,12 @@ function renderPortal() {
       </header>
       <section class="portal-character-panel" aria-labelledby="portalCharacterTitle">
         <div class="portal-portrait">
-          <img src="./assets/images/gandalf-bladesinger.png" alt="以老法师外貌示人的龙裔剑咏者甘阿·道夫" />
+          <img src="./assets/images/gandalf-bladesinger.png" alt="以老法师外貌示人的人类剑咏者甘阿·道夫" />
         </div>
         <div class="portal-character-copy">
           <p>AVAILABLE CHARACTER</p>
           <h2 id="portalCharacterTitle">甘阿·道夫</h2>
-          <div class="portal-tags"><span>龙裔</span><span>法师 ${currentLevel}</span><span>剑咏</span><span>自定义赌客</span></div>
+          <div class="portal-tags"><span>人类</span><span>法师 ${currentLevel}</span><span>剑咏</span><span>自定义赌客</span></div>
           <p class="portal-quote">“牌桌上的犹豫会出卖一个人，剑锋停下的位置也一样。”</p>
           <dl>
             <div><dt>当前生命</dt><dd>${state.hp} / ${state.maxHp}</dd></div>
@@ -566,7 +566,7 @@ function renderPortalRoute() {
     renderPortal();
     document.title = "DNDcard · 选择角色";
   } else if (isCharacter) {
-    document.title = `甘阿·道夫 · ${managerState.level}级龙裔剑咏法师`;
+    document.title = `甘阿·道夫 · ${managerState.level}级人类剑咏法师`;
   } else if (route === "classes") {
     renderClasses();
     document.title = "职业规则 · DNDcard";
