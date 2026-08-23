@@ -300,7 +300,7 @@ function renderPortal() {
       </header>
       <section class="portal-character-panel" aria-labelledby="portalCharacterTitle">
         <div class="portal-portrait">
-          <img src="./assets/images/gandalf-bladesinger.png?v=20260823-human-bladesong-pose" alt="以老法师外貌示人的人类剑咏者甘阿·道夫，旧牌收在衣兜里" />
+          <img src="./assets/images/gandalf-bladesinger.png?v=20260823-human-high-guard" alt="以老法师外貌示人的人类剑咏者甘阿·道夫，持剑采用古典高位架势，旧牌收在衣兜里" />
         </div>
         <div class="portal-character-copy">
           <p>AVAILABLE CHARACTER</p>
