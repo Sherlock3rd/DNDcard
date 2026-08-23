@@ -327,7 +327,7 @@ function renderPortal() {
             <span><i class="loss"></i>已故状态</span>
           </div>
         </header>
-        <p class="relationship-intro">记录人物身份、存亡状态与已知关系；六名冒险团成员暂留占位，等待补充姓名与肖像。</p>
+        <p class="relationship-intro">记录人物身份、存亡状态与已知关系；冒险团七名成员均已录入姓名、种族、职业与肖像。</p>
         <p class="relationship-pan-hint"><span aria-hidden="true">✥</span> 按住并拖动查看完整关系网</p>
         <div class="relationship-scroll" role="region" aria-label="可拖动浏览的人物关系图" tabindex="0">
           <div class="relationship-stage">
@@ -356,12 +356,14 @@ function renderPortal() {
               <div class="relationship-avatar"><img src="./assets/images/gandalf-bladesinger.png?v=20260823-human-high-guard" alt="甘阿·道夫" /></div>
               <span>玩家角色</span><strong>甘阿·道夫</strong><small><b>种族</b> 人类</small><small><b>职业</b> 法师（剑咏）</small>
             </article>
-            ${Array.from({ length: 6 }, (_, index) => {
-              const positions = [[7.5, 18], [22, 13], [36.5, 19], [7.5, 82], [22, 87], [36.5, 81]];
-              const [x, y] = positions[index];
-              const number = String(index + 1).padStart(2, "0");
-              return `<article class="relationship-node party-placeholder" style="--x:${x}%; --y:${y}%"><div class="relationship-avatar"><b>${number}</b></div><span>冒险团成员</span><strong>占位成员 ${number}</strong><small><b>种族</b> 待补充</small><small><b>职业</b> 待补充</small></article>`;
-            }).join("")}
+            ${[
+              { name: "赛伦", race: "人类", profession: "牧师", image: "relationship-sairen.png", x: 7.5, y: 18 },
+              { name: "夏尔-金歌", race: "人类", profession: "吟游诗人", image: "relationship-shire-goldsong.png", x: 22, y: 13 },
+              { name: "左无峰", race: "人类", profession: "拳师", image: "relationship-zuo-wufeng.png", x: 36.5, y: 19 },
+              { name: "缪拉-青苔", race: "半精灵", profession: "德鲁伊", image: "relationship-mura-moss.png", x: 7.5, y: 82 },
+              { name: "费伊", race: "变体人类-不朽者", profession: "魔器师", image: "relationship-feiyi.png", x: 22, y: 87 },
+              { name: "艾黎", race: "人类", profession: "边境行者", image: "relationship-aili.png", x: 36.5, y: 81 },
+            ].map((member) => `<article class="relationship-node party-member" style="--x:${member.x}%; --y:${member.y}%" aria-label="${member.name}，${member.race}，${member.profession}"><div class="relationship-avatar"><img src="./assets/images/${member.image}?v=20260823-party-members" alt="${member.name}" /></div><span>冒险团成员</span><strong>${member.name}</strong><small><b>种族</b> ${member.race}</small><small><b>职业</b> ${member.profession}</small></article>`).join("")}
 
             <article class="relationship-node location" style="--x:69%; --y:50%">
               <div class="relationship-avatar"><img src="./assets/images/relationship-dwarf-village.png?v=20260823-relationship-portraits" alt="地下矮人村" /></div><span>关联地点</span><strong>矮人村</strong><small><b>类型</b> 矮人聚落</small><small><b>状态</b> 矿坑事故</small>

@@ -462,8 +462,7 @@ body[data-route="rules"] {
 }
 
 .relationship-node.protagonist > strong { color: var(--gold-bright); font-size: 1.15rem; }
-.relationship-node.party-placeholder { opacity: 0.78; }
-.relationship-node.party-placeholder .relationship-avatar { border-style: dashed; }
+.relationship-node.party-member > strong { color: #ddd5f6; }
 
 .relationship-node.location .relationship-avatar,
 .relationship-node.story-character .relationship-avatar {
