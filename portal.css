@@ -454,15 +454,29 @@ body[data-route="rules"] {
   font-weight: 500;
 }
 
-.relationship-node.protagonist .relationship-avatar {
-  width: 94px;
-  height: 94px;
-  border-color: var(--gold-bright);
-  box-shadow: 0 0 0 6px rgba(12, 11, 19, 0.92), 0 0 32px rgba(210, 172, 88, 0.24);
+.relationship-node.party-member > strong { color: #ddd5f6; }
+
+.relationship-party-hub {
+  position: absolute;
+  left: 22%;
+  top: 50%;
+  z-index: 3;
+  display: grid;
+  width: 92px;
+  height: 92px;
+  place-content: center;
+  justify-items: center;
+  transform: translate(-50%, -50%) rotate(45deg);
+  border: 1px solid rgba(210, 172, 88, 0.72);
+  background: radial-gradient(circle, rgba(92, 70, 38, 0.5), rgba(12, 11, 19, 0.96) 68%);
+  box-shadow: 0 0 0 6px rgba(12, 11, 19, 0.82), 0 0 30px rgba(210, 172, 88, 0.2);
+  text-align: center;
 }
 
-.relationship-node.protagonist > strong { color: var(--gold-bright); font-size: 1.15rem; }
-.relationship-node.party-member > strong { color: #ddd5f6; }
+.relationship-party-hub > * { transform: rotate(-45deg); }
+.relationship-party-hub span { color: #9f8fdc; font-size: 0.42rem; letter-spacing: 0.1em; }
+.relationship-party-hub strong { color: var(--gold-bright); font-family: var(--display); font-size: 0.92rem; font-weight: 500; }
+.relationship-party-hub small { color: #9b927f; font-size: 0.48rem; }
 
 .relationship-node.location .relationship-avatar,
 .relationship-node.story-character .relationship-avatar {

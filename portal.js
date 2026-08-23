@@ -333,13 +333,13 @@ function renderPortal() {
           <div class="relationship-stage">
             <svg class="relationship-lines" viewBox="0 0 1180 620" aria-hidden="true">
               <g class="party-links">
-                <path d="M260 310 L88 112" /><path d="M260 310 L260 82" /><path d="M260 310 L431 118" />
-                <path d="M260 310 L88 510" /><path d="M260 310 L260 542" /><path d="M260 310 L431 505" />
+                <path d="M260 310 L260 88" /><path d="M260 310 L413 149" /><path d="M260 310 L460 329" />
+                <path d="M260 310 L389 515" /><path d="M260 310 L130 515" /><path d="M260 310 L83 329" /><path d="M260 310 L118 149" />
               </g>
-              <path class="story-link" d="M326 310 C460 310 590 310 745 310" />
+              <path class="story-link" d="M292 310 C470 310 590 310 745 310" />
               <path class="story-link" d="M810 270 C780 205 730 155 682 112" />
-              <path class="rescue-link" d="M320 292 C505 42 780 42 1008 112" />
-              <path class="loss-link" d="M324 330 C535 460 758 508 1030 500" />
+              <path class="rescue-link" d="M278 288 C505 42 780 42 1008 112" />
+              <path class="loss-link" d="M280 333 C535 460 758 508 1030 500" />
               <path class="mine-loss-link" d="M790 350 C765 405 725 455 684 492" />
               <path class="story-link soft" d="M850 305 C925 265 970 195 1005 135" />
               <path class="story-link soft" d="M850 330 C920 390 970 455 1020 492" />
@@ -352,18 +352,20 @@ function renderPortal() {
               </g>
             </svg>
 
-            <article class="relationship-node protagonist" style="--x:22%; --y:50%">
+            <article class="relationship-node party-member" style="--x:22%; --y:14%" aria-label="甘阿·道夫，人类，法师（剑咏）">
               <div class="relationship-avatar"><img src="./assets/images/gandalf-bladesinger.png?v=20260823-human-high-guard" alt="甘阿·道夫" /></div>
-              <span>玩家角色</span><strong>甘阿·道夫</strong><small><b>种族</b> 人类</small><small><b>职业</b> 法师（剑咏）</small>
+              <span>冒险团成员</span><strong>甘阿·道夫</strong><small><b>种族</b> 人类</small><small><b>职业</b> 法师（剑咏）</small>
             </article>
             ${[
-              { name: "赛伦", race: "人类", profession: "牧师", image: "relationship-sairen.png", x: 7.5, y: 18 },
-              { name: "夏尔-金歌", race: "人类", profession: "吟游诗人", image: "relationship-shire-goldsong.png", x: 22, y: 13 },
-              { name: "左无峰", race: "人类", profession: "拳师", image: "relationship-zuo-wufeng.png", x: 36.5, y: 19 },
-              { name: "缪拉-青苔", race: "半精灵", profession: "德鲁伊", image: "relationship-mura-moss.png", x: 7.5, y: 82 },
-              { name: "费伊", race: "变体人类-不朽者", profession: "魔器师", image: "relationship-feiyi.png", x: 22, y: 87 },
-              { name: "艾黎", race: "人类", profession: "边境行者", image: "relationship-aili.png", x: 36.5, y: 81 },
+              { name: "赛伦", race: "人类", profession: "牧师", image: "relationship-sairen.png", x: 35, y: 24 },
+              { name: "夏尔-金歌", race: "人类", profession: "吟游诗人", image: "relationship-shire-goldsong.png", x: 39, y: 53 },
+              { name: "左无峰", race: "人类", profession: "拳师", image: "relationship-zuo-wufeng.png", x: 33, y: 83 },
+              { name: "缪拉-青苔", race: "半精灵", profession: "德鲁伊", image: "relationship-mura-moss.png", x: 11, y: 83 },
+              { name: "费伊", race: "变体人类-不朽者", profession: "魔器师", image: "relationship-feiyi.png", x: 7, y: 53 },
+              { name: "艾黎", race: "人类", profession: "边境行者", image: "relationship-aili.png", x: 10, y: 24 },
             ].map((member) => `<article class="relationship-node party-member" style="--x:${member.x}%; --y:${member.y}%" aria-label="${member.name}，${member.race}，${member.profession}"><div class="relationship-avatar"><img src="./assets/images/${member.image}?v=20260823-party-members" alt="${member.name}" /></div><span>冒险团成员</span><strong>${member.name}</strong><small><b>种族</b> ${member.race}</small><small><b>职业</b> ${member.profession}</small></article>`).join("")}
+
+            <div class="relationship-party-hub" aria-label="冒险团共同关系枢纽"><span>ADVENTURING</span><strong>冒险团</strong><small>七名平级成员</small></div>
 
             <article class="relationship-node location" style="--x:69%; --y:50%">
               <div class="relationship-avatar"><img src="./assets/images/relationship-dwarf-village.png?v=20260823-relationship-portraits" alt="地下矮人村" /></div><span>关联地点</span><strong>矮人村</strong><small><b>类型</b> 矮人聚落</small><small><b>状态</b> 矿坑事故</small>
@@ -424,10 +426,10 @@ function renderPortal() {
   const relationshipDialog = portalApp.querySelector("#relationshipDialog");
   const relationshipScroller = portalApp.querySelector(".relationship-scroll");
   const centerRelationshipView = () => {
-    const protagonist = relationshipScroller?.querySelector(".relationship-node.protagonist");
-    if (!relationshipScroller || !protagonist) return;
-    relationshipScroller.scrollLeft = Math.max(0, protagonist.offsetLeft - relationshipScroller.clientWidth / 2);
-    relationshipScroller.scrollTop = Math.max(0, protagonist.offsetTop - relationshipScroller.clientHeight / 2);
+    const partyHub = relationshipScroller?.querySelector(".relationship-party-hub");
+    if (!relationshipScroller || !partyHub) return;
+    relationshipScroller.scrollLeft = Math.max(0, partyHub.offsetLeft - relationshipScroller.clientWidth / 2);
+    relationshipScroller.scrollTop = Math.max(0, partyHub.offsetTop - relationshipScroller.clientHeight / 2);
   };
   portalApp.querySelector("#openRelationshipButton")?.addEventListener("click", () => {
     relationshipDialog?.showModal();
