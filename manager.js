@@ -254,23 +254,6 @@ function escapeManagerHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
-function managerHash(value) {
-  let hash = 2166136261;
-  for (const char of String(value)) {
-    hash ^= char.charCodeAt(0);
-    hash = Math.imul(hash, 16777619);
-  }
-  return hash >>> 0;
-}
-
-function iconStyle(id) {
-  const hash = managerHash(id);
-  const index = hash % 64;
-  const col = index % 8;
-  const row = Math.floor(index / 8);
-  return `--icon-x:${(col * 100) / 7}%;--icon-y:${(row * 100) / 7}%;--icon-hue:${(hash >>> 6) % 120 - 60}deg`;
-}
-
 function abilityModifier(score) {
   return Math.floor((Number(score) - 10) / 2);
 }
@@ -393,11 +376,11 @@ function renderManagerSlots() {
 window.renderDynamicSlots = renderManagerSlots;
 
 function spellIcon(spell) {
-  return `<span class="catalog-icon spell-icon" style="${iconStyle(spell.id)}" aria-hidden="true"><i></i></span>`;
+  return `<span class="catalog-icon spell-icon" style="${window.DND_ICON_MAP.spellStyle(spell)}" aria-hidden="true"><i></i></span>`;
 }
 
 function itemIcon(item) {
-  return `<span class="catalog-icon item-icon" style="${iconStyle(item.id)}" aria-hidden="true"><i></i></span>`;
+  return `<span class="catalog-icon item-icon" style="${window.DND_ICON_MAP.itemStyle(item)}" aria-hidden="true"><i></i></span>`;
 }
 
 function renderSpellSummary() {

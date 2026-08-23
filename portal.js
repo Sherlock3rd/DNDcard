@@ -264,21 +264,6 @@ function portalEscape(value) {
     .replaceAll("'", "&#039;");
 }
 
-function portalHash(value) {
-  let hash = 2166136261;
-  for (const char of String(value)) {
-    hash ^= char.charCodeAt(0);
-    hash = Math.imul(hash, 16777619);
-  }
-  return hash >>> 0;
-}
-
-function portalIconStyle(id) {
-  const hash = portalHash(id);
-  const index = hash % 64;
-  return `--icon-x:${((index % 8) * 100) / 7}%;--icon-y:${(Math.floor(index / 8) * 100) / 7}%;--icon-hue:${(hash >>> 6) % 120 - 60}deg`;
-}
-
 function archiveHeader(active, title, subtitle) {
   const links = [
     ["classes", "职业规则"],
@@ -452,7 +437,7 @@ function renderSpellLibraryResults() {
   archiveApp.querySelector("#librarySpellCount").textContent = `找到 ${matches.length} 个法术 · 当前显示 ${Math.min(limit, matches.length)} 个`;
   archiveApp.querySelector("#librarySpellGrid").innerHTML = matches.slice(0, limit).map((spell) => `
     <article class="library-card spell">
-      <span class="catalog-icon spell-icon" style="${portalIconStyle(spell.id)}" aria-hidden="true"><i></i></span>
+      <span class="catalog-icon spell-icon" style="${window.DND_ICON_MAP.spellStyle(spell)}" aria-hidden="true"><i></i></span>
       <div class="library-card-heading"><p>${spell.level ? `${spell.level} 环` : "戏法"} · ${portalEscape(portalSchoolNames[spell.school] || spell.school)}</p><h2>${portalEscape(displaySpellName(spell))}</h2></div>
       <div class="library-badges">${spell.ritual ? "<span>仪式</span>" : ""}${spell.concentration ? "<span>专注</span>" : ""}<span>${portalEscape((spell.classes || []).map((name) => portalClassNames[name] || name).join("、") || "自定义")}</span></div>
       <dl><div><dt>施法</dt><dd>${portalEscape(spell.castingTimeZh || spell.castingTime)}</dd></div><div><dt>距离</dt><dd>${portalEscape(spell.rangeZh || spell.range)}</dd></div><div><dt>持续</dt><dd>${portalEscape(spell.durationZh || spell.duration)}</dd></div><div><dt>成分</dt><dd>${portalEscape(spell.componentsZh || spell.components)}</dd></div></dl>
@@ -514,7 +499,7 @@ function renderItemLibraryResults() {
   archiveApp.querySelector("#libraryItemCount").textContent = `找到 ${matches.length} 件物品 · 当前显示 ${Math.min(limit, matches.length)} 件`;
   archiveApp.querySelector("#libraryItemGrid").innerHTML = matches.slice(0, limit).map((item) => `
     <article class="library-card item">
-      <span class="catalog-icon item-icon" style="${portalIconStyle(item.id)}" aria-hidden="true"><i></i></span>
+      <span class="catalog-icon item-icon" style="${window.DND_ICON_MAP.itemStyle(item)}" aria-hidden="true"><i></i></span>
       <div class="library-card-heading"><p>${portalEscape(displayItemRarity(item.rarity))} · ${portalEscape(displayItemType(item.type || item.category))}</p><h2>${portalEscape(item.nameZh ? `${item.nameZh}（${item.name}）` : item.name)}</h2></div>
       <div class="library-badges">${item.magic ? "<span>魔法</span>" : "<span>普通</span>"}${item.cost ? `<span>${portalEscape(item.cost)}</span>` : ""}${item.weight ? `<span>${portalEscape(item.weight)} 磅</span>` : ""}</div>
       ${(item.damage || item.armorClass) ? `<dl>${item.damage ? `<div><dt>伤害</dt><dd>${portalEscape(displayItemDamage(item.damage))}</dd></div>` : ""}${item.armorClass ? `<div><dt>AC</dt><dd>${portalEscape(item.armorClass)}</dd></div>` : ""}</dl>` : ""}
