@@ -87,9 +87,9 @@ function displayItemDamage(value) {
 }
 
 const spellAliases = {
+  light: "光亮术",
   "fire-bolt": "火焰箭",
-  "mage-hand": "法师之手",
-  "minor-illusion": "次级幻影",
+  "custom-spell-booming-blade": "轰雷剑",
   "mage-armor": "法师护甲",
   shield: "护盾术",
   "magic-missile": "魔法飞弹",
@@ -97,87 +97,90 @@ const spellAliases = {
   "find-familiar": "获得魔宠",
   sleep: "睡眠术",
   "misty-step": "迷踪步",
-  web: "蛛网术",
-  "scorching-ray": "灼热射线",
-  invisibility: "隐形术",
+  thunderwave: "雷鸣波",
+  "mirror-image": "镜影术",
+  "custom-spell-absorb-elements": "吸收元素",
 };
 
 const initialSpellbook = [
+  "light",
   "fire-bolt",
-  "mage-hand",
-  "minor-illusion",
-  "mage-armor",
-  "shield",
-  "magic-missile",
+  "custom-spell-booming-blade",
   "detect-magic",
   "find-familiar",
+  "shield",
+  "thunderwave",
+  "mage-armor",
+  "custom-spell-absorb-elements",
+  "magic-missile",
   "sleep",
+  "mirror-image",
   "misty-step",
-  "web",
-  "scorching-ray",
-  "invisibility",
 ];
 
 const initialPrepared = [
   "mage-armor",
   "shield",
+  "custom-spell-absorb-elements",
   "magic-missile",
+  "thunderwave",
   "misty-step",
-  "web",
-  "scorching-ray",
 ];
 
 const managerDefaults = {
   level: 3,
-  abilities: { STR: 9, DEX: 15, CON: 14, INT: 16, WIS: 13, CHA: 11 },
+  abilities: { STR: 16, DEX: 15, CON: 14, INT: 17, WIS: 13, CHA: 6 },
   coins: { cp: 0, sp: 0, ep: 0, gp: 10, pp: 0 },
   spellbook: initialSpellbook,
   prepared: initialPrepared,
-  customSpells: [],
-  spellOverrides: {},
-  customItems: [
+  customSpells: [
     {
-      id: "custom-item-astrolabe",
-      name: "Brass Astrolabe",
-      nameZh: "黄铜星盘",
-      type: "奥术法器",
-      category: "Wonder",
-      cost: "",
-      weight: 1,
-      damage: "",
-      armorClass: null,
-      properties: ["导师遗物"],
-      description: "会在特定星象下自行转动的黄铜星盘。",
-      rarity: "Unique",
-      magic: true,
+      id: "custom-spell-booming-blade",
+      name: "Booming Blade",
+      nameZh: "轰雷剑",
+      level: 0,
+      school: "Evocation",
+      classes: ["Wizard"],
+      castingTimeZh: "1 动作",
+      rangeZh: "自身（5 尺）",
+      durationZh: "1 轮",
+      componentsZh: "S、M（价值至少 1 银币的近战武器）",
+      ritual: false,
+      concentration: false,
+      descriptionZh: "以手中武器发动一次近战攻击，并以雷鸣能量包裹目标；目标若在效果结束前主动移动，会承受额外雷鸣伤害。",
+      higherLevelZh: "角色等级提升时，武器攻击与移动触发的雷鸣伤害会提高。",
       custom: true,
     },
     {
-      id: "custom-item-letter",
-      name: "Unfinished Letter from the Mentor",
-      nameZh: "导师未写完的信",
-      type: "纪念物",
-      category: "Document",
-      cost: "",
-      weight: 0,
-      damage: "",
-      armorClass: null,
-      properties: [],
-      description: "信件最后一行停在那个被星历抹去的日期之前。",
-      rarity: "Story",
-      magic: false,
+      id: "custom-spell-absorb-elements",
+      name: "Absorb Elements",
+      nameZh: "吸收元素",
+      level: 1,
+      school: "Abjuration",
+      classes: ["Wizard"],
+      castingTimeZh: "1 反应",
+      rangeZh: "自身",
+      durationZh: "1 轮",
+      componentsZh: "S",
+      ritual: false,
+      concentration: false,
+      descriptionZh: "受到酸蚀、寒冷、火焰、闪电或雷鸣伤害时吸收部分能量，获得该伤害类型的临时抗性，并强化下一次近战攻击。",
+      higherLevelZh: "使用更高环法术位时，下一次近战攻击的额外元素伤害提高。",
       custom: true,
     },
   ],
+  spellOverrides: {},
+  customItems: [],
   itemOverrides: {},
   inventory: [
-    { id: "equipment-dagger", quantity: 1, equipped: true, notes: "" },
+    { id: "equipment-longsword", quantity: 1, equipped: true, notes: "父亲遗物 · 剑咏施法媒介" },
     { id: "equipment-quarterstaff", quantity: 1, equipped: false, notes: "" },
+    { id: "equipment-crossbow-light", quantity: 1, equipped: false, notes: "" },
+    { id: "equipment-studded-leather-armor", quantity: 1, equipped: true, notes: "基础 AC 14" },
     { id: "equipment-component-pouch", quantity: 1, equipped: true, notes: "" },
     { id: "equipment-spellbook", quantity: 1, equipped: true, notes: "记录 10 个一环及以上法术" },
-    { id: "equipment-scholars-pack", quantity: 1, equipped: false, notes: "" },
-    { id: "custom-item-astrolabe", quantity: 1, equipped: true, notes: "奥术法器" },
-    { id: "custom-item-letter", quantity: 1, equipped: false, notes: "" },
+    { id: "equipment-playing-card-set", quantity: 1, equipped: true, notes: "母亲遗物 · 边角磨白" },
+    { id: "magic-hat-of-disguise", quantity: 1, equipped: true, notes: "导师赠予 · 已同调" },
   ],
   levelHistory: [],
 };
@@ -192,7 +195,7 @@ let itemFilters = { search: "", type: "all", rarity: "all" };
 
 function loadManagerState() {
   try {
-    const saved = JSON.parse(localStorage.getItem("charlie-5e-manager") || "{}");
+    const saved = JSON.parse(localStorage.getItem("gandalf-5e-manager") || "{}");
     const loaded = {
       ...structuredClone(managerDefaults),
       ...saved,
@@ -200,22 +203,18 @@ function loadManagerState() {
       coins: { ...managerDefaults.coins, ...(saved.coins || {}) },
       spellOverrides: saved.spellOverrides || {},
       itemOverrides: saved.itemOverrides || {},
-      customSpells: saved.customSpells || [],
+      customSpells: saved.customSpells || managerDefaults.customSpells,
       customItems: saved.customItems || managerDefaults.customItems,
       inventory: saved.inventory || managerDefaults.inventory,
     };
     Object.keys(loaded.coins).forEach((key) => {
       loaded.coins[key] = Math.max(0, Math.floor(Number(loaded.coins[key]) || 0));
     });
-    loaded.customItems = loaded.customItems.map((item) => {
-      if (item.id === "custom-item-astrolabe" && item.name === "黄铜星盘") {
-        return { ...item, name: "Brass Astrolabe", nameZh: "黄铜星盘", descriptionZh: item.descriptionZh || item.description };
-      }
-      if (item.id === "custom-item-letter" && item.name === "导师未写完的信") {
-        return { ...item, name: "Unfinished Letter from the Mentor", nameZh: "导师未写完的信", descriptionZh: item.descriptionZh || item.description };
-      }
-      return { ...item, nameZh: item.nameZh || item.name, descriptionZh: item.descriptionZh || item.description || "" };
-    });
+    loaded.customItems = loaded.customItems.map((item) => ({
+      ...item,
+      nameZh: item.nameZh || item.name,
+      descriptionZh: item.descriptionZh || item.description || "",
+    }));
     const validSpellIds = new Set([
       ...srdCatalog.spells.map((spell) => spell.id),
       ...loaded.customSpells.map((spell) => spell.id),
@@ -229,7 +228,7 @@ function loadManagerState() {
 }
 
 function saveManagerState() {
-  localStorage.setItem("charlie-5e-manager", JSON.stringify(managerState));
+  localStorage.setItem("gandalf-5e-manager", JSON.stringify(managerState));
   saveState();
 }
 
@@ -616,7 +615,7 @@ function removeSpellFromBook(id) {
   const spell = findManagerSpell(id);
   if (
     !window.confirm(
-      `确定要将“${spell ? displaySpellName(spell) : "该法术"}”从 Charlie 的法术书中移除吗？\n\n已准备状态也会一并清除。`,
+      `确定要将“${spell ? displaySpellName(spell) : "该法术"}”从甘阿·道夫的法术书中移除吗？\n\n已准备状态也会一并清除。`,
     )
   ) {
     return;
@@ -730,7 +729,7 @@ function openSpellEditor(id = null) {
 function deleteCustomSpell(id) {
   const spell = findManagerSpell(id);
   if (!spell?.custom) return;
-  if (!window.confirm(`确定要永久删除自定义法术“${displaySpellName(spell)}”吗？\n\n若 Charlie 已抄录该法术，也会一并移除。`)) {
+  if (!window.confirm(`确定要永久删除自定义法术“${displaySpellName(spell)}”吗？\n\n若甘阿·道夫已抄录该法术，也会一并移除。`)) {
     return;
   }
   managerState.customSpells = managerState.customSpells.filter((entry) => entry.id !== id);
@@ -952,7 +951,7 @@ function removeItemFromInventory(id) {
   const entry = managerState.inventory.find((candidate) => candidate.id === id);
   if (
     !window.confirm(
-      `确定要将“${item ? displayItemName(item) : "该物品"}”从 Charlie 的背包中移除吗？\n\n当前持有的 ${entry?.quantity || 1} 件会一并移除。`,
+      `确定要将“${item ? displayItemName(item) : "该物品"}”从甘阿·道夫的背包中移除吗？\n\n当前持有的 ${entry?.quantity || 1} 件会一并移除。`,
     )
   ) {
     return;
@@ -1057,7 +1056,7 @@ function openItemEditor(id = null) {
 function deleteCustomItem(id) {
   const item = findManagerItem(id);
   if (!item?.custom) return;
-  if (!window.confirm(`确定要永久删除自定义物品“${displayItemName(item)}”吗？\n\n若 Charlie 已持有该物品，也会一并移除。`)) {
+  if (!window.confirm(`确定要永久删除自定义物品“${displayItemName(item)}”吗？\n\n若甘阿·道夫已持有该物品，也会一并移除。`)) {
     return;
   }
   managerState.customItems = managerState.customItems.filter((item) => item.id !== id);
@@ -1072,9 +1071,9 @@ function levelFeatureSummary(level) {
   const messages = [];
   if ([4, 8, 12, 16, 19].includes(level)) messages.push("获得属性值提升：选择两次 +1，可叠加到同一属性。");
   if ([4, 10].includes(level)) messages.push("额外学会 1 个法师戏法。");
-  if (level === 6) messages.push("预言学派：专家预言。");
-  if (level === 10) messages.push("预言学派：第三只眼。");
-  if (level === 14) messages.push("预言学派：高等预兆（预兆骰增至 3 个）。");
+  if (level === 6) messages.push("剑咏：额外攻击。");
+  if (level === 10) messages.push("剑咏：防御之歌。");
+  if (level === 14) messages.push("剑咏：胜利之歌。");
   if (level === 18) messages.push("法师：法术精通。");
   if (level === 20) messages.push("法师：招牌法术。");
   return messages;
@@ -1082,7 +1081,7 @@ function levelFeatureSummary(level) {
 
 function openLevelUpDialog() {
   if (managerState.level >= 20) {
-    window.alert("Charlie 已达到 20 级。");
+    window.alert("甘阿·道夫已达到 20 级。");
     return;
   }
   const dialog = document.querySelector("#levelUpDialog");

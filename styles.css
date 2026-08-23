@@ -818,6 +818,39 @@ td {
   outline: 0;
 }
 
+.bladesong-row {
+  grid-template-columns: auto 1fr auto;
+  align-items: stretch;
+}
+
+.bladesong-row output {
+  margin-left: 8px;
+  color: var(--ink);
+  font-size: 1.3rem;
+}
+
+.bladesong-row > span {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  color: var(--muted);
+}
+
+.bladesong-row > button {
+  padding: 10px 14px;
+  border: 1px solid var(--gold);
+  color: var(--gold-bright);
+  background: rgba(125, 94, 45, 0.18);
+  cursor: pointer;
+}
+
+@media (max-width: 680px) {
+  .bladesong-row {
+    grid-template-columns: 1fr;
+  }
+}
+
 .conditions {
   margin-top: 18px;
 }
@@ -2225,6 +2258,10 @@ button.loadout-spell:hover {
 
   h1 {
     font-size: clamp(4rem, 24vw, 6.8rem);
+  }
+
+  #characterName {
+    font-size: clamp(3rem, 15vw, 4.4rem);
   }
 
   blockquote {

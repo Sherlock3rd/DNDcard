@@ -186,7 +186,7 @@ const ruleChapters = [
       "结果达到或超过难度等级 DC 即成功。常见参考：容易 10、中等 15、困难 20。",
       "优势掷两枚 d20 取高；劣势取低。多个优势不会叠加，优势与劣势同时存在时互相抵消。",
     ],
-    example: "例：Charlie 用奥秘辨认符文。d20 掷出 12，智力 +3、奥秘熟练 +2，总计 17。",
+    example: "例：甘阿·道夫用奥秘辨认符文。d20 掷出 12，智力 +3、奥秘熟练 +2，总计 17。",
   },
   {
     id: "turns",
@@ -251,7 +251,7 @@ const ruleChapters = [
       "长休至少 8 小时；通常恢复全部 HP，并恢复已花费生命骰的一半（至少一枚）。",
       "24 小时内只能从一次长休获益，且开始长休时通常至少要有 1 HP。",
     ],
-    example: "Charlie 的奥术回想可在短休后恢复部分法术位，但每日只能使用一次。",
+    example: "甘阿·道夫的奥术回想可在短休后恢复部分法术位，但每日只能使用一次。",
   },
 ];
 
@@ -315,16 +315,16 @@ function renderPortal() {
       </header>
       <section class="portal-character-panel" aria-labelledby="portalCharacterTitle">
         <div class="portal-portrait">
-          <img src="./assets/images/charlie-wizard.png" alt="人类预言学派法师 Charlie" />
+          <img src="./assets/images/gandalf-bladesinger.png" alt="以老法师外貌示人的龙裔剑咏者甘阿·道夫" />
         </div>
         <div class="portal-character-copy">
           <p>AVAILABLE CHARACTER</p>
-          <h2 id="portalCharacterTitle">Charlie</h2>
-          <div class="portal-tags"><span>人类</span><span>法师 ${currentLevel}</span><span>预言学派</span><span>学者</span></div>
-          <p class="portal-quote">“星辰从不预言未来——它们只提醒我，未来有多少种写法。”</p>
+          <h2 id="portalCharacterTitle">甘阿·道夫</h2>
+          <div class="portal-tags"><span>龙裔</span><span>法师 ${currentLevel}</span><span>剑咏</span><span>赌客</span></div>
+          <p class="portal-quote">“牌桌上的犹豫会出卖一个人，剑锋停下的位置也一样。”</p>
           <dl>
             <div><dt>当前生命</dt><dd>${state.hp} / ${state.maxHp}</dd></div>
-            <div><dt>护甲等级</dt><dd>15</dd></div>
+            <div><dt>护甲等级</dt><dd>14 / 剑歌 17</dd></div>
             <div><dt>法术书</dt><dd>${managerState.spellbook.length - managerState.spellbook.map(findManagerSpell).filter((spell) => spell?.level === 0).length}</dd></div>
           </dl>
           <button class="portal-enter" type="button" data-portal-route="character">登录此角色</button>
@@ -415,7 +415,7 @@ function renderSpellLibrary() {
       <p class="archive-count" id="librarySpellCount"></p>
       <section class="library-grid" id="librarySpellGrid"></section>
       <button class="library-more" id="librarySpellMore" type="button">显示更多法术</button>
-      <footer class="archive-footer">查询目录不会改变 Charlie 的法术书；要配置角色，请登录角色后进入“法术”章节。</footer>
+      <footer class="archive-footer">查询目录不会改变甘阿·道夫的法术书；要配置角色，请登录角色后进入“法术”章节。</footer>
     </div>`;
   archiveApp.querySelector("#createCustomSpellButton").addEventListener("click", () => openSpellEditor());
   archiveApp.querySelectorAll("#librarySpellSearch, #librarySpellLevel, #librarySpellSchool, #librarySpellClass").forEach((control) => {
@@ -483,7 +483,7 @@ function renderItemLibrary() {
       <p class="archive-count" id="libraryItemCount"></p>
       <section class="library-grid item" id="libraryItemGrid"></section>
       <button class="library-more" id="libraryItemMore" type="button">显示更多物品</button>
-      <footer class="archive-footer">查询目录不会改变 Charlie 的背包；新建资料后，可在角色“装备”章节通过“添加物品”加入背包。</footer>
+      <footer class="archive-footer">查询目录不会改变甘阿·道夫的背包；新建资料后，可在角色“装备”章节通过“添加物品”加入背包。</footer>
     </div>`;
   archiveApp.querySelector("#createCustomItemButton").addEventListener("click", () => openItemEditor());
   archiveApp.querySelectorAll("#libraryItemSearch, #libraryItemType, #libraryItemRarity").forEach((control) => {
@@ -581,7 +581,7 @@ function renderPortalRoute() {
     renderPortal();
     document.title = "DNDcard · 选择角色";
   } else if (isCharacter) {
-    document.title = `Charlie · ${managerState.level}级人类法师`;
+    document.title = `甘阿·道夫 · ${managerState.level}级龙裔剑咏法师`;
   } else if (route === "classes") {
     renderClasses();
     document.title = "职业规则 · DNDcard";

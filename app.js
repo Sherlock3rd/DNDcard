@@ -2,9 +2,9 @@ const abilities = [
   {
     key: "STR",
     name: "力量",
-    score: 9,
-    mod: -1,
-    skills: [{ name: "运动", value: -1 }],
+    score: 17,
+    mod: 3,
+    skills: [{ name: "运动", value: 3 }],
   },
   {
     key: "DEX",
@@ -32,7 +32,7 @@ const abilities = [
     skills: [
       { name: "奥秘", value: 5, proficient: true },
       { name: "历史", value: 5, proficient: true },
-      { name: "调查", value: 5, proficient: true },
+      { name: "调查", value: 3 },
       { name: "自然", value: 3 },
       { name: "宗教", value: 5, proficient: true },
     ],
@@ -44,7 +44,7 @@ const abilities = [
     mod: 1,
     skills: [
       { name: "驯兽", value: 1 },
-      { name: "洞悉", value: 1 },
+      { name: "洞悉", value: 3, proficient: true },
       { name: "医药", value: 1 },
       { name: "察觉", value: 1 },
       { name: "生存", value: 1 },
@@ -53,22 +53,22 @@ const abilities = [
   {
     key: "CHA",
     name: "魅力",
-    score: 11,
-    mod: 0,
+    score: 6,
+    mod: -2,
     skills: [
-      { name: "欺瞒", value: 0 },
-      { name: "威吓", value: 0 },
-      { name: "表演", value: 0 },
-      { name: "游说", value: 0 },
+      { name: "欺瞒", value: -2 },
+      { name: "威吓", value: -2 },
+      { name: "表演", value: -2 },
+      { name: "游说", value: -2 },
     ],
   },
 ];
 
 const features = [
   {
-    source: "人类 · 种族",
-    name: "人类多才",
-    text: "六项属性各提高 1。体型中型，基础步行速度 30 尺，额外掌握一门语言。",
+    source: "龙裔 · 种族",
+    name: "龙裔血脉",
+    text: "体型中型，基础步行速度 30 尺；继承龙族血脉带来的吐息武器与对应伤害抗性。具体龙族祖先可在后续档案中补记。",
   },
   {
     source: "法师 · 1 级",
@@ -78,34 +78,41 @@ const features = [
   {
     source: "法师 · 1 级",
     name: "法术书与仪式施法",
-    text: "法术书记录 10 个法师法术。书中带仪式标签的法术无需准备即可用仪式方式施展。",
+    text: "法术书记录 10 个一环及以上法师法术。书中带仪式标签的法术无需准备即可用仪式方式施展。",
   },
   {
-    source: "预言学派 · 2 级",
-    name: "预言学者",
-    text: "抄录预言学派法术所需金币与时间减半。",
+    source: "剑咏 · 2 级",
+    name: "战法训练",
+    text: "掌握轻甲与近战武器训练，并以剑势、步伐和呼吸记忆魔力运行的轨迹。",
   },
   {
-    source: "预言学派 · 2 级",
-    name: "预兆",
-    text: "每次长休后掷 2 次 d20 并记录结果。你或可见生物进行攻击、豁免或属性检定前，可用一个记录值替代该次掷骰。",
+    source: "剑咏 · 2 级",
+    name: "剑歌",
+    text: "以附赠动作开启持续 1 分钟的剑歌；期间获得智力调整值提供的护甲加值，并强化速度、专注与敏捷表现。当前基础 AC 14，剑歌中 AC 17。",
   },
   {
-    source: "学者 · 背景",
-    name: "研究员",
-    text: "当你不知道某条知识时，通常知道从何处、哪位人物或哪座图书馆能够取得它。",
+    source: "赌客 · 背景",
+    name: "牌桌识人",
+    text: "以牌局接近陌生人、交换消息并观察人心；从下注方式、输牌反应和说谎时的停顿判断对方性格。",
+  },
+  {
+    source: "易容帽 · 同调",
+    name: "千面旅人",
+    text: "可随意施放伪装术而不消耗法术位。最常伪装成白发、佝偻的旅行老法师，以不同身份观察世界。",
   },
 ];
 
 const inventory = [
   ["魔法书", "3 磅 · 10 个法术"],
-  ["黄铜星盘", "奥术法器 · 导师遗物"],
+  ["父亲的旧长剑", "遗物 · 剑咏施法媒介"],
+  ["母亲的旧纸牌", "遗物 · 边角磨白"],
+  ["易容帽", "非普通奇物 · 需同调"],
   ["法术材料包", "施法材料"],
-  ["学者套组", "背包、学识书、墨水、笔、羊皮纸等"],
-  ["匕首", "1 磅 · 1d4 穿刺"],
-  ["短棍", "4 磅 · 1d6 钝击"],
-  ["普通衣物", "学者背景"],
-  ["导师未写完的信", "背景纪念物"],
+  ["旅行者套组", "背包、口粮、绳索与旅途用品"],
+  ["长棍", "4 磅 · 1d6+3 钝击"],
+  ["轻弩", "5 磅 · 1d8+2 穿刺"],
+  ["轻甲", "当前 AC 14"],
+  ["旅行衣物", "老人伪装常用装束"],
 ];
 
 const spells = [
@@ -121,31 +128,31 @@ const spells = [
   },
   {
     level: 0,
-    name: "法师之手",
-    school: "咒法戏法",
+    name: "光亮术",
+    school: "塑能戏法",
     casting: "1 动作",
-    range: "30 尺",
-    duration: "1 分钟",
+    range: "接触",
+    duration: "1 小时",
     components: "V、S",
     prepared: true,
   },
   {
     level: 0,
-    name: "次级幻影",
-    school: "幻术戏法",
+    name: "轰雷剑",
+    school: "塑能戏法",
     casting: "1 动作",
-    range: "30 尺",
-    duration: "1 分钟",
-    components: "S、M",
+    range: "自身（5 尺）",
+    duration: "1 轮",
+    components: "S、M（近战武器）",
     prepared: true,
   },
   {
     level: 1,
-    name: "法师护甲",
-    school: "防护 1 环",
+    name: "侦测魔法",
+    school: "预言 1 环 · 仪式",
     casting: "1 动作",
-    range: "接触",
-    duration: "8 小时",
+    range: "自身",
+    duration: "专注，10 分钟",
     components: "V、S、M",
     prepared: true,
   },
@@ -161,23 +168,23 @@ const spells = [
   },
   {
     level: 1,
-    name: "魔法飞弹",
-    school: "塑能 1 环",
-    casting: "1 动作",
-    range: "120 尺",
-    duration: "立即",
-    components: "V、S",
+    name: "吸收元素",
+    school: "防护 1 环",
+    casting: "1 反应",
+    range: "自身",
+    duration: "1 轮",
+    components: "S",
     prepared: true,
   },
   {
     level: 1,
-    name: "侦测魔法",
-    school: "预言 1 环 · 仪式",
+    name: "雷鸣波",
+    school: "塑能 1 环",
     casting: "1 动作",
-    range: "自身",
-    duration: "专注，10 分钟",
+    range: "自身（15 尺立方）",
+    duration: "立即",
     components: "V、S",
-    prepared: false,
+    prepared: true,
   },
   {
     level: 1,
@@ -191,11 +198,11 @@ const spells = [
   },
   {
     level: 1,
-    name: "睡眠术",
-    school: "惑控 1 环",
+    name: "法师护甲",
+    school: "防护 1 环",
     casting: "1 动作",
-    range: "90 尺",
-    duration: "1 分钟",
+    range: "接触",
+    duration: "8 小时",
     components: "V、S、M",
     prepared: false,
   },
@@ -211,33 +218,13 @@ const spells = [
   },
   {
     level: 2,
-    name: "蛛网术",
-    school: "咒法 2 环",
-    casting: "1 动作",
-    range: "60 尺",
-    duration: "专注，1 小时",
-    components: "V、S、M",
-    prepared: true,
-  },
-  {
-    level: 2,
-    name: "灼热射线",
-    school: "塑能 2 环",
-    casting: "1 动作",
-    range: "120 尺",
-    duration: "立即",
-    components: "V、S",
-    prepared: true,
-  },
-  {
-    level: 2,
-    name: "隐形术",
+    name: "镜影术",
     school: "幻术 2 环",
     casting: "1 动作",
-    range: "接触",
-    duration: "专注，1 小时",
-    components: "V、S、M",
-    prepared: false,
+    range: "自身",
+    duration: "1 分钟",
+    components: "V、S",
+    prepared: true,
   },
 ];
 
@@ -247,8 +234,8 @@ const defaults = {
   tempHp: 0,
   slot1: 4,
   slot2: 2,
-  portentOne: 17,
-  portentTwo: 6,
+  bladesongUses: 2,
+  bladesongActive: false,
   conditions: [],
 };
 
@@ -265,7 +252,7 @@ function signed(value) {
 
 function loadState() {
   try {
-    const saved = JSON.parse(localStorage.getItem("charlie-5e-state") || "{}");
+    const saved = JSON.parse(localStorage.getItem("gandalf-5e-state") || "{}");
     return {
       ...defaults,
       ...saved,
@@ -279,7 +266,7 @@ function loadState() {
 }
 
 function saveState() {
-  localStorage.setItem("charlie-5e-state", JSON.stringify(state));
+  localStorage.setItem("gandalf-5e-state", JSON.stringify(state));
   const el = document.querySelector("#saveState");
   el.textContent = "状态已保存";
   window.clearTimeout(saveState.timer);
@@ -360,8 +347,9 @@ function renderSpells(filter = "all") {
 function renderState() {
   document.querySelector("#hpValue").value = state.hp;
   document.querySelector("#tempHpValue").value = state.tempHp;
-  document.querySelector("#portentOne").value = state.portentOne;
-  document.querySelector("#portentTwo").value = state.portentTwo;
+  document.querySelector("#bladesongUses").value = state.bladesongUses;
+  document.querySelector("#bladesongStatus").textContent = state.bladesongActive ? "剑歌进行中 · AC 17" : "未开启 · 基础 AC 14";
+  document.querySelector("#toggleBladesong").textContent = state.bladesongActive ? "结束剑歌" : "开启剑歌";
   renderSlots("slot1", 4);
   renderSlots("slot2", 2);
   window.renderDynamicSlots?.();
@@ -464,14 +452,10 @@ document.addEventListener("click", (event) => {
   }
 });
 
-document.querySelector("#portentOne").addEventListener("change", (event) => {
-  state.portentOne = Math.max(1, Math.min(20, Number(event.target.value) || 1));
-  renderState();
-  saveState();
-});
-
-document.querySelector("#portentTwo").addEventListener("change", (event) => {
-  state.portentTwo = Math.max(1, Math.min(20, Number(event.target.value) || 1));
+document.querySelector("#toggleBladesong").addEventListener("click", () => {
+  if (!state.bladesongActive && state.bladesongUses <= 0) return;
+  if (!state.bladesongActive) state.bladesongUses -= 1;
+  state.bladesongActive = !state.bladesongActive;
   renderState();
   saveState();
 });
@@ -479,6 +463,8 @@ document.querySelector("#portentTwo").addEventListener("change", (event) => {
 document.querySelector("#longRest").addEventListener("click", () => {
   state.hp = state.maxHp;
   state.tempHp = 0;
+  state.bladesongUses = 2;
+  state.bladesongActive = false;
   const slotMaximums = window.currentSlotMaximums || { slot1: 4, slot2: 2 };
   Object.entries(slotMaximums).forEach(([key, max]) => {
     state[key] = max;
@@ -489,7 +475,7 @@ document.querySelector("#longRest").addEventListener("click", () => {
 });
 
 document.querySelector("#resetButton").addEventListener("click", () => {
-  if (!window.confirm("将 Charlie 的当前生命、法术位、预兆骰与状态恢复为初始值？")) return;
+  if (!window.confirm("将甘阿·道夫的当前生命、法术位、剑歌次数与状态恢复为初始值？")) return;
   const maxHp = state.maxHp;
   state = { ...defaults, maxHp, hp: maxHp, conditions: [] };
   Object.entries(window.currentSlotMaximums || { slot1: 4, slot2: 2 }).forEach(([key, max]) => {
