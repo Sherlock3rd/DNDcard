@@ -298,6 +298,70 @@ function renderPortal() {
         <h1>DNDcard</h1>
         <span>选择角色档案，或先查阅规则资料库</span>
       </header>
+      <section class="portal-relationship" aria-labelledby="relationshipTitle">
+        <header class="relationship-heading">
+          <div>
+            <p>RELATIONSHIP CHRONICLE · TODAY</p>
+            <h2 id="relationshipTitle">冒险团关系图</h2>
+          </div>
+          <div class="relationship-legend" aria-label="关系图图例">
+            <span><i class="party"></i>冒险团</span>
+            <span><i class="story"></i>今日剧情</span>
+            <span><i class="loss"></i>死亡事件</span>
+          </div>
+        </header>
+        <p class="relationship-intro">以当前角色为视角记录队伍成员与本次矮人村事件；六名队友暂留占位，等待补充姓名与肖像。</p>
+        <div class="relationship-scroll" role="region" aria-label="可横向滚动的人物关系图" tabindex="0">
+          <div class="relationship-stage">
+            <svg class="relationship-lines" viewBox="0 0 1180 620" aria-hidden="true">
+              <g class="party-links">
+                <path d="M260 310 L88 112" /><path d="M260 310 L260 82" /><path d="M260 310 L431 118" />
+                <path d="M260 310 L88 510" /><path d="M260 310 L260 542" /><path d="M260 310 L431 505" />
+              </g>
+              <path class="story-link" d="M326 310 C460 310 590 310 745 310" />
+              <path class="story-link" d="M810 270 C780 205 730 155 682 112" />
+              <path class="rescue-link" d="M320 292 C525 155 745 96 1008 112" />
+              <path class="loss-link" d="M324 330 C535 460 758 508 1030 500" />
+              <path class="mine-loss-link" d="M790 350 C765 405 725 455 684 492" />
+              <path class="story-link soft" d="M850 305 C925 265 970 195 1005 135" />
+              <path class="story-link soft" d="M850 330 C920 390 970 455 1020 492" />
+              <g class="relationship-labels">
+                <text x="494" y="294">今日进入矮人村</text>
+                <text x="726" y="177">村庄领袖</text>
+                <text x="625" y="121">被冒险团救下</text>
+                <text class="loss-text" x="630" y="486">被误认为叛徒 · 误杀</text>
+                <text class="mine-loss-text" x="692" y="420">矿坑遇难者之一</text>
+              </g>
+            </svg>
+
+            <article class="relationship-node protagonist" style="--x:22%; --y:50%">
+              <div class="relationship-avatar"><img src="./assets/images/gandalf-bladesinger.png?v=20260823-human-high-guard" alt="甘阿·道夫" /></div>
+              <span>玩家角色</span><strong>甘阿·道夫</strong><small>人类 · 剑咏法师</small>
+            </article>
+            ${Array.from({ length: 6 }, (_, index) => {
+              const positions = [[7.5, 18], [22, 13], [36.5, 19], [7.5, 82], [22, 87], [36.5, 81]];
+              const [x, y] = positions[index];
+              return `<article class="relationship-node party-placeholder" style="--x:${x}%; --y:${y}%"><div class="relationship-avatar"><b>${String(index + 1).padStart(2, "0")}</b></div><span>冒险团成员</span><strong>待补充</strong><small>姓名 · 职业 · 肖像</small></article>`;
+            }).join("")}
+
+            <article class="relationship-node location" style="--x:69%; --y:50%">
+              <div class="relationship-avatar"><b>村</b></div><span>今日地点</span><strong>矮人村</strong><small>本次剧情中心</small>
+            </article>
+            <article class="relationship-node story-character" style="--x:58%; --y:18%">
+              <div class="relationship-avatar"><b>长</b></div><span>剧情角色</span><strong>村长</strong><small>矮人村领袖</small>
+            </article>
+            <article class="relationship-node story-character rescued" style="--x:86%; --y:18%">
+              <div class="relationship-avatar"><b>帕</b></div><span>已救援</span><strong>帕主</strong><small>被冒险团救下的爱人</small>
+            </article>
+            <article class="relationship-node story-character deceased" style="--x:88%; --y:81%">
+              <div class="relationship-avatar"><b>马</b></div><span>已故</span><strong>马鲁克</strong><small>被当作叛徒误杀的矮人</small>
+            </article>
+            <article class="relationship-node story-character deceased mine-casualty" style="--x:58%; --y:81%">
+              <div class="relationship-avatar"><b>墨</b></div><span>矿坑遇难</span><strong>墨里斯</strong><small>矿坑遇难者之一</small>
+            </article>
+          </div>
+        </div>
+      </section>
       <section class="portal-character-panel" aria-labelledby="portalCharacterTitle">
         <div class="portal-portrait">
           <img src="./assets/images/gandalf-bladesinger.png?v=20260823-human-high-guard" alt="以老法师外貌示人的人类剑咏者甘阿·道夫，持剑采用古典高位架势，旧牌收在衣兜里" />
