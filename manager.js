@@ -1,4 +1,5 @@
 const srdCatalog = window.SRD_CATALOG;
+const featCatalog = window.FEAT_CATALOG || [];
 
 const wizardSlotTable = {
   1: [2],
@@ -196,6 +197,7 @@ let spellCatalogLimit = 48;
 let itemCatalogLimit = 48;
 let spellFilters = { search: "", level: "all", school: "all", className: "all" };
 let itemFilters = { search: "", type: "all", rarity: "all" };
+let featFilters = { search: "", category: "all" };
 
 function loadManagerState() {
   try {
@@ -287,6 +289,12 @@ function displaySpellName(spell) {
 function displayItemName(item) {
   const chinese = item.nameZh || item.alias || item.name;
   return chinese === item.name ? item.name : `${chinese}（${item.name}）`;
+}
+
+function displayFeatName(feat) {
+  if (!feat) return "未知专长";
+  if (feat.nameZh && feat.nameZh !== feat.name) return `${feat.nameZh}（${feat.name}）`;
+  return feat.nameZh || feat.name || "未知专长";
 }
 
 function allManagerSpells() {
@@ -1116,48 +1124,173 @@ function renderFeatManager() {
           <h4>${escapeManagerHtml(feat.name)}</h4>
           ${feat.prerequisite ? `<p class="feat-prerequisite"><strong>先决条件：</strong>${escapeManagerHtml(feat.prerequisite)}</p>` : ""}
           <p>${escapeManagerHtml(feat.description || "暂无效果说明").replaceAll("\n", "<br>")}</p>
+          ${feat.configuration ? `<p class="feat-configuration"><strong>角色配置：</strong>${escapeManagerHtml(feat.configuration).replaceAll("\n", "<br>")}</p>` : ""}
         </article>`,
     )
     .join("");
 }
 
+function addPresetFeat(catalogId, acquiredAtLevel = managerState.level) {
+  const preset = featCatalog.find((feat) => feat.id === catalogId);
+  if (!preset) return false;
+  if (!preset.repeatable && managerState.feats.some((feat) => feat.catalogId === catalogId)) return false;
+  managerState.feats.push({
+    id: `feat-${catalogId}-${Date.now()}`,
+    catalogId,
+    name: displayFeatName(preset),
+    source: "D&D 5e 2014 玩家手册 · DM 许可",
+    prerequisite: preset.prerequisite || "",
+    description: preset.summary,
+    configuration: preset.choiceHint ? `待设置：${preset.choiceHint}` : "",
+    acquiredAtLevel: Math.max(1, Math.min(20, Number(acquiredAtLevel) || managerState.level)),
+  });
+  saveManagerState();
+  renderFeatManager();
+  return true;
+}
+
+function renderFeatCatalogResults(dialog) {
+  const query = featFilters.search.trim().toLowerCase();
+  const matches = featCatalog.filter((feat) => {
+    const haystack = `${feat.name} ${feat.nameZh} ${feat.category} ${feat.prerequisite} ${feat.summary} ${feat.choiceHint || ""}`.toLowerCase();
+    return (!query || haystack.includes(query)) && (featFilters.category === "all" || feat.category === featFilters.category);
+  });
+  const status = dialog.querySelector("#featCatalogStatus");
+  const results = dialog.querySelector("#featCatalogResults");
+  if (!status || !results) return;
+  status.textContent = `共 ${matches.length} 个预设专长 · 2014 版 5e`;
+  results.innerHTML = matches
+    .map((feat) => {
+      const acquired = managerState.feats.some((entry) => entry.catalogId === feat.id);
+      return `
+        <article class="catalog-card feat-catalog-card">
+          <header>
+            <div class="feat-catalog-mark" aria-hidden="true">${escapeManagerHtml(feat.nameZh.slice(0, 1))}</div>
+            <div class="catalog-title">
+              <span>${escapeManagerHtml(feat.category)} · ${feat.repeatable ? "可重复选择" : "可选专长"}</span>
+              <h3>${escapeManagerHtml(displayFeatName(feat))}</h3>
+              <small>${escapeManagerHtml(feat.prerequisite ? `先决条件：${feat.prerequisite}` : "无先决条件")}</small>
+            </div>
+          </header>
+          <details><summary>规则摘要</summary><p>${escapeManagerHtml(feat.summary)}</p>${feat.choiceHint ? `<p><strong>加入后设置：</strong>${escapeManagerHtml(feat.choiceHint)}</p>` : ""}</details>
+          <footer class="catalog-actions">
+            <button class="text-button" type="button" data-add-preset-feat="${feat.id}" ${acquired && !feat.repeatable ? "disabled" : ""}>${acquired && !feat.repeatable ? "已添加" : "加入角色"}</button>
+          </footer>
+        </article>`;
+    })
+    .join("");
+}
+
+function openFeatEditor(featId) {
+  const feat = managerState.feats.find((entry) => entry.id === featId);
+  if (!feat) return;
+  const dialog = document.querySelector("#featDialog");
+  dialog.innerHTML = `
+    <form method="dialog" id="featEditorForm">
+      <div class="dialog-heading">
+        <div><p>FEAT CONFIGURATION</p><h2>设置专长</h2></div>
+        <button value="cancel" aria-label="关闭专长设置">×</button>
+      </div>
+      <div class="editor-grid">
+        <label class="wide">专长名称<input name="name" required maxlength="80" value="${escapeManagerHtml(feat.name)}" /></label>
+        <label>获得等级<input name="acquiredAtLevel" type="number" min="1" max="20" value="${Number(feat.acquiredAtLevel) || managerState.level}" /></label>
+        <label>规则来源<input name="source" maxlength="100" value="${escapeManagerHtml(feat.source || "")}" /></label>
+        <label class="wide">先决条件<input name="prerequisite" maxlength="160" value="${escapeManagerHtml(feat.prerequisite || "")}" /></label>
+        <label class="wide">角色配置<textarea name="configuration" rows="3" placeholder="记录属性、元素、法术、语言、熟练项等选择">${escapeManagerHtml(feat.configuration || "")}</textarea></label>
+        <label class="wide">效果说明<textarea name="description" rows="5" required>${escapeManagerHtml(feat.description || "")}</textarea></label>
+      </div>
+      <menu><button value="cancel" class="ghost-button">返回目录</button><button value="default" class="primary-button">保存设置</button></menu>
+    </form>`;
+  dialog.querySelectorAll('[value="cancel"]').forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
+      dialog.close();
+      openFeatDialog();
+    });
+  });
+  dialog.querySelector("#featEditorForm").addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (event.submitter?.value === "cancel") return;
+    const formData = new FormData(event.currentTarget);
+    feat.name = String(formData.get("name") || "").trim();
+    feat.source = String(formData.get("source") || "").trim();
+    feat.prerequisite = String(formData.get("prerequisite") || "").trim();
+    feat.configuration = String(formData.get("configuration") || "").trim();
+    feat.description = String(formData.get("description") || "").trim();
+    feat.acquiredAtLevel = Math.max(1, Math.min(20, Number(formData.get("acquiredAtLevel")) || managerState.level));
+    saveManagerState();
+    renderFeatManager();
+    dialog.close();
+    openFeatDialog();
+  });
+  dialog.showModal();
+}
+
 function openFeatDialog() {
   const dialog = document.querySelector("#featDialog");
   dialog.innerHTML = `
-    <form method="dialog" id="featForm">
+    <div class="feat-catalog-dialog">
       <div class="dialog-heading">
-        <div><p>OPTIONAL CHARACTER RULE</p><h2>专长设置</h2></div>
-        <button value="cancel" aria-label="关闭专长设置">×</button>
+        <div><p>OPTIONAL FEATS · 2014</p><h2>专长目录</h2></div>
+        <button type="button" data-close-feat-dialog aria-label="关闭专长设置">×</button>
       </div>
-      <p class="dialog-note">2014 版专长属于可选规则，是否可用及具体来源由 DM 决定。此处只保存角色已获得的专长，不会自动修改属性或战斗数值。</p>
+      <p class="dialog-note">选择预设即可加入角色；带有属性、元素、法术或熟练项选择的专长，加入后请点击“设置”。规则效果使用中文摘要，最终以 DM 采用的规则书为准。</p>
+      <h3 class="feat-dialog-section-title">已获得专长</h3>
       <div class="feat-dialog-list">
         ${
           managerState.feats.length
             ? managerState.feats
                 .map(
-                  (feat) => `<article><div><strong>${escapeManagerHtml(feat.name)}</strong><small>${escapeManagerHtml(feat.source || "自定义专长")} · ${Number(feat.acquiredAtLevel) || managerState.level} 级</small></div><button class="text-button danger" type="button" data-remove-feat="${feat.id}">移除</button></article>`,
+                  (feat) => `<article><div><strong>${escapeManagerHtml(feat.name)}</strong><small>${escapeManagerHtml(feat.source || "自定义专长")} · ${Number(feat.acquiredAtLevel) || managerState.level} 级</small></div><div class="feat-dialog-actions"><button class="text-button" type="button" data-edit-feat="${feat.id}">设置</button><button class="text-button danger" type="button" data-remove-feat="${feat.id}">移除</button></div></article>`,
                 )
                 .join("")
             : `<div class="feat-dialog-empty">当前没有已记录的专长。</div>`
         }
       </div>
-      <fieldset>
-        <legend>添加已获得专长</legend>
-        <div class="editor-grid">
-          <label>专长名称<input name="name" required maxlength="60" /></label>
-          <label>获得等级<input name="acquiredAtLevel" type="number" min="1" max="20" value="${managerState.level}" /></label>
-          <label class="wide">规则来源<input name="source" value="2014 可选专长 · DM 许可" maxlength="100" /></label>
-          <label class="wide">先决条件<input name="prerequisite" placeholder="没有则留空" maxlength="160" /></label>
-          <label class="wide">效果说明<textarea name="description" rows="5" required placeholder="记录该专长对角色产生的规则效果"></textarea></label>
-        </div>
-      </fieldset>
-      <menu><button value="cancel" class="ghost-button">关闭</button><button value="default" class="primary-button">保存专长</button></menu>
-    </form>`;
+      <div class="catalog-controls feat-catalog-controls">
+        <label class="search-field"><span>搜索</span><input id="featSearch" value="${escapeManagerHtml(featFilters.search)}" placeholder="名称、类别、效果或先决条件" /></label>
+        <label><span>类别</span><select id="featCategoryFilter"><option value="all">全部</option>${[...new Set(featCatalog.map((feat) => feat.category))].map((category) => `<option value="${escapeManagerHtml(category)}" ${featFilters.category === category ? "selected" : ""}>${escapeManagerHtml(category)}</option>`).join("")}</select></label>
+      </div>
+      <div class="catalog-status" id="featCatalogStatus"></div>
+      <div class="catalog-grid feat-catalog-grid" id="featCatalogResults"></div>
+      <details class="feat-custom-entry">
+        <summary>添加自定义专长</summary>
+        <form id="customFeatForm">
+          <div class="editor-grid">
+            <label>专长名称<input name="name" required maxlength="60" /></label>
+            <label>获得等级<input name="acquiredAtLevel" type="number" min="1" max="20" value="${managerState.level}" /></label>
+            <label class="wide">规则来源<input name="source" value="自定义专长 · DM 许可" maxlength="100" /></label>
+            <label class="wide">先决条件<input name="prerequisite" placeholder="没有则留空" maxlength="160" /></label>
+            <label class="wide">角色配置<textarea name="configuration" rows="3" placeholder="记录需要选择的属性、法术或熟练项"></textarea></label>
+            <label class="wide">效果说明<textarea name="description" rows="5" required placeholder="记录该专长对角色产生的规则效果"></textarea></label>
+          </div>
+          <button type="submit" class="primary-button">保存自定义专长</button>
+        </form>
+      </details>
+      <menu><button type="button" class="ghost-button" data-close-feat-dialog>关闭</button></menu>
+    </div>`;
 
-  dialog.querySelectorAll('[value="cancel"]').forEach((button) => {
-    button.addEventListener("click", (event) => {
-      event.preventDefault();
+  renderFeatCatalogResults(dialog);
+  dialog.querySelectorAll("[data-close-feat-dialog]").forEach((button) => button.addEventListener("click", () => dialog.close()));
+  dialog.querySelector("#featSearch").addEventListener("input", (event) => {
+    featFilters.search = event.target.value;
+    renderFeatCatalogResults(dialog);
+  });
+  dialog.querySelector("#featCategoryFilter").addEventListener("change", (event) => {
+    featFilters.category = event.target.value;
+    renderFeatCatalogResults(dialog);
+  });
+  dialog.querySelector("#featCatalogResults").addEventListener("click", (event) => {
+    const button = event.target.closest("[data-add-preset-feat]");
+    if (!button || !addPresetFeat(button.dataset.addPresetFeat)) return;
+    renderFeatCatalogResults(dialog);
+    dialog.close();
+    openFeatDialog();
+  });
+  dialog.querySelectorAll("[data-edit-feat]").forEach((button) => {
+    button.addEventListener("click", () => {
       dialog.close();
+      openFeatEditor(button.dataset.editFeat);
     });
   });
   dialog.querySelectorAll("[data-remove-feat]").forEach((button) => {
@@ -1171,9 +1304,8 @@ function openFeatDialog() {
       openFeatDialog();
     });
   });
-  dialog.querySelector("#featForm").addEventListener("submit", (event) => {
+  dialog.querySelector("#customFeatForm").addEventListener("submit", (event) => {
     event.preventDefault();
-    if (event.submitter?.value === "cancel") return;
     const formData = new FormData(event.currentTarget);
     managerState.feats.push({
       id: `feat-${Date.now()}`,
@@ -1181,6 +1313,7 @@ function openFeatDialog() {
       source: String(formData.get("source") || "").trim(),
       prerequisite: String(formData.get("prerequisite") || "").trim(),
       description: String(formData.get("description") || "").trim(),
+      configuration: String(formData.get("configuration") || "").trim(),
       acquiredAtLevel: Math.max(1, Math.min(20, Number(formData.get("acquiredAtLevel")) || managerState.level)),
     });
     saveManagerState();
@@ -1281,9 +1414,11 @@ function openLevelUpDialog() {
               <div id="asiAdvancementFields"><p class="field-help">选择两次 +1；选择同一属性即为该属性 +2，单项不能超过 20。</p><div class="asi-grid">${["STR", "DEX", "CON", "INT", "WIS", "CHA"].map((key) => `<label>${key}<select name="asi${key}"><option value="0">+0</option><option value="1">+1</option><option value="2">+2</option></select></label>`).join("")}</div><p class="selection-count" id="asiCount">已分配 0 / 2</p></div>
               <div class="level-feat-fields" id="featAdvancementFields" hidden>
                 <div class="editor-grid">
+                  <label class="wide">预设专长<select name="featCatalogId"><option value="">自定义专长</option>${featCatalog.map((feat) => `<option value="${feat.id}">${escapeManagerHtml(displayFeatName(feat))}${feat.prerequisite ? ` · ${escapeManagerHtml(feat.prerequisite)}` : ""}</option>`).join("")}</select></label>
                   <label>专长名称<input name="featName" maxlength="60" /></label>
                   <label>规则来源<input name="featSource" value="2014 可选专长 · DM 许可" maxlength="100" /></label>
                   <label class="wide">先决条件<input name="featPrerequisite" placeholder="没有则留空" maxlength="160" /></label>
+                  <label class="wide">角色配置<textarea name="featConfiguration" rows="3" placeholder="记录属性、元素、法术或熟练项等选择"></textarea></label>
                   <label class="wide">效果说明<textarea name="featDescription" rows="4" placeholder="记录专长产生的规则效果"></textarea></label>
                 </div>
               </div>
@@ -1327,6 +1462,15 @@ function openLevelUpDialog() {
       dialog.querySelector("#featAdvancementFields").hidden = mode !== "feat";
     };
     form.querySelectorAll('[name="advancementMode"]').forEach((input) => input.addEventListener("change", syncAdvancementMode));
+    form.querySelector('[name="featCatalogId"]').addEventListener("change", (event) => {
+      const preset = featCatalog.find((feat) => feat.id === event.target.value);
+      if (!preset) return;
+      form.querySelector('[name="featName"]').value = displayFeatName(preset);
+      form.querySelector('[name="featSource"]').value = "D&D 5e 2014 玩家手册 · DM 许可";
+      form.querySelector('[name="featPrerequisite"]').value = preset.prerequisite || "";
+      form.querySelector('[name="featDescription"]').value = preset.summary;
+      form.querySelector('[name="featConfiguration"]').value = preset.choiceHint ? `待设置：${preset.choiceHint}` : "";
+    });
     const updateAsiCount = () => {
       const total = [...form.querySelectorAll('[name^="asi"]')].reduce(
         (sum, select) => sum + Number(select.value),
@@ -1355,6 +1499,12 @@ function openLevelUpDialog() {
     if (gainsAsi) {
       const advancementMode = formData.get("advancementMode") || "asi";
       if (advancementMode === "feat") {
+        const featCatalogId = String(formData.get("featCatalogId") || "");
+        const selectedPreset = featCatalog.find((feat) => feat.id === featCatalogId);
+        if (selectedPreset && !selectedPreset.repeatable && managerState.feats.some((feat) => feat.catalogId === featCatalogId)) {
+          window.alert(`角色已经拥有专长“${displayFeatName(selectedPreset)}”。`);
+          return;
+        }
         const featName = String(formData.get("featName") || "").trim();
         const featDescription = String(formData.get("featDescription") || "").trim();
         if (!featName || !featDescription) {
@@ -1363,10 +1513,12 @@ function openLevelUpDialog() {
         }
         gainedFeat = {
           id: `feat-${Date.now()}`,
+          catalogId: featCatalogId || undefined,
           name: featName,
           source: String(formData.get("featSource") || "").trim(),
           prerequisite: String(formData.get("featPrerequisite") || "").trim(),
           description: featDescription,
+          configuration: String(formData.get("featConfiguration") || "").trim(),
           acquiredAtLevel: nextLevel,
         };
       } else {

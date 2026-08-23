@@ -1034,6 +1034,16 @@ td {
   font-weight: 400;
 }
 
+.feat-configuration {
+  border-top: 1px solid rgba(128, 115, 230, 0.22);
+  padding-top: 9px;
+  color: #c9c3ef !important;
+}
+
+.feat-configuration strong {
+  color: var(--ink);
+}
+
 .feat-prerequisite strong {
   color: var(--ink);
 }
@@ -1060,6 +1070,78 @@ td {
 .feat-dialog-list strong,
 .feat-dialog-list small {
   display: block;
+}
+
+.feat-dialog {
+  width: min(1040px, calc(100% - 28px));
+}
+
+.feat-dialog-section-title {
+  margin: 0 0 9px;
+  color: var(--gold-bright);
+  font-size: 0.78rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+}
+
+.feat-dialog-actions {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.feat-catalog-controls {
+  grid-template-columns: minmax(260px, 2fr) minmax(150px, 0.7fr);
+}
+
+.feat-catalog-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-height: min(48svh, 560px);
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.feat-catalog-card {
+  min-height: 0;
+}
+
+.feat-catalog-mark {
+  display: grid;
+  flex: 0 0 46px;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  border: 1px solid rgba(128, 115, 230, 0.48);
+  color: #d9d4ff;
+  background: radial-gradient(circle, rgba(128, 115, 230, 0.32), rgba(18, 15, 30, 0.74));
+  font-family: Georgia, serif;
+  font-size: 1.15rem;
+}
+
+.feat-catalog-card .catalog-actions button:disabled {
+  color: var(--faint);
+  cursor: default;
+  opacity: 0.66;
+}
+
+.feat-custom-entry {
+  margin-top: 18px;
+  border: 1px solid rgba(181, 150, 88, 0.24);
+  padding: 14px;
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.feat-custom-entry > summary {
+  color: var(--gold-bright);
+  cursor: pointer;
+}
+
+.feat-custom-entry form {
+  margin-top: 16px;
+}
+
+.feat-custom-entry .primary-button {
+  margin-top: 14px;
 }
 
 .feat-dialog-list small {
@@ -2487,6 +2569,15 @@ button.loadout-spell:hover {
 
   .feat-list {
     grid-template-columns: 1fr;
+  }
+
+  .feat-catalog-grid {
+    grid-template-columns: 1fr;
+    max-height: 56svh;
+  }
+
+  .feat-dialog-list article {
+    align-items: flex-start;
   }
 
   .feat-manager-heading {
