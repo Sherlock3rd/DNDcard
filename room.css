@@ -1,12 +1,15 @@
 /* Each physical object owns its artwork, hit target and caption. */
 body[data-route="portal"] { overflow: hidden; }
 .study-room { position: relative; height: 100svh; color: #eee4cf; background: #090c12; }
-.room-viewport { position: absolute; inset: 0; display: flex; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
+.room-viewport { position: absolute; inset: 0; display: flex; align-items: center; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
 .room-stage { position: relative; flex: 0 0 auto; margin-inline: auto; width: calc(100svh * 1672 / 941); height: 100svh; isolation: isolate; }
 .room-artwork { position: absolute; inset: 0; isolation: isolate; pointer-events: none; }
 .room-layer { position: absolute; inset: 0; display: block; width: 100%; height: 100%; pointer-events: none; mix-blend-mode: plus-lighter; }
 .room-hit-area { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 .room-hit-area polygon { fill: transparent; pointer-events: fill; }
+@media (min-width: 900px) {
+ .room-stage { width: min(100%, calc(100svh * 1672 / 941)); height: auto; aspect-ratio: 1672 / 941; }
+}
 .room-heading { position: absolute; inset: 0 0 auto; z-index: 10; display: flex; justify-content: space-between; align-items: center; padding: 24px 36px 50px; background: linear-gradient(#080c13e8, transparent); pointer-events: none; }
 .room-wordmark { display: flex; align-items: center; gap: 15px; text-decoration: none; color: #f3e7cd; pointer-events: auto; }
 .room-wordmark h1 { margin: 0; font: 500 clamp(24px, 2.8vw, 38px)/1.1 Georgia, serif; letter-spacing: .025em; }
