@@ -9,7 +9,7 @@
       content="甘阿·道夫 — D&D 5e 三级人类剑咏法师角色卡"
     />
     <title>DNDcard · 奥术档案馆</title>
-    <link rel="stylesheet" href="./styles.css?v=20260823-feat-catalog" />
+    <link rel="stylesheet" href="./styles.css?v=20260913-modifier-sync" />
     <link rel="stylesheet" href="./portal.css?v=20260823-iron-ring-village" />
   </head>
   <body>
@@ -63,8 +63,8 @@
               </article>
               <article>
                 <span>先攻</span>
-                <strong>+2</strong>
-                <small>敏捷</small>
+                <strong id="initiativeValue">+2</strong>
+                <small>敏捷与专长</small>
               </article>
               <article id="speedMetric">
                 <span>速度</span>
@@ -165,9 +165,9 @@
                 </div>
               </div>
               <div class="stat-row">
-                <div><span>被动察觉</span><strong>11</strong></div>
-                <div><span>被动调查</span><strong>13</strong></div>
-                <div><span>被动洞悉</span><strong>13</strong></div>
+                <div><span>被动察觉</span><strong id="passivePerceptionValue">11</strong></div>
+                <div><span>被动调查</span><strong id="passiveInvestigationValue">13</strong></div>
+                <div><span>被动洞悉</span><strong id="passiveInsightValue">13</strong></div>
               </div>
               <p class="note">
                 轻甲 AC 14；开启剑歌后 AC 17；剑歌中使用护盾术可达 AC 22。法师护甲与镶钉皮甲不能叠加。
@@ -196,9 +196,9 @@
                 <table>
                   <thead><tr><th>攻击</th><th>命中</th><th>伤害 / 效果</th></tr></thead>
                   <tbody>
-                    <tr><td>长棍</td><td>+5</td><td>1d6+3 钝击</td></tr>
-                    <tr><td>轻弩</td><td>+4</td><td>1d8+2 穿刺</td></tr>
-                    <tr><td>长剑</td><td>+5</td><td>1d8+3 挥砍 · 父亲遗物</td></tr>
+                    <tr><td>长棍</td><td id="quarterstaffAttackBonus">+5</td><td id="quarterstaffDamage">1d6+3 钝击</td></tr>
+                    <tr><td>轻弩</td><td id="crossbowAttackBonus">+4</td><td id="crossbowDamage">1d8+2 穿刺</td></tr>
+                    <tr><td>长剑</td><td id="longswordAttackBonus">+5</td><td id="longswordDamage">1d8+3 挥砍 · 父亲遗物</td></tr>
                   </tbody>
                 </table>
               </div>
@@ -367,7 +367,7 @@
           <input id="conditionInput" placeholder="例如：专注、倒地、中毒" maxlength="24" />
         </label>
         <div class="condition-presets" aria-label="常用状态">
-          <span>常用状态 · 点击即可立即添加或移除</span>
+          <span>常驻法术、增益与不利状态 · 点击立即添加或移除，规则修正会同步到角色卡</span>
           <div id="conditionPresets"></div>
         </div>
         <menu>
@@ -386,8 +386,8 @@
     <script src="./data/srd-catalog.js?v=20260823-feat-catalog"></script>
     <script src="./data/feat-catalog.js?v=20260823-feat-catalog"></script>
     <script src="./icon-map.js?v=20260823-feat-catalog"></script>
-    <script src="./app.js?v=20260823-human"></script>
-    <script src="./manager.js?v=20260823-feat-catalog"></script>
+    <script src="./app.js?v=20260913-modifier-sync"></script>
+    <script src="./manager.js?v=20260913-modifier-sync"></script>
     <script src="./portal.js?v=20260823-iron-ring-village"></script>
   </body>
 </html>

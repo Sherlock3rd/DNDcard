@@ -914,11 +914,33 @@ td {
 }
 
 .condition-chip {
+  display: inline-grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 8px;
+  align-items: center;
   padding: 8px 10px;
   border: 1px solid rgba(128, 115, 230, 0.55);
   color: #c9c2ff;
   background: rgba(128, 115, 230, 0.12);
   cursor: pointer;
+}
+
+.condition-chip strong {
+  text-align: left;
+}
+
+.condition-chip small {
+  grid-column: 1 / -1;
+  max-width: 240px;
+  color: var(--muted);
+  text-align: left;
+  line-height: 1.35;
+}
+
+.condition-chip em {
+  grid-column: 2;
+  grid-row: 1;
+  font-style: normal;
 }
 
 .condition-presets {
@@ -939,12 +961,24 @@ td {
 }
 
 .condition-presets button {
+  display: grid;
+  gap: 2px;
+  justify-items: start;
   min-height: 34px;
   border: 1px solid rgba(181, 150, 88, 0.28);
   padding: 0 10px;
   color: var(--muted);
   background: rgba(0, 0, 0, 0.28);
   cursor: pointer;
+}
+
+.condition-presets button strong {
+  color: inherit;
+}
+
+.condition-presets button small {
+  color: var(--muted);
+  font-size: 0.68rem;
 }
 
 .condition-presets button:hover,
@@ -1032,6 +1066,12 @@ td {
   margin: 12px 0 0;
   font-size: 1.05rem;
   font-weight: 400;
+}
+
+.feat-sync-summary {
+  border-left: 2px solid rgba(128, 115, 230, 0.7);
+  padding-left: 10px;
+  color: #d8d3ff;
 }
 
 .feat-configuration {

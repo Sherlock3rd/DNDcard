@@ -199,6 +199,87 @@ let spellFilters = { search: "", level: "all", school: "all", className: "all" }
 let itemFilters = { search: "", type: "all", rarity: "all" };
 let featFilters = { search: "", category: "all" };
 
+const featEffectDefinitions = {
+  actor: { abilityChoices: ["CHA"], abilityIncrease: 1 },
+  athlete: { abilityChoices: ["STR", "DEX"], abilityIncrease: 1 },
+  durable: { abilityChoices: ["CON"], abilityIncrease: 1 },
+  "heavily-armored": { abilityChoices: ["STR"], abilityIncrease: 1 },
+  "heavy-armor-master": { abilityChoices: ["STR"], abilityIncrease: 1 },
+  "keen-mind": { abilityChoices: ["INT"], abilityIncrease: 1 },
+  "lightly-armored": { abilityChoices: ["STR", "DEX"], abilityIncrease: 1 },
+  linguist: { abilityChoices: ["INT"], abilityIncrease: 1 },
+  "moderately-armored": { abilityChoices: ["STR", "DEX"], abilityIncrease: 1 },
+  observant: { abilityChoices: ["INT", "WIS"], abilityIncrease: 1, passivePerception: 5, passiveInvestigation: 5 },
+  resilient: { abilityChoices: ["STR", "DEX", "CON", "INT", "WIS", "CHA"], abilityIncrease: 1, savingThrowProficiency: true },
+  "tavern-brawler": { abilityChoices: ["STR", "CON"], abilityIncrease: 1 },
+  "weapon-master": { abilityChoices: ["STR", "DEX"], abilityIncrease: 1 },
+  alert: { initiativeBonus: 5 },
+  mobile: { speedBonus: 10 },
+};
+
+const abilityNames = { STR: "力量", DEX: "敏捷", CON: "体质", INT: "智力", WIS: "感知", CHA: "魅力" };
+
+function featEffectDefinition(feat) {
+  return featEffectDefinitions[feat?.catalogId] || null;
+}
+
+function selectedFeatAbility(feat) {
+  const definition = featEffectDefinition(feat);
+  if (!definition?.abilityChoices?.length) return null;
+  const selected = feat.effectChoices?.ability;
+  if (definition.abilityChoices.includes(selected)) return selected;
+  const configuration = String(feat.configuration || "");
+  const inferred = definition.abilityChoices.filter((key) => configuration.includes(key) || configuration.includes(abilityNames[key]));
+  if (inferred.length === 1) return inferred[0];
+  return definition.abilityChoices.length === 1 ? definition.abilityChoices[0] : null;
+}
+
+function effectiveAbilities(feats = managerState.feats) {
+  const result = { ...managerState.abilities };
+  feats.forEach((feat) => {
+    const definition = featEffectDefinition(feat);
+    const ability = selectedFeatAbility(feat);
+    if (!definition?.abilityIncrease || !ability) return;
+    result[ability] = Math.min(20, Number(result[ability] || 0) + definition.abilityIncrease);
+  });
+  return result;
+}
+
+function featDerivedBonuses(feats = managerState.feats) {
+  return feats.reduce(
+    (totals, feat) => {
+      const definition = featEffectDefinition(feat) || {};
+      totals.initiativeBonus += Number(definition.initiativeBonus || 0);
+      totals.speedBonus += Number(definition.speedBonus || 0);
+      totals.passivePerception += Number(definition.passivePerception || 0);
+      totals.passiveInvestigation += Number(definition.passiveInvestigation || 0);
+      const selectedAbility = selectedFeatAbility(feat);
+      if (definition.savingThrowProficiency && selectedAbility) totals.savingThrowProficiencies.add(selectedAbility);
+      return totals;
+    },
+    { initiativeBonus: 0, speedBonus: 0, passivePerception: 0, passiveInvestigation: 0, savingThrowProficiencies: new Set(["INT", "WIS"]) },
+  );
+}
+
+function characterDerivedState() {
+  const scores = effectiveAbilities();
+  const bonuses = featDerivedBonuses();
+  const wearingStuddedLeather = managerState.inventory.some((entry) => entry.id === "equipment-studded-leather-armor" && entry.equipped);
+  const dexMod = abilityModifier(scores.DEX);
+  return {
+    abilities: scores,
+    baseArmorClass: wearingStuddedLeather ? 12 + dexMod : 10 + dexMod,
+    wearingArmor: wearingStuddedLeather,
+    baseSpeed: 30 + bonuses.speedBonus,
+    initiativeBonus: dexMod + bonuses.initiativeBonus,
+    passivePerceptionBonus: bonuses.passivePerception,
+    passiveInvestigationBonus: bonuses.passiveInvestigation,
+    savingThrowProficiencies: [...bonuses.savingThrowProficiencies],
+  };
+}
+
+window.getCharacterDerivedState = characterDerivedState;
+
 function loadManagerState() {
   try {
     const saved = JSON.parse(localStorage.getItem("gandalf-5e-manager") || "{}");
@@ -267,7 +348,7 @@ function proficiencyForLevel(level) {
 }
 
 function maxPreparedSpells() {
-  return managerState.level + abilityModifier(managerState.abilities.INT);
+  return managerState.level + abilityModifier(effectiveAbilities().INT);
 }
 
 function preparedLeveledSpellIds() {
@@ -326,20 +407,35 @@ function findManagerItem(id) {
 function syncCharacterSheet() {
   const level = managerState.level;
   const proficiency = proficiencyForLevel(level);
-  const intMod = abilityModifier(managerState.abilities.INT);
-  const wisMod = abilityModifier(managerState.abilities.WIS);
+  const derived = characterDerivedState();
+  const conditionModifiers = window.getActiveConditionModifiers?.() || { attackDice: [], saveDice: [], checkDice: [], skillBonuses: {} };
+  const intMod = abilityModifier(derived.abilities.INT);
+  const wisMod = abilityModifier(derived.abilities.WIS);
+  const strMod = abilityModifier(derived.abilities.STR);
+  const dexMod = abilityModifier(derived.abilities.DEX);
+  const attackDice = conditionModifiers.attackDice?.length ? ` ${conditionModifiers.attackDice.map((die) => `+${die}`).join(" ")}` : "";
+  const saveDice = conditionModifiers.saveDice?.length ? ` ${conditionModifiers.saveDice.map((die) => `+${die}`).join(" ")}` : "";
 
   document.querySelector("#levelLabel").textContent = `法师 ${level}`;
   document.querySelector("#proficiencyValue").textContent = `+${proficiency}`;
   document.querySelector("#proficiencyLevel").textContent = `${level} 级`;
-  document.querySelector("#spellAttackValue").textContent = `+${proficiency + intMod}`;
+  document.querySelector("#spellAttackValue").textContent = `+${proficiency + intMod}${attackDice}`;
   document.querySelector("#spellDcValue").textContent = 8 + proficiency + intMod;
   document.querySelector("#hpMeta").textContent = `最大 ${state.maxHp} · 生命骰 ${level}d6`;
-  document.querySelector("#savingThrowLine").textContent =
-    `智力 +${intMod + proficiency}、感知 +${wisMod + proficiency}`;
+  const savingThrows = derived.savingThrowProficiencies.map((key) => `${abilityNames[key]} ${signed(abilityModifier(derived.abilities[key]) + proficiency)}${saveDice}`);
+  document.querySelector("#savingThrowLine").textContent = savingThrows.join("、");
+  document.querySelector("#longswordAttackBonus").textContent = `${signed(proficiency + strMod)}${attackDice}`;
+  document.querySelector("#quarterstaffAttackBonus").textContent = `${signed(proficiency + strMod)}${attackDice}`;
+  document.querySelector("#crossbowAttackBonus").textContent = `${signed(proficiency + dexMod)}${attackDice}`;
+  document.querySelector("#longswordDamage").textContent = `1d8${signed(strMod)} 挥砍 · 父亲遗物`;
+  document.querySelector("#quarterstaffDamage").textContent = `1d6${signed(strMod)} 钝击`;
+  document.querySelector("#crossbowDamage").textContent = `1d8${signed(dexMod)} 穿刺`;
+  document.querySelector("#passivePerceptionValue").textContent = 10 + wisMod + derived.passivePerceptionBonus;
+  document.querySelector("#passiveInvestigationValue").textContent = 10 + intMod + derived.passiveInvestigationBonus;
+  document.querySelector("#passiveInsightValue").textContent = 10 + wisMod + proficiency;
 
   abilities.forEach((ability) => {
-    const score = managerState.abilities[ability.key];
+    const score = derived.abilities[ability.key];
     const mod = abilityModifier(score);
     ability.score = score;
     ability.mod = mod;
@@ -350,6 +446,8 @@ function syncCharacterSheet() {
   renderState();
   renderManagerSlots();
 }
+
+window.syncCharacterSheet = syncCharacterSheet;
 
 function renderManagerSlots() {
   const slots = wizardSlotTable[managerState.level];
@@ -798,7 +896,7 @@ function renderInventorySummary() {
       <div><span>条目</span><strong>${entries.length}</strong></div>
       <div><span>总重量</span><strong>${totalWeight.toFixed(1)} 磅</strong></div>
       <div><span>已装备</span><strong>${entries.filter((entry) => entry.equipped).length}</strong></div>
-      <div><span>负重上限</span><strong>${managerState.abilities.STR * 15} 磅</strong></div>
+      <div><span>负重上限</span><strong>${effectiveAbilities().STR * 15} 磅</strong></div>
     </div>`;
 }
 
@@ -1001,6 +1099,7 @@ function removeItemFromInventory(id) {
   }
   managerState.inventory = managerState.inventory.filter((entry) => entry.id !== id);
   saveManagerState();
+  syncCharacterSheet();
   renderInventoryManager();
 }
 
@@ -1110,6 +1209,21 @@ function deleteCustomItem(id) {
   if (location.hash === "#item-library" && typeof renderItemLibrary === "function") renderItemLibrary();
 }
 
+function featSyncSummary(feat) {
+  const definition = featEffectDefinition(feat);
+  if (!definition) return "";
+  const parts = [];
+  const ability = selectedFeatAbility(feat);
+  if (definition.abilityIncrease && ability) parts.push(`${abilityNames[ability]} +${definition.abilityIncrease}`);
+  if (definition.abilityIncrease && !ability) parts.push("属性选择待设置");
+  if (definition.initiativeBonus) parts.push(`先攻 +${definition.initiativeBonus}`);
+  if (definition.speedBonus) parts.push(`速度 +${definition.speedBonus} 尺`);
+  if (definition.passivePerception) parts.push(`被动察觉 +${definition.passivePerception}`);
+  if (definition.passiveInvestigation) parts.push(`被动调查 +${definition.passiveInvestigation}`);
+  if (definition.savingThrowProficiency && ability) parts.push(`${abilityNames[ability]}豁免熟练`);
+  return parts.join(" · ");
+}
+
 function renderFeatManager() {
   const list = document.querySelector("#featList");
   if (!managerState.feats.length) {
@@ -1124,6 +1238,7 @@ function renderFeatManager() {
           <h4>${escapeManagerHtml(feat.name)}</h4>
           ${feat.prerequisite ? `<p class="feat-prerequisite"><strong>先决条件：</strong>${escapeManagerHtml(feat.prerequisite)}</p>` : ""}
           <p>${escapeManagerHtml(feat.description || "暂无效果说明").replaceAll("\n", "<br>")}</p>
+          ${featSyncSummary(feat) ? `<p class="feat-sync-summary"><strong>已同步：</strong>${escapeManagerHtml(featSyncSummary(feat))}</p>` : ""}
           ${feat.configuration ? `<p class="feat-configuration"><strong>角色配置：</strong>${escapeManagerHtml(feat.configuration).replaceAll("\n", "<br>")}</p>` : ""}
         </article>`,
     )
@@ -1134,7 +1249,8 @@ function addPresetFeat(catalogId, acquiredAtLevel = managerState.level) {
   const preset = featCatalog.find((feat) => feat.id === catalogId);
   if (!preset) return false;
   if (!preset.repeatable && managerState.feats.some((feat) => feat.catalogId === catalogId)) return false;
-  managerState.feats.push({
+  const definition = featEffectDefinitions[catalogId];
+  const addedFeat = {
     id: `feat-${catalogId}-${Date.now()}`,
     catalogId,
     name: displayFeatName(preset),
@@ -1142,11 +1258,14 @@ function addPresetFeat(catalogId, acquiredAtLevel = managerState.level) {
     prerequisite: preset.prerequisite || "",
     description: preset.summary,
     configuration: preset.choiceHint ? `待设置：${preset.choiceHint}` : "",
+    effectChoices: definition?.abilityChoices?.length === 1 ? { ability: definition.abilityChoices[0] } : {},
     acquiredAtLevel: Math.max(1, Math.min(20, Number(acquiredAtLevel) || managerState.level)),
-  });
+  };
+  managerState.feats.push(addedFeat);
   saveManagerState();
+  syncCharacterSheet();
   renderFeatManager();
-  return true;
+  return addedFeat;
 }
 
 function renderFeatCatalogResults(dialog) {
@@ -1184,6 +1303,9 @@ function renderFeatCatalogResults(dialog) {
 function openFeatEditor(featId) {
   const feat = managerState.feats.find((entry) => entry.id === featId);
   if (!feat) return;
+  const effectDefinition = featEffectDefinition(feat);
+  const abilityOptions = effectDefinition?.abilityChoices || [];
+  const selectedAbility = selectedFeatAbility(feat) || "";
   const dialog = document.querySelector("#featDialog");
   dialog.innerHTML = `
     <form method="dialog" id="featEditorForm">
@@ -1196,6 +1318,7 @@ function openFeatEditor(featId) {
         <label>获得等级<input name="acquiredAtLevel" type="number" min="1" max="20" value="${Number(feat.acquiredAtLevel) || managerState.level}" /></label>
         <label>规则来源<input name="source" maxlength="100" value="${escapeManagerHtml(feat.source || "")}" /></label>
         <label class="wide">先决条件<input name="prerequisite" maxlength="160" value="${escapeManagerHtml(feat.prerequisite || "")}" /></label>
+        ${abilityOptions.length ? `<label class="wide">属性加成<select name="effectAbility" required><option value="">请选择</option>${abilityOptions.map((key) => `<option value="${key}" ${selectedAbility === key ? "selected" : ""}>${abilityNames[key]} +${effectDefinition.abilityIncrease}</option>`).join("")}</select><small>保存后立即同步属性、技能、豁免、法术与其他派生值。</small></label>` : ""}
         <label class="wide">角色配置<textarea name="configuration" rows="3" placeholder="记录属性、元素、法术、语言、熟练项等选择">${escapeManagerHtml(feat.configuration || "")}</textarea></label>
         <label class="wide">效果说明<textarea name="description" rows="5" required>${escapeManagerHtml(feat.description || "")}</textarea></label>
       </div>
@@ -1217,8 +1340,10 @@ function openFeatEditor(featId) {
     feat.prerequisite = String(formData.get("prerequisite") || "").trim();
     feat.configuration = String(formData.get("configuration") || "").trim();
     feat.description = String(formData.get("description") || "").trim();
+    if (abilityOptions.length) feat.effectChoices = { ...(feat.effectChoices || {}), ability: String(formData.get("effectAbility") || "") };
     feat.acquiredAtLevel = Math.max(1, Math.min(20, Number(formData.get("acquiredAtLevel")) || managerState.level));
     saveManagerState();
+    syncCharacterSheet();
     renderFeatManager();
     dialog.close();
     openFeatDialog();
@@ -1282,10 +1407,14 @@ function openFeatDialog() {
   });
   dialog.querySelector("#featCatalogResults").addEventListener("click", (event) => {
     const button = event.target.closest("[data-add-preset-feat]");
-    if (!button || !addPresetFeat(button.dataset.addPresetFeat)) return;
+    if (!button) return;
+    const addedFeat = addPresetFeat(button.dataset.addPresetFeat);
+    if (!addedFeat) return;
     renderFeatCatalogResults(dialog);
     dialog.close();
-    openFeatDialog();
+    const definition = featEffectDefinition(addedFeat);
+    if (definition?.abilityChoices?.length > 1) openFeatEditor(addedFeat.id);
+    else openFeatDialog();
   });
   dialog.querySelectorAll("[data-edit-feat]").forEach((button) => {
     button.addEventListener("click", () => {
@@ -1299,6 +1428,7 @@ function openFeatDialog() {
       if (!feat || !window.confirm(`确定移除专长“${feat.name}”吗？`)) return;
       managerState.feats = managerState.feats.filter((entry) => entry.id !== feat.id);
       saveManagerState();
+      syncCharacterSheet();
       renderFeatManager();
       dialog.close();
       openFeatDialog();
@@ -1342,7 +1472,7 @@ function openLevelUpDialog() {
   }
   const dialog = document.querySelector("#levelUpDialog");
   const nextLevel = managerState.level + 1;
-  const conMod = abilityModifier(managerState.abilities.CON);
+  const conMod = abilityModifier(effectiveAbilities().CON);
   const averageGain = 4 + conMod;
   const newMaxSpellLevel = maxSpellLevel(nextLevel);
   const eligibleSpells = allManagerSpells()
@@ -1375,7 +1505,7 @@ function openLevelUpDialog() {
       <div class="level-summary-banner">
         <span>熟练 +${proficiencyForLevel(nextLevel)}</span>
         <span>最高 ${newMaxSpellLevel} 环</span>
-        <span>准备上限 ${nextLevel + abilityModifier(managerState.abilities.INT)}</span>
+        <span>准备上限 ${nextLevel + abilityModifier(effectiveAbilities().INT)}</span>
       </div>
       <fieldset>
         <legend>生命值成长</legend>
@@ -1418,6 +1548,7 @@ function openLevelUpDialog() {
                   <label>专长名称<input name="featName" maxlength="60" /></label>
                   <label>规则来源<input name="featSource" value="2014 可选专长 · DM 许可" maxlength="100" /></label>
                   <label class="wide">先决条件<input name="featPrerequisite" placeholder="没有则留空" maxlength="160" /></label>
+                  <label class="wide" id="featEffectAbilityField" hidden>属性加成<select name="featEffectAbility"><option value="">该专长没有属性加成</option></select><small>所选属性会在升级完成后立即同步到角色卡和所有派生值。</small></label>
                   <label class="wide">角色配置<textarea name="featConfiguration" rows="3" placeholder="记录属性、元素、法术或熟练项等选择"></textarea></label>
                   <label class="wide">效果说明<textarea name="featDescription" rows="4" placeholder="记录专长产生的规则效果"></textarea></label>
                 </div>
@@ -1464,6 +1595,15 @@ function openLevelUpDialog() {
     form.querySelectorAll('[name="advancementMode"]').forEach((input) => input.addEventListener("change", syncAdvancementMode));
     form.querySelector('[name="featCatalogId"]').addEventListener("change", (event) => {
       const preset = featCatalog.find((feat) => feat.id === event.target.value);
+      const effectAbilityField = form.querySelector("#featEffectAbilityField");
+      const effectAbilitySelect = form.querySelector('[name="featEffectAbility"]');
+      const definition = featEffectDefinitions[event.target.value];
+      const abilityChoices = definition?.abilityChoices || [];
+      effectAbilityField.hidden = !abilityChoices.length;
+      effectAbilitySelect.required = abilityChoices.length > 0;
+      effectAbilitySelect.innerHTML = abilityChoices.length
+        ? `<option value="">请选择</option>${abilityChoices.map((key) => `<option value="${key}" ${abilityChoices.length === 1 ? "selected" : ""}>${abilityNames[key]} +${definition.abilityIncrease}</option>`).join("")}`
+        : `<option value="">该专长没有属性加成</option>`;
       if (!preset) return;
       form.querySelector('[name="featName"]').value = displayFeatName(preset);
       form.querySelector('[name="featSource"]').value = "D&D 5e 2014 玩家手册 · DM 许可";
@@ -1495,6 +1635,7 @@ function openLevelUpDialog() {
     }
 
     const oldAbilities = { ...managerState.abilities };
+    const oldEffectiveAbilities = effectiveAbilities();
     let gainedFeat = null;
     if (gainsAsi) {
       const advancementMode = formData.get("advancementMode") || "asi";
@@ -1519,6 +1660,7 @@ function openLevelUpDialog() {
           prerequisite: String(formData.get("featPrerequisite") || "").trim(),
           description: featDescription,
           configuration: String(formData.get("featConfiguration") || "").trim(),
+          effectChoices: formData.get("featEffectAbility") ? { ability: String(formData.get("featEffectAbility")) } : {},
           acquiredAtLevel: nextLevel,
         };
       } else {
@@ -1543,9 +1685,11 @@ function openLevelUpDialog() {
 
     const hpMode = formData.get("hpMode");
     const rolled = Math.max(1, Math.min(6, Number(formData.get("hpRoll") || 4)));
-    const baseGain = (hpMode === "roll" ? rolled : 4) + abilityModifier(oldAbilities.CON);
+    const prospectiveFeats = gainedFeat ? [...managerState.feats, gainedFeat] : managerState.feats;
+    const nextEffectiveAbilities = effectiveAbilities(prospectiveFeats);
+    const baseGain = (hpMode === "roll" ? rolled : 4) + abilityModifier(oldEffectiveAbilities.CON);
     const conRetroactive =
-      (abilityModifier(managerState.abilities.CON) - abilityModifier(oldAbilities.CON)) * nextLevel;
+      (abilityModifier(nextEffectiveAbilities.CON) - abilityModifier(oldEffectiveAbilities.CON)) * nextLevel;
     const hpGain = baseGain + conRetroactive;
 
     const oldSlots = wizardSlotTable[managerState.level];
@@ -1634,6 +1778,7 @@ document.addEventListener("click", (event) => {
     if (entry) {
       entry.equipped = !entry.equipped;
       saveManagerState();
+      syncCharacterSheet();
       renderInventoryManager();
     }
   }

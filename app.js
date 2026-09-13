@@ -260,15 +260,93 @@ const defaults = {
   conditions: [],
 };
 
-const commonConditions = [
-  "专注", "目盲", "魅惑", "耳聋", "恐慌", "擒抱", "失能",
-  "隐形", "麻痹", "石化", "中毒", "倒地", "束缚", "震慑", "昏迷",
+const conditionCatalog = [
+  { id: "concentrating", name: "专注", category: "通用", effect: "正在维持一个专注法术" },
+  { id: "bless", name: "祝福术", category: "法术增益", effect: "攻击检定与豁免 +1d4", modifiers: { attackDice: ["1d4"], saveDice: ["1d4"] } },
+  { id: "guidance", name: "神导术", category: "法术增益", effect: "一次属性检定 +1d4", modifiers: { checkDice: ["1d4"] } },
+  { id: "resistance", name: "抗力术", category: "法术增益", effect: "一次豁免 +1d4", modifiers: { saveDice: ["1d4"] } },
+  { id: "mage-armor", name: "法师护甲", category: "防护法术", effect: "未穿护甲时基础 AC = 13 + 敏捷", modifiers: { unarmoredBaseAc: 13 } },
+  { id: "shield", name: "护盾术", category: "防护法术", effect: "AC +5，持续至下回合开始", modifiers: { acBonus: 5 } },
+  { id: "mirror-image", name: "镜影术", category: "防护法术", effect: "三道镜像转移攻击，不直接改变 AC" },
+  { id: "shield-of-faith", name: "虔诚护盾", category: "防护法术", effect: "AC +2（专注）", modifiers: { acBonus: 2 } },
+  { id: "haste", name: "加速术", category: "法术增益", effect: "AC +2、速度翻倍、敏捷豁免优势", modifiers: { acBonus: 2, speedMultiplier: 2, advantages: ["敏捷豁免"] } },
+  { id: "longstrider", name: "大步奔行", category: "法术增益", effect: "速度 +10 尺", modifiers: { speedBonus: 10 } },
+  { id: "aid", name: "援助术", category: "法术增益", effect: "生命上限与当前生命提高，数值按施法环位记录" },
+  { id: "heroism", name: "英雄气概", category: "法术增益", effect: "免疫恐慌，并在每回合获得临时生命（专注）" },
+  { id: "protection-evil-good", name: "防护善恶", category: "防护法术", effect: "指定生物类型攻击劣势，且更难魅惑、恐慌或附身" },
+  { id: "invisibility", name: "隐形术", category: "法术增益", effect: "隐形；攻击或施法后通常结束（专注）" },
+  { id: "greater-invisibility", name: "高等隐形术", category: "法术增益", effect: "隐形且攻击、施法不结束（专注）" },
+  { id: "fly", name: "飞行术", category: "移动法术", effect: "获得 60 尺飞行速度（专注）" },
+  { id: "darkvision", name: "黑暗视觉", category: "感官法术", effect: "获得 60 尺黑暗视觉" },
+  { id: "see-invisibility", name: "识破隐形", category: "感官法术", effect: "看见隐形生物及以太位面" },
+  { id: "death-ward", name: "防死结界", category: "防护法术", effect: "首次降至 0 生命时改为 1，或抵消一次即死效果" },
+  { id: "freedom-of-movement", name: "行动自如", category: "移动法术", effect: "忽略困难地形及多种束缚移动的效果" },
+  { id: "pass-without-trace", name: "行踪无迹", category: "法术增益", effect: "隐匿检定 +10（专注）", modifiers: { skillBonuses: { 隐匿: 10 } } },
+  { id: "enhance-ability", name: "强化属性", category: "法术增益", effect: "所选属性检定具有优势（专注）" },
+  { id: "bardic-inspiration", name: "吟游激励 d6", category: "其他增益", effect: "一次属性检定、攻击或豁免可追加 1d6" },
+  { id: "blinded", name: "目盲", category: "不利状态", effect: "攻击具有劣势；针对你的攻击具有优势" },
+  { id: "charmed", name: "魅惑", category: "不利状态", effect: "不能攻击魅惑者，魅惑者对你的社交检定具有优势" },
+  { id: "deafened", name: "耳聋", category: "不利状态", effect: "自动失败依赖听觉的检定" },
+  { id: "frightened", name: "恐慌", category: "不利状态", effect: "看见恐惧源时检定与攻击劣势，且不能主动接近" },
+  { id: "grappled", name: "擒抱", category: "不利状态", effect: "速度变为 0" },
+  { id: "incapacitated", name: "失能", category: "不利状态", effect: "不能执行动作或反应" },
+  { id: "paralyzed", name: "麻痹", category: "不利状态", effect: "失能、不能移动；力量与敏捷豁免自动失败" },
+  { id: "petrified", name: "石化", category: "不利状态", effect: "失能、不能移动，并获得多项抗性与豁免变化" },
+  { id: "poisoned", name: "中毒", category: "不利状态", effect: "攻击检定与属性检定具有劣势" },
+  { id: "prone", name: "倒地", category: "不利状态", effect: "移动需爬行；攻击劣势，近战攻击者通常具有优势" },
+  { id: "restrained", name: "束缚", category: "不利状态", effect: "速度为 0；攻击劣势，针对你的攻击具有优势" },
+  { id: "stunned", name: "震慑", category: "不利状态", effect: "失能；力量与敏捷豁免自动失败" },
+  { id: "unconscious", name: "昏迷", category: "不利状态", effect: "失能、倒地且无法感知周围" },
 ];
+
+const conditionById = new Map(conditionCatalog.map((condition) => [condition.id, condition]));
+const conditionByName = new Map(conditionCatalog.map((condition) => [condition.name, condition]));
+
+function resolveCondition(value) {
+  const raw = typeof value === "object" && value ? value.id || value.name : value;
+  const key = String(raw || "").replace(/^preset:/, "").trim();
+  return conditionById.get(key) || conditionByName.get(key) || { id: `custom:${key}`, name: key, category: "自定义", effect: "自定义状态，未设置自动修正" };
+}
+
+function activeConditionModifiers() {
+  const combined = {
+    acBonus: 0,
+    speedBonus: 0,
+    speedMultiplier: 1,
+    unarmoredBaseAc: null,
+    attackDice: [],
+    saveDice: [],
+    checkDice: [],
+    skillBonuses: {},
+    advantages: [],
+  };
+  state.conditions.map(resolveCondition).forEach((condition) => {
+    const modifiers = condition.modifiers || {};
+    combined.acBonus += Number(modifiers.acBonus || 0);
+    combined.speedBonus += Number(modifiers.speedBonus || 0);
+    combined.speedMultiplier *= Number(modifiers.speedMultiplier || 1);
+    if (Number.isFinite(modifiers.unarmoredBaseAc)) combined.unarmoredBaseAc = Math.max(combined.unarmoredBaseAc || 0, modifiers.unarmoredBaseAc);
+    combined.attackDice.push(...(modifiers.attackDice || []));
+    combined.saveDice.push(...(modifiers.saveDice || []));
+    combined.checkDice.push(...(modifiers.checkDice || []));
+    combined.advantages.push(...(modifiers.advantages || []));
+    Object.entries(modifiers.skillBonuses || {}).forEach(([skill, bonus]) => {
+      combined.skillBonuses[skill] = (combined.skillBonuses[skill] || 0) + Number(bonus || 0);
+    });
+  });
+  return combined;
+}
+
+window.getActiveConditionModifiers = activeConditionModifiers;
 
 let state = loadState();
 
 function signed(value) {
   return value >= 0 ? `+${value}` : `${value}`;
+}
+
+function diceSuffix(dice) {
+  return dice?.length ? ` ${dice.map((value) => `+${value}`).join(" ")}` : "";
 }
 
 function loadState() {
@@ -278,7 +356,11 @@ function loadState() {
       ...defaults,
       ...saved,
       conditions: Array.isArray(saved.conditions)
-        ? [...new Set(saved.conditions.map((condition) => String(condition).trim()).filter(Boolean))]
+        ? saved.conditions
+            .map((condition) => (typeof condition === "object" && condition ? condition.id || condition.name : condition))
+            .map((condition) => String(condition || "").trim())
+            .filter(Boolean)
+            .filter((condition, index, entries) => entries.findIndex((entry) => resolveCondition(entry).id === resolveCondition(condition).id) === index)
         : [],
     };
   } catch {
@@ -297,6 +379,7 @@ function saveState() {
 }
 
 function renderAbilities() {
+  const conditionModifiers = activeConditionModifiers();
   document.querySelector("#abilityGrid").innerHTML = abilities
     .map(
       (ability) => `
@@ -308,11 +391,13 @@ function renderAbilities() {
             ability.skills.length
               ? `<ul>${ability.skills
                   .map(
-                    (skill) =>
-                      `<li class="${skill.proficient ? "proficient" : ""}" ${skill.name === "杂技" ? 'id="acrobaticsSkill"' : ""}>${skill.name} ${signed(skill.value)}${skill.name === "杂技" && state.bladesongActive ? " · 优势" : ""}</li>`,
+                    (skill) => {
+                      const statusBonus = Number(conditionModifiers.skillBonuses[skill.name] || 0);
+                      return `<li class="${skill.proficient ? "proficient" : ""}" ${skill.name === "杂技" ? 'id="acrobaticsSkill"' : ""}>${skill.name} ${signed(skill.value + statusBonus)}${diceSuffix(conditionModifiers.checkDice)}${skill.name === "杂技" && state.bladesongActive ? " · 优势" : ""}</li>`;
+                    },
                   )
                   .join("")}</ul>`
-              : `<ul><li>体质检定 ${signed(ability.mod)}</li></ul>`
+              : `<ul><li>体质检定 ${signed(ability.mod)}${diceSuffix(conditionModifiers.checkDice)}</li></ul>`
           }
         </article>
       `,
@@ -368,21 +453,34 @@ function renderSpells(filter = "all") {
 function renderState() {
   const intMod = abilities.find((ability) => ability.key === "INT")?.mod ?? 0;
   const conMod = abilities.find((ability) => ability.key === "CON")?.mod ?? 0;
-  const armorClass = 14 + (state.bladesongActive ? intMod : 0);
-  const speed = 30 + (state.bladesongActive ? 10 : 0);
+  const dexMod = abilities.find((ability) => ability.key === "DEX")?.mod ?? 0;
+  const derived = window.getCharacterDerivedState?.() || { baseArmorClass: 14, baseSpeed: 30, wearingArmor: true, initiativeBonus: dexMod };
+  const conditionModifiers = activeConditionModifiers();
+  const mageArmorClass = conditionModifiers.unarmoredBaseAc && !derived.wearingArmor
+    ? conditionModifiers.unarmoredBaseAc + dexMod
+    : 0;
+  const baseArmorClass = Math.max(Number(derived.baseArmorClass || 10 + dexMod), mageArmorClass);
+  const armorClass = baseArmorClass + conditionModifiers.acBonus + (state.bladesongActive ? intMod : 0);
+  const speed = (Number(derived.baseSpeed || 30) + conditionModifiers.speedBonus + (state.bladesongActive ? 10 : 0)) * conditionModifiers.speedMultiplier;
   const concentrationSave = conMod + (state.bladesongActive ? intMod : 0);
   document.querySelector("#hpValue").value = state.hp;
   document.querySelector("#tempHpValue").value = state.tempHp;
   document.querySelector("#bladesongUses").value = state.bladesongUses;
   document.querySelector("#armorClassValue").textContent = armorClass;
-  document.querySelector("#armorClassMeta").textContent = state.bladesongActive ? `剑歌中 · 智力 +${intMod}` : `轻甲 · 剑歌 ${14 + intMod}`;
+  const armorSources = [];
+  if (conditionModifiers.unarmoredBaseAc) armorSources.push(derived.wearingArmor ? "法师护甲未生效（正穿护甲）" : "法师护甲");
+  if (conditionModifiers.acBonus) armorSources.push(`状态 +${conditionModifiers.acBonus}`);
+  if (state.bladesongActive) armorSources.push(`剑歌 +${intMod}`);
+  document.querySelector("#armorClassMeta").textContent = armorSources.join(" · ") || `${derived.wearingArmor ? "轻甲" : "基础防护"} · 剑歌 ${baseArmorClass + intMod}`;
+  const initiativeValue = document.querySelector("#initiativeValue");
+  if (initiativeValue) initiativeValue.textContent = signed(Number(derived.initiativeBonus ?? dexMod));
   document.querySelector("#speedValue").textContent = speed;
   document.querySelector("#speedMeta").textContent = state.bladesongActive ? "尺 · 剑歌 +10" : "尺";
-  document.querySelector("#bladesongStatus").textContent = state.bladesongActive ? `剑歌进行中 · AC ${armorClass}` : "未开启 · 基础 AC 14";
+  document.querySelector("#bladesongStatus").textContent = state.bladesongActive ? `剑歌进行中 · AC ${armorClass}` : `未开启 · 当前 AC ${armorClass}`;
   document.querySelector("#bladesongAcEffect").textContent = `AC ${armorClass}`;
   document.querySelector("#bladesongSpeedEffect").textContent = `速度 ${speed} 尺`;
   document.querySelector("#bladesongAcrobaticsEffect").textContent = state.bladesongActive ? "杂技检定优势" : "杂技正常";
-  document.querySelector("#bladesongConcentrationEffect").textContent = `专注豁免 ${signed(concentrationSave)}${state.bladesongActive ? `（剑歌 +${intMod}）` : ""}`;
+  document.querySelector("#bladesongConcentrationEffect").textContent = `专注豁免 ${signed(concentrationSave)}${diceSuffix(conditionModifiers.saveDice)}${state.bladesongActive ? `（剑歌 +${intMod}）` : ""}`;
   const bladesongButton = document.querySelector("#toggleBladesong");
   bladesongButton.textContent = state.bladesongActive ? "结束剑歌" : "开启剑歌";
   bladesongButton.setAttribute("aria-pressed", String(state.bladesongActive));
@@ -408,13 +506,19 @@ function renderSlots(key, max) {
 function renderConditions() {
   const conditionMarkup = state.conditions
     .map((condition, index) => {
-      const escaped = String(condition)
+      const resolved = resolveCondition(condition);
+      const escaped = String(resolved.name)
         .replaceAll("&", "&amp;")
         .replaceAll("<", "&lt;")
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
-      return `<button class="condition-chip" type="button" data-condition-index="${index}" title="点击移除 ${escaped}">${escaped} ×</button>`;
+      const effect = String(resolved.effect || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
+      return `<button class="condition-chip" type="button" data-condition-index="${index}" title="${effect || `点击移除 ${escaped}`}"><strong>${escaped}</strong>${effect ? `<small>${effect}</small>` : ""}<em>×</em></button>`;
     })
     .join("");
   document.querySelector("#conditionList").innerHTML = conditionMarkup;
@@ -440,13 +544,18 @@ function renderHeroState() {
 
 window.renderHeroState = renderHeroState;
 
+function refreshCharacterSheet() {
+  if (typeof window.syncCharacterSheet === "function") window.syncCharacterSheet();
+  else renderState();
+}
+
 function renderConditionPresets() {
   const container = document.querySelector("#conditionPresets");
   if (!container) return;
-  container.innerHTML = commonConditions
+  container.innerHTML = conditionCatalog
     .map(
       (condition) =>
-        `<button class="${state.conditions.includes(condition) ? "active" : ""}" type="button" data-condition-preset="${condition}">${condition}</button>`,
+        `<button class="${state.conditions.some((entry) => resolveCondition(entry).id === condition.id) ? "active" : ""}" type="button" data-condition-preset="${condition.id}" title="${condition.effect}"><strong>${condition.name}</strong><small>${condition.category}</small></button>`,
     )
     .join("");
 }
@@ -474,19 +583,19 @@ document.addEventListener("click", (event) => {
   const condition = event.target.closest("[data-condition-index]");
   if (condition) {
     state.conditions.splice(Number(condition.dataset.conditionIndex), 1);
-    renderConditions();
+    refreshCharacterSheet();
     saveState();
   }
 
   const preset = event.target.closest("[data-condition-preset]");
   if (preset) {
-    const value = preset.dataset.conditionPreset;
-    if (state.conditions.includes(value)) {
-      state.conditions = state.conditions.filter((conditionName) => conditionName !== value);
+    const id = preset.dataset.conditionPreset;
+    if (state.conditions.some((entry) => resolveCondition(entry).id === id)) {
+      state.conditions = state.conditions.filter((entry) => resolveCondition(entry).id !== id);
     } else {
-      state.conditions.push(value);
+      state.conditions.push(`preset:${id}`);
     }
-    renderConditions();
+    refreshCharacterSheet();
     saveState();
   }
 });
@@ -495,7 +604,7 @@ document.querySelector("#toggleBladesong").addEventListener("click", () => {
   if (!state.bladesongActive && state.bladesongUses <= 0) return;
   if (!state.bladesongActive) state.bladesongUses -= 1;
   state.bladesongActive = !state.bladesongActive;
-  renderState();
+  refreshCharacterSheet();
   saveState();
 });
 
@@ -509,7 +618,7 @@ document.querySelector("#longRest").addEventListener("click", () => {
     state[key] = max;
   });
   state.conditions = [];
-  renderState();
+  refreshCharacterSheet();
   saveState();
 });
 
@@ -520,7 +629,7 @@ document.querySelector("#resetButton").addEventListener("click", () => {
   Object.entries(window.currentSlotMaximums || { slot1: 4, slot2: 2 }).forEach(([key, max]) => {
     state[key] = max;
   });
-  renderState();
+  refreshCharacterSheet();
   saveState();
 });
 
@@ -544,8 +653,10 @@ document.querySelector("#addCondition").addEventListener("click", (event) => {
     input.focus();
     return;
   }
-  if (!state.conditions.includes(value)) state.conditions.push(value);
-  renderConditions();
+  const preset = conditionByName.get(value);
+  const storedValue = preset ? `preset:${preset.id}` : value;
+  if (!state.conditions.some((entry) => resolveCondition(entry).id === resolveCondition(storedValue).id)) state.conditions.push(storedValue);
+  refreshCharacterSheet();
   saveState();
 });
 
