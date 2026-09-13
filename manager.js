@@ -1141,7 +1141,7 @@ function openItemEditor(id = null) {
         <label>子类别<input name="category" value="${escapeManagerHtml(item?.category || "")}" /></label>
         <label>稀有度<input name="rarity" value="${escapeManagerHtml(item?.rarity || "Common")}" /></label>
         <label>价值<input name="cost" value="${escapeManagerHtml(item?.cost || "")}" /></label>
-        <label>重量（磅）<input name="weight" type="number" min="0" step="0.1" value="${Number(item?.weight || 0)}" /></label>
+        <label>重量（磅）<input name="weight" type="number" min="0" step="any" value="${Number(item?.weight || 0)}" /></label>
         <label class="check-label"><input type="checkbox" name="magic" ${item?.magic ? "checked" : ""} /> 魔法物品</label>
       </div></details>
       <p class="item-form-hint">保存到本浏览器的道具资料库；可在角色装备页添加到背包。图片与说明一并保存，不自动改变角色数值。</p>
