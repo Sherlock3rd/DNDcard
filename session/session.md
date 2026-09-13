@@ -4,7 +4,7 @@
 
 - 项目名称：DNDcard
 - 项目目标：提供基于 D&D 5e 的角色创建、保存、读取与当前状态查看能力。
-- 当前阶段：基础规则框架与代码仓库初始化。
+- 当前阶段：角色卡与资料库已上线，接入 Supabase 私有云端存档。
 - 源仓库：`https://github.com/Sherlock3rd/DNDcard`
 
 ## 当前全局状态
@@ -88,6 +88,18 @@
 
 ## 下一步
 
-1. 补充登录和云端持久化存储。
+1. 由用户完成真实邮箱确认与跨设备账号登录验收。
 2. 接入 GPT 角色创建流程，并将新角色加入现有角色入口。
 3. 评估 DM / 队友共享与同步权限。
+
+## 2026-09-13 Supabase 接入与部署续作
+
+- 克隆 `Sherlock3rd/DNDcard` 的 `main` 到 `D:\gameDesign\DNDcard`，基线提交 `b8c9ac4`。用户明确本次服务器目标为 Supabase。
+- 读取此前“更新到GitHub”任务，沿用用户已确认并要求执行的邮箱密码登录、本人私有存档、完整角色与战斗状态同步、冲突保留副本及首次导入方案。
+- 确认项目 `yvqpqnoqvckivouzylqk` 健康，已有 `character_saves`、`character_save_history`、`save_character` RPC 与两条迁移。此次复用后端，不重建数据表；将已部署迁移按原版本和原内容导出到 `supabase/migrations/`。
+- 新增 `cloud-config.js`、`cloud-sync-core.js`、`cloud-sync.js`、`cloud-sync.css` 和固定版本的浏览器 Supabase SDK。主页及设置新增账号入口，支持注册/登录、首次导入确认、自动同步、断网待传、账号缓存隔离、冲突选择及副本下载。读取新版本时等待正在编辑的弹窗关闭。
+- 原角色规则、计算公式、localStorage 键和完整快照格式未变。云端配置仅包含公开 publishable key，没有 service_role/secret key。用户真实浏览器存档未被读取或操作。
+- 新增固定依赖与锁文件、SDK 打包脚本、本地预览脚本和 11 项同步/页面集成测试；既有图标、专长、修正值、物品编辑、设置和升级确认检查通过。修正已有修正值测试对 Windows CRLF 的不兼容。
+- 使用 Supabase 与 Postgres 最佳实践技能核对 RLS、认证身份和权限。真实数据库事务测试覆盖保存、版本递增、历史记录、冲突、无效快照、跨账号隔离及匿名拒绝；事务全部回滚，复查用户/存档/历史行数均为 0，安全 advisor 无告警。
+- 浏览器完成桌面及 390×844 手机账号弹窗检查，无控制台错误和横向溢出。公开 Auth 设置确认邮箱注册开启、邮件确认开启、匿名登录关闭。真实邮件收取及用户登录尚未代做。
+- 前端沿用 GitHub Pages。部署与恢复说明：`docs/supabase-deployment.md`；用户仍通过原网址访问。

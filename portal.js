@@ -421,7 +421,7 @@ function renderPortal() {
       <button class="future-character" type="button" disabled>
         <span>＋</span><strong>由 GPT 创建新角色</strong><small>角色生成入口将在后续版本开放</small>
       </button>
-      <footer class="portal-footer">SRD 5.1 · CC BY 4.0 · 所有角色状态保存在当前浏览器</footer>
+      <footer class="portal-footer">SRD 5.1 · CC BY 4.0 · 未登录时保存在本机，登录后可同步云端存档</footer>
     </main>`;
   const relationshipDialog = portalApp.querySelector("#relationshipDialog");
   const relationshipScroller = portalApp.querySelector(".relationship-scroll");

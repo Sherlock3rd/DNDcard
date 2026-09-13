@@ -370,6 +370,7 @@ function loadState() {
 
 function saveState() {
   localStorage.setItem("gandalf-5e-state", JSON.stringify(state));
+  window.dispatchEvent(new Event("dndcard:local-save"));
   const el = document.querySelector("#saveState");
   el.textContent = "状态已保存";
   window.clearTimeout(saveState.timer);

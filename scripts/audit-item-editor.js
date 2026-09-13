@@ -1,13 +1,13 @@
-// npm install --prefix tmp/test-runtime --no-save --no-package-lock jsdom
+// npm ci
 // All storage and UI operations below run in isolated jsdom memory, never a user's browser.
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
-const { JSDOM } = require("../tmp/test-runtime/node_modules/jsdom");
+const { JSDOM } = require("jsdom");
 const root = path.resolve(__dirname, "..");
 const html = fs.readFileSync(path.join(root, "index.html"), "utf8");
-const scripts = [...html.matchAll(/<script src="\.\/([^"?]+)[^"]*"/g)].map((match) => match[1]);
+const scripts = [...html.matchAll(/<script src="\.\/([^"?]+)[^"]*"/g)].map((match) => match[1]).filter((file) => !file.startsWith("cloud-") && !file.startsWith("assets/vendor/"));
 const clone = (value) => JSON.parse(JSON.stringify(value));
 function boot(saved = {}) {
   const dom = new JSDOM(html, { url: "https://example.test/#item-library", runScripts: "outside-only", pretendToBeVisual: true });

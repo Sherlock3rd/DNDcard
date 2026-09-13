@@ -1,0 +1,15 @@
+.cloud-account-button { position: fixed; right: max(16px, env(safe-area-inset-right)); bottom: max(16px, env(safe-area-inset-bottom)); z-index: 40; max-width: calc(100vw - 32px); padding: 12px 18px; border: 1px solid #9b8152; border-radius: 12px; background: #18151ff2; color: #eddfc5; box-shadow: 0 6px 28px #0008; cursor: pointer; text-align: left; }
+.cloud-account-button span { display: block; font-size: 11px; margin-top: 3px; color: #c7bba9; }
+body[data-route="character"] .cloud-account-button { display: none; }
+.cloud-dialog { width: min(580px, calc(100vw - 24px)); max-height: calc(100dvh - 32px); overflow-y: auto; }
+.cloud-dialog p { color: #cfc3b4; line-height: 1.7; overflow-wrap: anywhere; }
+.cloud-dialog label { display: grid; gap: 7px; margin: 12px 0; color: #e5d5bc; }
+.cloud-dialog input { min-width: 0; width: 100%; box-sizing: border-box; padding: 12px; border-radius: 8px; border: 1px solid #645442; background: #15131c; color: #f1e7d8; font: inherit; }
+.cloud-dialog menu, .cloud-actions { display: flex; gap: 10px; flex-wrap: wrap; padding: 0; }
+.cloud-dialog button { min-height: 44px; white-space: normal; }
+.cloud-dialog [hidden] { display: none !important; }
+.cloud-status { padding: 12px 14px; border-radius: 8px; background: #ffffff09; }
+.cloud-conflict { padding: 14px; border: 1px solid #b88b49; border-radius: 8px; }
+.cloud-lock { position: fixed; inset: 0; z-index: 99999; display: grid; place-content: center; padding: 24px; background: #111018f5; color: #eee0c8; text-align: center; }
+.cloud-lock p { max-width: 480px; line-height: 1.8; }
+@media (max-width: 600px) { .cloud-dialog .cloud-actions > button, .cloud-dialog menu > button { flex: 1 1 42%; } .cloud-account-button { bottom: max(10px, env(safe-area-inset-bottom)); padding: 9px 13px; } }

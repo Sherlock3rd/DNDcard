@@ -1,8 +1,8 @@
 const fs = require("fs");
 const vm = require("vm");
 
-const appSource = fs.readFileSync("app.js", "utf8");
-const managerSource = fs.readFileSync("manager.js", "utf8");
+const appSource = fs.readFileSync("app.js", "utf8").replace(/\r\n/g, "\n");
+const managerSource = fs.readFileSync("manager.js", "utf8").replace(/\r\n/g, "\n");
 const indexSource = fs.readFileSync("index.html", "utf8");
 const featSource = fs.readFileSync("data/feat-catalog.js", "utf8");
 
