@@ -177,10 +177,11 @@ console.log("PASS: 重置弹窗打开 / 取消 / 关闭 / Esc 不写存档；仅
 const beforeSettings = storage();
 assert.equal($(".top-actions #resetButton"), null);
 assert.equal($(".top-actions [data-open-git-sync]"), null);
-assert.ok($(".top-actions #settingsButton"));
-$("#settingsButton").click();
+assert.equal($(".top-actions #settingsButton"), null);
+run("renderPortal()");
+$("[data-open-bookshelf]").click();
 assert.equal($("#settingsDialog").open, true);
-assert.equal($("#settingsButton").getAttribute("aria-expanded"), "true");
+assert.equal($("[data-open-bookshelf]").getAttribute("aria-expanded"), "true");
 $("#settingsDialog [data-open-git-sync]").click();
 assert.equal($("#gitSyncDialog").open, true);
 $("#gitSyncDialog [data-close-sync]").click();
@@ -189,7 +190,7 @@ $("#settingsDialog #resetButton").click();
 assert.equal($("#resetStateDialog").open, true);
 $("#cancelResetButton").click();
 $("#settingsDialog [data-close-settings]").click();
-assert.equal($("#settingsButton").getAttribute("aria-expanded"), "false");
+assert.equal($("[data-open-bookshelf]").getAttribute("aria-expanded"), "false");
 assert.deepEqual(storage(), beforeSettings, "设置导航不改动存档");
 
 function auditLevelConfirmation(mode) {

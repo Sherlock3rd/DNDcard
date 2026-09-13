@@ -6,11 +6,12 @@
     <meta name="theme-color" content="#0b0b10" />
     <meta
       name="description"
-      content="甘阿·道夫 — D&D 5e 三级人类剑咏法师角色卡"
+      content="The Black Tower — 甘阿·道夫的私人冒险档案"
     />
-    <title>DNDcard · 奥术档案馆</title>
+    <title>The Black Tower</title>
     <link rel="stylesheet" href="./styles.css?v=20260913-settings-confirm" />
     <link rel="stylesheet" href="./portal.css?v=20260913-item-editor" />
+    <link rel="stylesheet" href="./room.css?v=20260913-black-tower" />
     <link rel="stylesheet" href="./cloud-sync.css?v=20260913-cloud-1" />
   </head>
   <body>
@@ -30,7 +31,6 @@
           <span class="save-state" id="saveState">本地档案已同步</span>
           <button class="ghost-button character-home-button" type="button" data-portal-route="portal" aria-label="返回主页">返回主页</button>
           <button class="level-button" id="levelUpButton" type="button">升级角色</button>
-          <button class="ghost-button" id="settingsButton" type="button" aria-haspopup="dialog" aria-controls="settingsDialog" aria-expanded="false">设置</button>
         </div>
       </header>
 
@@ -378,17 +378,21 @@
       </form>
     </dialog>
 
-    <dialog class="manager-dialog settings-dialog" id="settingsDialog" aria-labelledby="settingsTitle">
-      <div class="dialog-heading">
-        <div><p>CHARACTER SETTINGS</p><h2 id="settingsTitle">设置</h2></div>
-        <button type="button" data-close-settings aria-label="关闭设置" autofocus>×</button>
+    <dialog class="manager-dialog bookshelf-dialog" id="settingsDialog" aria-labelledby="settingsTitle">
+      <div class="dialog-heading"><div><p>THE BLACK TOWER · LIBRARY</p><h2 id="settingsTitle">书架</h2></div><button type="button" data-close-settings aria-label="关闭书架" autofocus>×</button></div>
+      <p class="shelf-intro">取下一本书，翻开规则、资料与私人档案。</p>
+      <div class="shelf-row"><button type="button" class="shelf-book book-sage" data-portal-route="classes"><span class="book-number">Ⅰ</span><strong>职业规则</strong><span class="book-ornament" aria-hidden="true">✧</span><small>CLASS COMPENDIUM</small></button><button type="button" class="shelf-book book-blue" data-portal-route="spell-library"><span class="book-number">Ⅱ</span><strong>法术查询</strong><span class="book-ornament" aria-hidden="true">✧</span><small>GRIMOIRE</small></button><button type="button" class="shelf-book book-ochre" data-portal-route="item-library"><span class="book-number">Ⅲ</span><strong>道具查询</strong><span class="book-ornament" aria-hidden="true">✧</span><small>ARTIFACTS</small></button><button type="button" class="shelf-book book-wine" data-portal-route="rules"><span class="book-number">Ⅳ</span><strong>基础规则</strong><span class="book-ornament" aria-hidden="true">✧</span><small>THE HANDBOOK</small></button></div>
+      <div class="shelf-row shelf-personal">
+        <button class="shelf-book book-blue" type="button" data-open-cloud><span class="book-number">Ⅴ</span><strong>账号与云端</strong><span class="book-ornament" aria-hidden="true">☾</span><small data-cloud-status>未登录 · 保存在本机</small></button>
+        <button class="shelf-book book-sage" type="button" data-open-git-sync><span class="book-number">Ⅵ</span><strong>档案备份</strong><span class="book-ornament" aria-hidden="true">✧</span><small>导出 / 同步到 Git</small></button>
+        <button class="shelf-book book-wine" id="resetButton" type="button"><span class="book-number">Ⅶ</span><strong>状态重置</strong><span class="book-ornament" aria-hidden="true">◇</span><small>恢复战斗资源 · 需确认</small></button>
       </div>
-      <div class="settings-actions">
-        <button class="ghost-button" type="button" data-open-cloud><strong>账号与云端存档</strong><small data-cloud-status>未登录 · 保存在本机</small></button>
-        <button class="ghost-button" type="button" data-open-git-sync><strong>上传 / 同步回填到 Git</strong><small>预览并导出备份，前往 GitHub 提交</small></button>
-        <button class="ghost-button danger" id="resetButton" type="button"><strong>重置状态</strong><small>恢复战斗资源、清空状态；需再次确认</small></button>
-      </div>
-      <menu><button class="ghost-button" type="button" data-close-settings>关闭设置</button></menu>
+      <menu><button class="ghost-button" type="button" data-close-settings>放回书本，返回房间</button></menu>
+    </dialog>
+    <dialog class="manager-dialog room-placeholder-dialog" id="roomPlaceholderDialog" aria-labelledby="roomPlaceholderTitle">
+      <div class="dialog-heading"><div><p>THE BLACK TOWER</p><h2 id="roomPlaceholderTitle"></h2></div><button type="button" data-close-room-placeholder aria-label="关闭并返回房间" autofocus>×</button></div>
+      <div class="room-empty"><span aria-hidden="true">✧</span><h3 data-room-empty-title></h3><p data-room-empty-description></p></div>
+      <menu><button type="button" class="ghost-button" data-close-room-placeholder>返回房间</button></menu>
     </dialog>
     <dialog class="manager-dialog" id="resetStateDialog" aria-labelledby="resetStateTitle" aria-describedby="resetStateDescription">
       <div class="dialog-heading">
@@ -425,13 +429,14 @@
     <script src="./data/feat-catalog.js?v=20260823-feat-catalog"></script>
     <script src="./icon-map.js?v=20260913-item-editor"></script>
     <script src="./item-data.js?v=20260913-item-editor"></script>
-    <script src="./app.js?v=20260913-cloud-1"></script>
+    <script src="./app.js?v=20260913-black-tower"></script>
     <script src="./manager.js?v=20260913-settings-confirm"></script>
-    <script src="./portal.js?v=20260913-cloud-1"></script>
+    <script src="./room.js?v=20260913-black-tower"></script>
+    <script src="./portal.js?v=20260913-black-tower"></script>
     <script src="./git-sync.js?v=20260913-item-editor"></script>
     <script src="./assets/vendor/supabase.js?v=2.116.0"></script>
     <script src="./cloud-config.js?v=20260913-cloud-1"></script>
     <script src="./cloud-sync-core.js?v=20260913-cloud-1"></script>
-    <script src="./cloud-sync.js?v=20260913-cloud-1"></script>
+    <script src="./cloud-sync.js?v=20260913-black-tower"></script>
   </body>
 </html>

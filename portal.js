@@ -274,8 +274,8 @@ function archiveHeader(active, title, subtitle) {
   return `
     <header class="archive-topbar">
       <button class="archive-brand" type="button" data-portal-route="portal" aria-label="返回档案入口">
-        <span class="brand-mark">D</span>
-        <span><strong>DND CARD</strong><small>奥术档案馆</small></span>
+        <span class="brand-mark">B</span>
+        <span><strong>The Black Tower</strong><small>私人冒险档案</small></span>
       </button>
       <nav aria-label="规则资料库">
         ${links.map(([route, label]) => `<button class="${active === route ? "active" : ""}" type="button" data-portal-route="${route}">${label}</button>`).join("")}
@@ -291,27 +291,8 @@ function archiveHeader(active, title, subtitle) {
 function renderPortal() {
   const currentLevel = typeof managerState === "object" ? managerState.level : 3;
   portalApp.innerHTML = `
-    <div class="portal-backdrop" aria-hidden="true"></div>
-    <main class="portal-shell">
-      <header class="portal-heading">
-        <p>ARCANE ARCHIVE · 2014 5E</p>
-        <h1>DNDcard</h1>
-        <span>选择角色档案，或先查阅规则资料库</span>
-      </header>
-      <button class="relationship-entry" id="openRelationshipButton" type="button" aria-haspopup="dialog" aria-controls="relationshipDialog">
-        <span class="relationship-entry-copy">
-          <small>RELATIONSHIP NETWORK</small>
-          <strong>人物关系网</strong>
-          <em>人物身份、状态与关系 · 12 个节点</em>
-        </span>
-        <span class="relationship-entry-faces" aria-hidden="true">
-          <img src="./assets/images/gandalf-bladesinger.png?v=20260823-human-high-guard" alt="" />
-          <img src="./assets/images/relationship-chief.png?v=20260823-relationship-portraits" alt="" />
-          <img src="./assets/images/relationship-pazu.png?v=20260823-relationship-portraits" alt="" />
-          <b>+9</b>
-        </span>
-        <span class="relationship-entry-action">查看关系图 <b aria-hidden="true">→</b></span>
-      </button>
+    <main class="study-room">
+      ${renderRoomScene(currentLevel)}
       <dialog class="relationship-dialog" id="relationshipDialog" aria-labelledby="relationshipTitle">
         <div class="relationship-dialog-shell">
           <button class="relationship-dialog-close" type="button" data-close-relationship aria-label="关闭关系图">×</button>
@@ -387,42 +368,8 @@ function renderPortal() {
           </section>
         </div>
       </dialog>
-      <section class="portal-character-panel" aria-labelledby="portalCharacterTitle">
-        <div class="portal-portrait">
-          <img src="./assets/images/gandalf-bladesinger.png?v=20260823-human-high-guard" alt="以老法师外貌示人的人类剑咏者甘阿·道夫，持剑采用古典高位架势，旧牌收在衣兜里" />
-        </div>
-        <div class="portal-character-copy">
-          <p>AVAILABLE CHARACTER</p>
-          <h2 id="portalCharacterTitle">甘阿·道夫</h2>
-          <div class="portal-tags"><span>人类</span><span>法师 ${currentLevel}</span><span>剑咏</span><span>自定义赌客</span></div>
-          <p class="portal-quote">“牌桌上的犹豫会出卖一个人，剑锋停下的位置也一样。”</p>
-          <dl>
-            <div><dt>当前生命</dt><dd>${state.hp} / ${state.maxHp}</dd></div>
-            <div><dt>护甲等级</dt><dd>14 / 剑歌 17</dd></div>
-            <div><dt>法术书</dt><dd>${managerState.spellbook.length - managerState.spellbook.map(findManagerSpell).filter((spell) => spell?.level === 0).length}</dd></div>
-          </dl>
-          <button class="portal-enter" type="button" data-portal-route="character">登录此角色</button>
-        </div>
-      </section>
-      <section class="portal-library" aria-label="规则资料库入口">
-        <button class="portal-destination classes" type="button" data-portal-route="classes">
-          <span>Ⅰ</span><strong>职业规则</strong><small>12 个基础职业与成长方向</small>
-        </button>
-        <button class="portal-destination spells" type="button" data-portal-route="spell-library">
-          <span>Ⅱ</span><strong>法术查询</strong><small>${portalCatalog.spells.length} 个 SRD 法术</small>
-        </button>
-        <button class="portal-destination items" type="button" data-portal-route="item-library">
-          <span>Ⅲ</span><strong>道具查询</strong><small>${portalCatalog.items.length} 件 SRD 物品</small>
-        </button>
-        <button class="portal-destination rules" type="button" data-portal-route="rules">
-          <span>Ⅳ</span><strong>基础规则</strong><small>从检定到战斗与施法</small>
-        </button>
-      </section>
-      <button class="future-character" type="button" disabled>
-        <span>＋</span><strong>由 GPT 创建新角色</strong><small>角色生成入口将在后续版本开放</small>
-      </button>
-      <footer class="portal-footer">SRD 5.1 · CC BY 4.0 · 未登录时保存在本机，登录后可同步云端存档</footer>
     </main>`;
+  initializeRoomScene(portalApp);
   const relationshipDialog = portalApp.querySelector("#relationshipDialog");
   const relationshipScroller = portalApp.querySelector(".relationship-scroll");
   const centerRelationshipView = () => {
@@ -701,21 +648,21 @@ function renderPortalRoute() {
 
   if (isPortal) {
     renderPortal();
-    document.title = "DNDcard · 选择角色";
+    document.title = "The Black Tower";
   } else if (isCharacter) {
-    document.title = `甘阿·道夫 · ${managerState.level}级人类剑咏法师`;
+    document.title = `甘阿·道夫 · The Black Tower`;
   } else if (route === "classes") {
     renderClasses();
-    document.title = "职业规则 · DNDcard";
+    document.title = "职业规则 · The Black Tower";
   } else if (route === "spell-library") {
     renderSpellLibrary();
-    document.title = "法术查询 · DNDcard";
+    document.title = "法术查询 · The Black Tower";
   } else if (route === "item-library") {
     renderItemLibrary();
-    document.title = "道具查询 · DNDcard";
+    document.title = "道具查询 · The Black Tower";
   } else if (route === "rules") {
     renderRules();
-    document.title = "基础规则 · DNDcard";
+    document.title = "基础规则 · The Black Tower";
   }
   window.scrollTo({ top: 0, behavior: "auto" });
 }

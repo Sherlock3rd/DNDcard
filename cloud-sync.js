@@ -10,12 +10,6 @@
     conflict: "有版本冲突 · 请选择保留版本", editing: "请先完成当前编辑，再读取云端版本", error: "同步未完成 · 本机副本已保留"
   };
   let engine, client, timer, busy = false, staged = null, authEpoch = 0;
-  const accountButton = document.createElement("button");
-  accountButton.type = "button";
-  accountButton.className = "cloud-account-button";
-  accountButton.dataset.openCloud = "";
-  accountButton.innerHTML = '账号与云端存档<span data-cloud-status>未登录 · 保存在本机</span>';
-  document.body.append(accountButton);
   const dialog = document.createElement("dialog");
   dialog.className = "manager-dialog cloud-dialog";
   dialog.id = "cloudDialog";
