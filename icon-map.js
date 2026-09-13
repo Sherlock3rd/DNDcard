@@ -126,7 +126,21 @@
     }[spell.school] ?? 33;
   }
 
+  const itemPresets = [
+    ["sword", "剑", 0], ["axe", "斧", 1], ["bow", "弓", 2], ["staff", "法杖", 3],
+    ["dagger", "匕首", 4], ["shield", "盾牌", 5], ["mace", "钉头锤", 6], ["spear", "长矛", 7],
+    ["armor", "金属护甲", 8], ["helmet", "头盔", 9], ["cloak", "斗篷", 10], ["boots", "靴子", 11],
+    ["gloves", "护手", 12], ["leather", "皮甲", 15], ["hood", "兜帽", 16], ["pouch", "腰包", 17],
+    ["rope", "绳索", 18], ["lantern", "提灯", 19], ["backpack", "背包", 20], ["book", "书籍", 24],
+    ["scroll", "卷轴", 25], ["potion", "红色灵药", 26], ["blue-potion", "蓝色灵药", 27],
+    ["green-potion", "绿色灵药", 28], ["purple-potion", "紫色灵药", 29], ["gem", "宝石", 30],
+    ["ring", "戒指", 32], ["amulet", "护符", 36], ["wand", "魔杖", 40], ["orb", "水晶球", 46],
+    ["key", "钥匙", 50], ["food", "食物", 56], ["instrument", "鲁特琴", 60],
+  ].map(([id, label, index]) => ({ id, label, index }));
+
   function itemIndex(item) {
+    const selected = itemPresets.find((preset) => preset.id === item.iconType);
+    if (selected) return selected.index;
     if (Number.isInteger(itemOverrides[item.id])) return itemOverrides[item.id];
     const name = normalized(item.id, item.sourceId, item.name, item.nameZh);
 
@@ -209,6 +223,7 @@
   }
 
   window.DND_ICON_MAP = {
+    itemPresets,
     spellIndex,
     itemIndex,
     spellStyle: (spell) => styleForIndex(spellIndex(spell)),

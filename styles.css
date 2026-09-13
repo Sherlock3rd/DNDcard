@@ -124,6 +124,8 @@ button {
 
 .top-actions {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   align-items: center;
   gap: 14px;
 }
@@ -2408,6 +2410,20 @@ button.loadout-spell:hover {
   grid-column: 1 / -1;
 }
 
+.editor-grid [hidden] { display: none !important; }
+.item-icon-preview { display: flex; align-items: center; gap: 16px; color: var(--muted); }
+.item-icon-preview .catalog-icon { flex: 0 0 64px; width: 64px; height: 64px; }
+.item-optional-fields { margin-top: 18px; }
+.item-optional-fields summary { cursor: pointer; padding: 10px 0; }
+.item-form-hint { font-size: 13px; line-height: 1.7; color: var(--muted); overflow-wrap: anywhere; }
+.git-snapshot-preview { max-height: 230px; overflow: auto; padding: 12px; background: #0b0b10; font-size: 12px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.git-sync-consent { display: flex; align-items: flex-start; gap: 10px; margin: 18px 0; line-height: 1.6; }
+#gitSyncDialog p { line-height: 1.7; overflow-wrap: anywhere; }
+#gitSyncDialog menu { flex-wrap: wrap; }
+#gitSyncDialog button:disabled { opacity: .45; cursor: not-allowed; }
+#gitUploadFallback { display: inline-block; color: #d6b879; padding-bottom: 12px; }
+#gitUploadFallback[hidden] { display: none; }
+
 .editor-grid .check-label {
   display: flex;
   align-items: center;
@@ -2630,7 +2646,11 @@ button.loadout-spell:hover {
 
   .topbar {
     min-height: 62px;
+    flex-wrap: wrap;
+    gap: 12px;
   }
+
+  .top-actions { gap: 8px; }
 
   .save-state {
     display: none;

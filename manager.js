@@ -1074,6 +1074,7 @@ function renderInventoryCard(item, entry) {
       <details>
         <summary>物品说明</summary>
         <p>${escapeManagerHtml(item.descriptionZh || item.description || "暂无说明").replaceAll("\n", "<br>")}</p>
+        <button class="text-button" type="button" data-item-notes="${item.id}">编辑持有备注</button>
         <div class="detail-danger-zone"><button class="text-button danger" type="button" data-remove-item="${item.id}">从背包移除</button></div>
       </details>
     </article>`;
@@ -1127,23 +1128,28 @@ function openItemEditor(id = null) {
       </div>
       <div class="editor-grid">
         <label class="wide">中文名称<input name="nameZh" required value="${escapeManagerHtml(item?.nameZh || (item?.custom ? item?.name : "") || "")}" /></label>
-        <label class="wide">英文名称<input name="name" required value="${escapeManagerHtml(item?.name || "")}" /></label>
-        <label>类别<input name="type" value="${escapeManagerHtml(item?.type || "Adventuring Gear")}" /></label>
+        <label>类别<select name="type">${[...new Set([...Object.keys(itemTypeNames), item?.type].filter(Boolean))].map((type) => `<option value="${escapeManagerHtml(type)}" ${type === (item?.type || "Adventuring Gear") ? "selected" : ""}>${type === "Potion" ? "灵药 / 药水" : escapeManagerHtml(displayItemType(type))}</option>`).join("")}</select></label>
+        <label>默认图片类型<select name="iconType"><option value="">自动匹配名称与类别</option>${window.DND_ICON_MAP.itemPresets.map((preset) => `<option value="${preset.id}" ${item?.iconType === preset.id ? "selected" : ""}>${preset.label}</option>`).join("")}</select></label>
+        <div class="wide item-icon-preview" aria-live="polite"></div>
+        <label data-item-field="damage">伤害<input name="damage" value="${escapeManagerHtml(item?.damage || "")}" placeholder="如 1d8 Slashing" /></label>
+        <label data-item-field="armorClass">护甲等级<input name="armorClass" type="number" min="0" value="${item?.armorClass || ""}" /></label>
+        <label class="wide" data-item-field="properties">属性标签<input name="properties" value="${escapeManagerHtml((item?.properties || []).join(", "))}" placeholder="用逗号分隔，如 Light, Finesse" /></label>
+        <label class="wide"><span id="itemDescriptionLabel">物品说明 / 装备内容</span><textarea name="descriptionZh" rows="6" placeholder="填写效果、使用方法、限制或装备说明">${escapeManagerHtml(item?.descriptionZh || item?.description || "")}</textarea></label>
+      </div>
+      <details class="item-optional-fields"><summary>更多信息（选填）</summary><div class="editor-grid">
+        <label class="wide">英文名称<input name="name" value="${escapeManagerHtml(item?.name || "")}" placeholder="可留空" /></label>
         <label>子类别<input name="category" value="${escapeManagerHtml(item?.category || "")}" /></label>
         <label>稀有度<input name="rarity" value="${escapeManagerHtml(item?.rarity || "Common")}" /></label>
         <label>价值<input name="cost" value="${escapeManagerHtml(item?.cost || "")}" /></label>
         <label>重量（磅）<input name="weight" type="number" min="0" step="0.1" value="${Number(item?.weight || 0)}" /></label>
-        <label>伤害<input name="damage" value="${escapeManagerHtml(item?.damage || "")}" /></label>
-        <label>护甲等级<input name="armorClass" type="number" min="0" value="${item?.armorClass || ""}" /></label>
-        <label class="wide">属性标签<input name="properties" value="${escapeManagerHtml((item?.properties || []).join(", "))}" placeholder="Light, Finesse, Story" /></label>
-        <label class="wide">中文说明<textarea name="descriptionZh" rows="6">${escapeManagerHtml(item?.descriptionZh || item?.description || "")}</textarea></label>
         <label class="check-label"><input type="checkbox" name="magic" ${item?.magic ? "checked" : ""} /> 魔法物品</label>
-      </div>
+      </div></details>
+      <p class="item-form-hint">保存到本浏览器的道具资料库；可在角色装备页添加到背包。图片与说明一并保存，不自动改变角色数值。</p>
       <menu>
         ${isCustom ? `<button type="button" class="ghost-button danger" data-delete-custom-item="${item.id}">删除条目</button>` : ""}
         <span></span>
         <button value="cancel" class="ghost-button">取消</button>
-        <button value="default" class="primary-button">保存</button>
+        <button value="default" class="primary-button">保存物品资料</button>
       </menu>
     </form>`;
   dialog.querySelectorAll('[value="cancel"]').forEach((button) => {
@@ -1152,34 +1158,34 @@ function openItemEditor(id = null) {
       dialog.close();
     });
   });
-  dialog.querySelector("#itemEditorForm").addEventListener("submit", (event) => {
+  const editor = dialog.querySelector("#itemEditorForm");
+  const updateFields = () => {
+    const type = editor.elements.type.value;
+    dialog.querySelectorAll("[data-item-field]").forEach((label) => {
+      label.hidden = !window.DND_ITEM_DATA.fieldsFor(type).includes(label.dataset.itemField);
+      label.querySelector("input").disabled = label.hidden;
+    });
+    dialog.querySelector("#itemDescriptionLabel").textContent = type === "Potion" ? "灵药效果 / 使用说明" : "物品说明 / 装备内容";
+    const previewItem = { ...(item || {}), type, name: editor.elements.name.value, nameZh: editor.elements.nameZh.value, iconType: editor.elements.iconType.value };
+    dialog.querySelector(".item-icon-preview").innerHTML = `${itemIcon(previewItem)}<span>图片预览 · ${escapeManagerHtml(editor.elements.iconType.selectedOptions[0].textContent)}</span>`;
+  };
+  editor.addEventListener("input", updateFields);
+  editor.addEventListener("change", updateFields);
+  updateFields();
+  editor.addEventListener("submit", (event) => {
     event.preventDefault();
     if (event.submitter?.value === "cancel") {
       dialog.close();
       return;
     }
     const form = new FormData(event.currentTarget);
-    const entry = {
-      ...(item || {}),
-      id: item?.id || `custom-item-${Date.now()}`,
-      name: form.get("name").trim(),
-      nameZh: form.get("nameZh").trim(),
-      type: form.get("type").trim(),
-      category: form.get("category").trim(),
-      rarity: form.get("rarity").trim(),
-      cost: form.get("cost").trim(),
-      weight: Number(form.get("weight") || 0),
-      damage: form.get("damage").trim(),
-      armorClass: form.get("armorClass") ? Number(form.get("armorClass")) : null,
-      properties: form
-        .get("properties")
-        .split(",")
-        .map((value) => value.trim())
-        .filter(Boolean),
-      descriptionZh: form.get("descriptionZh").trim(),
-      magic: form.get("magic") === "on",
-      custom: item ? Boolean(item.custom) : true,
-    };
+    const entry = window.DND_ITEM_DATA.readItem(form, item);
+    if (!entry.nameZh) {
+      editor.elements.nameZh.setCustomValidity("请输入物品名称");
+      editor.elements.nameZh.reportValidity();
+      editor.elements.nameZh.addEventListener("input", () => editor.elements.nameZh.setCustomValidity(""), { once: true });
+      return;
+    }
     if (entry.custom) {
       const index = managerState.customItems.findIndex((candidate) => candidate.id === entry.id);
       if (index >= 0) managerState.customItems[index] = entry;
@@ -1189,7 +1195,34 @@ function openItemEditor(id = null) {
     }
     saveManagerState();
     renderInventoryManager();
-    if (location.hash === "#item-library" && typeof renderItemLibrary === "function") renderItemLibrary();
+    if (location.hash === "#item-library" && typeof renderItemLibrary === "function") {
+      renderItemLibrary();
+      document.querySelector("#libraryItemSearch").value = entry.nameZh || entry.name;
+      renderItemLibraryResults();
+    }
+    dialog.close();
+  });
+  dialog.showModal();
+}
+
+function openItemNotes(id) {
+  const entry = managerState.inventory.find((candidate) => candidate.id === id);
+  const item = findManagerItem(id);
+  if (!entry || !item) return;
+  const dialog = document.querySelector("#itemNotesDialog");
+  dialog.innerHTML = `<form method="dialog">
+    <div class="dialog-heading"><div><p>INVENTORY NOTES</p><h2>编辑持有备注</h2></div><button type="button" data-close-notes aria-label="关闭">×</button></div>
+    <p>${escapeManagerHtml(displayItemName(item))}</p>
+    <div class="editor-grid"><label class="wide">备注<textarea name="notes" rows="5" placeholder="如来源、存放位置、使用记录">${escapeManagerHtml(entry.notes || "")}</textarea></label></div>
+    <p class="item-form-hint">只修改这件物品的持有备注，不改全局规则说明、数量或装备状态。</p>
+    <menu><button type="button" class="ghost-button" data-close-notes>取消</button><button type="submit" class="primary-button">保存备注</button></menu>
+  </form>`;
+  dialog.querySelectorAll("[data-close-notes]").forEach((button) => button.addEventListener("click", () => dialog.close()));
+  dialog.querySelector("form").addEventListener("submit", (event) => {
+    event.preventDefault();
+    entry.notes = new FormData(event.currentTarget).get("notes").trim();
+    saveManagerState();
+    renderInventoryManager();
     dialog.close();
   });
   dialog.showModal();
@@ -1762,6 +1795,8 @@ document.addEventListener("click", (event) => {
   if (deleteSpellButton) deleteCustomSpell(deleteSpellButton.dataset.deleteCustomSpell);
 
   const addItemButton = event.target.closest("[data-add-item]");
+  const itemNotesButton = event.target.closest("[data-item-notes]");
+  if (itemNotesButton) openItemNotes(itemNotesButton.dataset.itemNotes);
   if (addItemButton) addItemToInventory(addItemButton.dataset.addItem);
 
   const removeItemButton = event.target.closest("[data-remove-item]");

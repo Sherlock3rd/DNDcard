@@ -595,6 +595,7 @@ function renderItemLibrary() {
           <span aria-hidden="true">＋</span>
           <span><strong>添加自定义物品</strong><small>建立新的全局道具资料</small></span>
         </button>
+        <button class="ghost-button" type="button" data-open-git-sync>同步回填到 Git</button>
       </div>
       <div class="archive-filterbar item">
         <label class="archive-search"><span>搜索</span><input id="libraryItemSearch" placeholder="名称、类型、属性或说明" /></label>
@@ -636,10 +637,10 @@ function renderItemLibraryResults() {
   archiveApp.querySelector("#libraryItemGrid").innerHTML = matches.slice(0, limit).map((item) => `
     <article class="library-card item">
       <span class="catalog-icon item-icon" style="${window.DND_ICON_MAP.itemStyle(item)}" aria-hidden="true"><i></i></span>
-      <div class="library-card-heading"><p>${portalEscape(displayItemRarity(item.rarity))} · ${portalEscape(displayItemType(item.type || item.category))}</p><h2>${portalEscape(item.nameZh ? `${item.nameZh}（${item.name}）` : item.name)}</h2></div>
+      <div class="library-card-heading"><p>${portalEscape(displayItemRarity(item.rarity))} · ${portalEscape(displayItemType(item.type || item.category))}</p><h2>${portalEscape(displayItemName(item))}</h2></div>
       <div class="library-badges">${item.magic ? "<span>魔法</span>" : "<span>普通</span>"}${item.cost ? `<span>${portalEscape(item.cost)}</span>` : ""}${item.weight ? `<span>${portalEscape(item.weight)} 磅</span>` : ""}</div>
       ${(item.damage || item.armorClass) ? `<dl>${item.damage ? `<div><dt>伤害</dt><dd>${portalEscape(displayItemDamage(item.damage))}</dd></div>` : ""}${item.armorClass ? `<div><dt>AC</dt><dd>${portalEscape(item.armorClass)}</dd></div>` : ""}</dl>` : ""}
-      <details><summary>阅读物品说明</summary><p>${portalEscape(item.descriptionZh || "该物品暂无中文规则说明。")}</p><div class="library-detail-actions"><button class="text-button" type="button" data-edit-item="${item.id}">编辑总览资料</button></div></details>
+      <details><summary>阅读物品说明</summary><p>${portalEscape(item.descriptionZh || "该物品暂无中文规则说明。").replaceAll("\n", "<br>")}</p><div class="library-detail-actions"><button class="text-button" type="button" data-edit-item="${item.id}">编辑总览资料</button></div></details>
     </article>`).join("") || `<div class="archive-empty">没有符合条件的物品。</div>`;
   archiveApp.querySelector("#libraryItemMore").hidden = limit >= matches.length;
 }

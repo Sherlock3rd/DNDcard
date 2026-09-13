@@ -870,6 +870,8 @@ body[data-route="rules"] .archive-backdrop {
 
 .archive-catalog-actions {
   display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
   justify-content: flex-end;
   margin: 0 0 12px;
 }
