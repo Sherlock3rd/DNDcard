@@ -9,7 +9,7 @@
       content="甘阿·道夫 — D&D 5e 三级人类剑咏法师角色卡"
     />
     <title>DNDcard · 奥术档案馆</title>
-    <link rel="stylesheet" href="./styles.css?v=20260913-item-editor" />
+    <link rel="stylesheet" href="./styles.css?v=20260913-settings-confirm" />
     <link rel="stylesheet" href="./portal.css?v=20260913-item-editor" />
   </head>
   <body>
@@ -27,10 +27,9 @@
         </a>
         <div class="top-actions">
           <span class="save-state" id="saveState">本地档案已同步</span>
-          <button class="ghost-button" type="button" data-open-git-sync>同步回填到 Git</button>
           <button class="ghost-button character-home-button" type="button" data-portal-route="portal" aria-label="返回主页">返回主页</button>
           <button class="level-button" id="levelUpButton" type="button">升级角色</button>
-          <button class="ghost-button reset-state-button" id="resetButton" type="button">重置状态</button>
+          <button class="ghost-button" id="settingsButton" type="button" aria-haspopup="dialog" aria-controls="settingsDialog" aria-expanded="false">设置</button>
         </div>
       </header>
 
@@ -378,6 +377,17 @@
       </form>
     </dialog>
 
+    <dialog class="manager-dialog settings-dialog" id="settingsDialog" aria-labelledby="settingsTitle">
+      <div class="dialog-heading">
+        <div><p>CHARACTER SETTINGS</p><h2 id="settingsTitle">设置</h2></div>
+        <button type="button" data-close-settings aria-label="关闭设置" autofocus>×</button>
+      </div>
+      <div class="settings-actions">
+        <button class="ghost-button" type="button" data-open-git-sync><strong>上传 / 同步回填到 Git</strong><small>预览并导出备份，前往 GitHub 提交</small></button>
+        <button class="ghost-button danger" id="resetButton" type="button"><strong>重置状态</strong><small>恢复战斗资源、清空状态；需再次确认</small></button>
+      </div>
+      <menu><button class="ghost-button" type="button" data-close-settings>关闭设置</button></menu>
+    </dialog>
     <dialog class="manager-dialog" id="resetStateDialog" aria-labelledby="resetStateTitle" aria-describedby="resetStateDescription">
       <div class="dialog-heading">
         <div><p>RESET CURRENT STATE</p><h2 id="resetStateTitle">确认重置当前状态？</h2></div>
@@ -400,13 +410,21 @@
     <dialog class="manager-dialog" id="gitSyncDialog"></dialog>
     <dialog class="manager-dialog feat-dialog" id="featDialog"></dialog>
     <dialog class="manager-dialog level-dialog" id="levelUpDialog"></dialog>
+    <dialog class="manager-dialog" id="levelConfirmDialog" aria-labelledby="levelConfirmTitle" aria-describedby="levelConfirmDescription">
+      <div class="dialog-heading">
+        <div><p>CONFIRM ADVANCEMENT</p><h2 id="levelConfirmTitle">再次确认升级</h2></div>
+        <button type="button" data-cancel-level-confirm aria-label="取消升级确认">×</button>
+      </div>
+      <div id="levelConfirmDescription"><div id="levelConfirmSummary"></div><p>确认后才会写入本地存档。请核对以上选择；返回修改或关闭此窗口不会升级，已选内容会保留。</p></div>
+      <menu><button class="ghost-button" id="cancelLevelConfirm" type="button" data-cancel-level-confirm autofocus>返回修改</button><button class="primary-button" id="confirmLevelButton" type="button">确认升级</button></menu>
+    </dialog>
 
     <script src="./data/srd-catalog.js?v=20260823-feat-catalog"></script>
     <script src="./data/feat-catalog.js?v=20260823-feat-catalog"></script>
     <script src="./icon-map.js?v=20260913-item-editor"></script>
     <script src="./item-data.js?v=20260913-item-editor"></script>
-    <script src="./app.js?v=20260913-reset-confirm"></script>
-    <script src="./manager.js?v=20260913-item-editor-2"></script>
+    <script src="./app.js?v=20260913-settings-confirm"></script>
+    <script src="./manager.js?v=20260913-settings-confirm"></script>
     <script src="./portal.js?v=20260913-item-editor"></script>
     <script src="./git-sync.js?v=20260913-item-editor"></script>
   </body>

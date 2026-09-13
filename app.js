@@ -623,6 +623,16 @@ document.querySelector("#longRest").addEventListener("click", () => {
 });
 
 const resetStateDialog = document.querySelector("#resetStateDialog");
+const settingsDialog = document.querySelector("#settingsDialog");
+const settingsButton = document.querySelector("#settingsButton");
+settingsButton.addEventListener("click", () => {
+  if (!settingsDialog.open) settingsDialog.showModal();
+  settingsButton.setAttribute("aria-expanded", "true");
+});
+settingsDialog.querySelectorAll("[data-close-settings]").forEach((button) => {
+  button.addEventListener("click", () => settingsDialog.close());
+});
+settingsDialog.addEventListener("close", () => settingsButton.setAttribute("aria-expanded", "false"));
 document.querySelector("#resetButton").addEventListener("click", () => {
   if (!resetStateDialog.open) resetStateDialog.showModal();
   document.querySelector("#cancelResetButton").focus();

@@ -2392,6 +2392,13 @@ button.loadout-spell:hover {
   min-width: 0;
 }
 
+.settings-dialog { max-width: 460px; }
+.settings-actions { display: grid; gap: 14px; margin-top: 20px; }
+.settings-actions button { display: grid; gap: 6px; min-height: 78px; padding: 14px; text-align: left; white-space: normal; }
+.settings-actions small { color: var(--muted); line-height: 1.6; }
+#levelConfirmDescription { line-height: 1.8; overflow-wrap: anywhere; }
+#levelConfirmDialog menu { flex-wrap: wrap; }
+
 .manager-dialog menu {
   align-items: center;
 }

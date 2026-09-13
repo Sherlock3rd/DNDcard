@@ -234,8 +234,8 @@ function selectedFeatAbility(feat) {
   return definition.abilityChoices.length === 1 ? definition.abilityChoices[0] : null;
 }
 
-function effectiveAbilities(feats = managerState.feats) {
-  const result = { ...managerState.abilities };
+function effectiveAbilities(feats = managerState.feats, baseAbilities = managerState.abilities) {
+  const result = { ...baseAbilities };
   feats.forEach((feat) => {
     const definition = featEffectDefinition(feat);
     const ability = selectedFeatAbility(feat);
@@ -1596,11 +1596,27 @@ function openLevelUpDialog() {
       }
       <menu>
         <button value="cancel" class="ghost-button">取消</button>
-        <button value="default" class="primary-button">确认升级到 ${nextLevel} 级</button>
+        <button value="default" class="primary-button">下一步：核对升级</button>
       </menu>
     </form>`;
 
   const form = dialog.querySelector("#levelUpForm");
+  const confirmation = document.querySelector("#levelConfirmDialog");
+  let pendingUpgrade = null;
+  confirmation.onclose = () => { pendingUpgrade = null; };
+  confirmation.querySelectorAll("[data-cancel-level-confirm]").forEach((button) => {
+    button.onclick = () => confirmation.close();
+  });
+  confirmation.querySelector("#confirmLevelButton").onclick = () => {
+    if (!confirmation.open || !dialog.open || !pendingUpgrade) return;
+    const apply = pendingUpgrade;
+    pendingUpgrade = null;
+    apply();
+  };
+  dialog.onclose = () => {
+    pendingUpgrade = null;
+    if (confirmation.open) confirmation.close();
+  };
   dialog.querySelectorAll('[value="cancel"]').forEach((button) => {
     button.addEventListener("click", (event) => {
       event.preventDefault();
@@ -1668,6 +1684,7 @@ function openLevelUpDialog() {
     }
 
     const oldAbilities = { ...managerState.abilities };
+    const nextAbilities = { ...oldAbilities };
     const oldEffectiveAbilities = effectiveAbilities();
     let gainedFeat = null;
     if (gainsAsi) {
@@ -1711,7 +1728,7 @@ function openLevelUpDialog() {
             window.alert(`${key} 不能超过 20。`);
             return;
           }
-          managerState.abilities[key] = nextScore;
+          nextAbilities[key] = nextScore;
         }
       }
     }
@@ -1719,42 +1736,66 @@ function openLevelUpDialog() {
     const hpMode = formData.get("hpMode");
     const rolled = Math.max(1, Math.min(6, Number(formData.get("hpRoll") || 4)));
     const prospectiveFeats = gainedFeat ? [...managerState.feats, gainedFeat] : managerState.feats;
-    const nextEffectiveAbilities = effectiveAbilities(prospectiveFeats);
+    const nextEffectiveAbilities = effectiveAbilities(prospectiveFeats, nextAbilities);
     const baseGain = (hpMode === "roll" ? rolled : 4) + abilityModifier(oldEffectiveAbilities.CON);
     const conRetroactive =
       (abilityModifier(nextEffectiveAbilities.CON) - abilityModifier(oldEffectiveAbilities.CON)) * nextLevel;
     const hpGain = baseGain + conRetroactive;
 
-    const oldSlots = wizardSlotTable[managerState.level];
-    const newSlots = wizardSlotTable[nextLevel];
-    newSlots.forEach((max, index) => {
-      const key = `slot${index + 1}`;
-      const oldMax = oldSlots[index] || 0;
-      state[key] = Math.min(max, (state[key] || 0) + (max - oldMax));
-    });
+    const expectedState = JSON.stringify({ managerState, state });
+    pendingUpgrade = () => {
+      if (JSON.stringify({ managerState, state }) !== expectedState) {
+        confirmation.close();
+        window.alert("角色状态已变化，请重新核对升级内容后再确认。");
+        return;
+      }
+      managerState.abilities = nextAbilities;
+      const oldSlots = wizardSlotTable[managerState.level];
+      const newSlots = wizardSlotTable[nextLevel];
+      newSlots.forEach((max, index) => {
+        const key = `slot${index + 1}`;
+        const oldMax = oldSlots[index] || 0;
+        state[key] = Math.min(max, (state[key] || 0) + (max - oldMax));
+      });
 
-    managerState.level = nextLevel;
-    managerState.spellbook.push(...learned);
-    if (gainsCantrip) managerState.spellbook.push(formData.get("newCantrip"));
-    if (gainedFeat) managerState.feats.push(gainedFeat);
-    managerState.levelHistory.push({
-      level: nextLevel,
-      hpGain,
-      spells: learned,
-      cantrip: gainsCantrip ? formData.get("newCantrip") : null,
-      feat: gainedFeat,
-      abilities: { ...managerState.abilities },
-      at: new Date().toISOString(),
-    });
-    state.maxHp += hpGain;
-    state.hp += hpGain;
-    saveManagerState();
-    renderState();
-    syncCharacterSheet();
-    renderSpellManager();
-    renderInventoryManager();
-    renderFeatManager();
-    dialog.close();
+      managerState.level = nextLevel;
+      managerState.spellbook.push(...learned);
+      if (gainsCantrip) managerState.spellbook.push(formData.get("newCantrip"));
+      if (gainedFeat) managerState.feats.push(gainedFeat);
+      managerState.levelHistory.push({
+        level: nextLevel,
+        hpGain,
+        spells: learned,
+        cantrip: gainsCantrip ? formData.get("newCantrip") : null,
+        feat: gainedFeat,
+        abilities: { ...managerState.abilities },
+        at: new Date().toISOString(),
+      });
+      state.maxHp += hpGain;
+      state.hp += hpGain;
+      saveManagerState();
+      renderState();
+      syncCharacterSheet();
+      renderSpellManager();
+      renderInventoryManager();
+      renderFeatManager();
+      confirmation.close();
+      dialog.close();
+    };
+    const abilityChanges = Object.keys(nextAbilities).filter((key) => nextEffectiveAbilities[key] !== oldEffectiveAbilities[key])
+      .map((key) => `${abilityNames[key]} ${oldEffectiveAbilities[key]} → ${nextEffectiveAbilities[key]}`);
+    const learnedNames = learned.map((id) => displaySpellName(findManagerSpell(id)));
+    const cantripName = gainsCantrip ? displaySpellName(findManagerSpell(formData.get("newCantrip"))) : "";
+    confirmation.querySelector("#levelConfirmSummary").innerHTML = `
+      <p><strong>法师 ${managerState.level} → ${nextLevel} 级</strong></p>
+      <ul><li>生命上限：${state.maxHp} → ${state.maxHp + hpGain}（增加 ${hpGain}）</li>
+      <li>新增法术：${escapeManagerHtml(learnedNames.join("、"))}</li>
+      ${cantripName ? `<li>新增戏法：${escapeManagerHtml(cantripName)}</li>` : ""}
+      ${gainedFeat ? `<li>新增专长：${escapeManagerHtml(gainedFeat.name)}</li>` : ""}
+      ${abilityChanges.length ? `<li>属性变化：${escapeManagerHtml(abilityChanges.join("；"))}</li>` : ""}</ul>`;
+    confirmation.querySelector("#confirmLevelButton").textContent = `确认升级到 ${nextLevel} 级`;
+    if (!confirmation.open) confirmation.showModal();
+    confirmation.querySelector("#cancelLevelConfirm").focus();
   });
   dialog.showModal();
 }
