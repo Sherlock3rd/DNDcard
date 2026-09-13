@@ -622,8 +622,16 @@ document.querySelector("#longRest").addEventListener("click", () => {
   saveState();
 });
 
+const resetStateDialog = document.querySelector("#resetStateDialog");
 document.querySelector("#resetButton").addEventListener("click", () => {
-  if (!window.confirm("将甘阿·道夫的当前生命、法术位、剑歌次数与状态恢复为初始值？")) return;
+  if (!resetStateDialog.open) resetStateDialog.showModal();
+  document.querySelector("#cancelResetButton").focus();
+});
+resetStateDialog.querySelectorAll("[data-cancel-reset]").forEach((button) => {
+  button.addEventListener("click", () => resetStateDialog.close());
+});
+document.querySelector("#confirmResetButton").addEventListener("click", () => {
+  if (!resetStateDialog.open) return;
   const maxHp = state.maxHp;
   state = { ...defaults, maxHp, hp: maxHp, conditions: [] };
   Object.entries(window.currentSlotMaximums || { slot1: 4, slot2: 2 }).forEach(([key, max]) => {
@@ -631,6 +639,7 @@ document.querySelector("#resetButton").addEventListener("click", () => {
   });
   refreshCharacterSheet();
   saveState();
+  resetStateDialog.close();
 });
 
 const conditionDialog = document.querySelector("#conditionDialog");

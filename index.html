@@ -378,6 +378,21 @@
       </form>
     </dialog>
 
+    <dialog class="manager-dialog" id="resetStateDialog" aria-labelledby="resetStateTitle" aria-describedby="resetStateDescription">
+      <div class="dialog-heading">
+        <div><p>RESET CURRENT STATE</p><h2 id="resetStateTitle">确认重置当前状态？</h2></div>
+        <button type="button" data-cancel-reset aria-label="取消并关闭">×</button>
+      </div>
+      <div id="resetStateDescription">
+        <p>确认后将恢复当前生命、法术位与剑歌次数，清空临时生命和已添加的状态，并关闭剑歌模式。</p>
+        <p>不会删除角色等级、属性、专长、法术书、背包物品或自定义资料。</p>
+        <p>本次状态修改会保存到当前浏览器，无法直接撤销。不确定时请取消。</p>
+      </div>
+      <menu>
+        <button class="ghost-button" id="cancelResetButton" type="button" data-cancel-reset autofocus>取消，保留当前状态</button>
+        <button class="primary-button danger" id="confirmResetButton" type="button">确认重置状态</button>
+      </menu>
+    </dialog>
     <dialog class="manager-dialog" id="spellEditorDialog"></dialog>
     <dialog class="manager-dialog spell-detail-dialog" id="spellDetailDialog"></dialog>
     <dialog class="manager-dialog" id="itemEditorDialog"></dialog>
@@ -390,7 +405,7 @@
     <script src="./data/feat-catalog.js?v=20260823-feat-catalog"></script>
     <script src="./icon-map.js?v=20260913-item-editor"></script>
     <script src="./item-data.js?v=20260913-item-editor"></script>
-    <script src="./app.js?v=20260913-modifier-sync"></script>
+    <script src="./app.js?v=20260913-reset-confirm"></script>
     <script src="./manager.js?v=20260913-item-editor-2"></script>
     <script src="./portal.js?v=20260913-item-editor"></script>
     <script src="./git-sync.js?v=20260913-item-editor"></script>
