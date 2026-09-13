@@ -1,14 +1,31 @@
 function renderRoomScene(level) {
   return `<header class="room-heading"><a class="room-wordmark" href="#portal" aria-label="书房主页"><span class="room-seal" aria-hidden="true">B</span><span><h1>The Black Tower</h1><small>PRIVATE ADVENTURE ARCHIVE</small></span></a><span class="room-edition">黑塔 · 私人书房<span>归来，落座，再启程</span></span></header>
-    <section class="room-viewport" aria-label="可左右探索的书房" tabindex="0"><div class="room-stage">
-      <img class="room-art" src="./assets/images/room/background.png" alt="月光与烛火照亮黑塔的石砌书房" width="1672" height="941" fetchpriority="high" />
-      <button class="room-object room-board" id="openRelationshipButton" type="button" aria-haspopup="dialog" aria-controls="relationshipDialog"><img class="room-sprite" src="./assets/images/room/relationship-board.png" alt="" draggable="false" /><span class="room-object-label"><i aria-hidden="true"></i><strong>案板墙</strong><small>人物关系网</small></span></button>
-      <button class="room-object room-map" id="roomMap" type="button" data-room-placeholder="map" aria-haspopup="dialog"><img class="room-sprite" src="./assets/images/room/map-table.png" alt="" draggable="false" /><span class="room-object-label"><i aria-hidden="true"></i><strong>地图桌</strong><small>地图资料 · 待绘制</small></span></button>
-      <button class="room-object room-shelf" id="roomBookshelf" type="button" data-open-bookshelf aria-haspopup="dialog" aria-controls="settingsDialog" aria-expanded="false"><img class="room-sprite" src="./assets/images/room/bookshelf.png" alt="" draggable="false" /><span class="room-object-label"><i aria-hidden="true"></i><strong>书架</strong><small>规则、资料与设置</small></span></button>
-      <button class="room-object room-character" id="roomCharacter" type="button" data-portal-route="character"><img class="room-sprite" src="./assets/images/room/wizard.png" alt="" draggable="false" /><span class="room-object-label"><i aria-hidden="true"></i><strong>甘阿·道夫</strong><small>法师 ${level} 级 · 进入角色卡</small></span></button>
-      <button class="room-object room-journal" id="roomJournal" type="button" data-room-placeholder="journal" aria-haspopup="dialog"><img class="room-sprite" src="./assets/images/room/journal.png" alt="" draggable="false" /><span class="room-object-label"><i aria-hidden="true"></i><strong>冒险日记</strong><small>跑团记录 · 待开启</small></span></button>
-    </div></section>
+    ${renderOriginalRoomLayers(level)}
     <footer class="room-footer"><p><span class="room-spark" aria-hidden="true"></span>点击房间内的物品，翻开你的冒险档案。<small>左右滑动探索房间，也可使用下方导览。</small></p><nav class="room-guide" aria-label="房间位置导览"><button type="button" data-room-focus="openRelationshipButton">案板墙</button><button type="button" data-room-focus="roomMap">地图桌</button><button type="button" data-room-focus="roomBookshelf">书架</button><button type="button" data-room-focus="roomCharacter">甘阿·道夫</button><button type="button" data-room-focus="roomJournal">日记本</button></nav><span class="room-occupant">一间书房<span>SRD 5.1 · CC BY 4.0</span></span></footer>`;
+}
+
+
+// Every image uses one shared, unwarped source canvas. Hit paths do not move the art.
+function renderOriginalRoomLayers(level) {
+  const spec = window.ROOM_LAYER_SPEC;
+  const labels = {
+    board: ['openRelationshipButton', '案板墙', '人物关系网', 'aria-haspopup="dialog" aria-controls="relationshipDialog"'],
+    shelf: ['roomBookshelf', '书架', '规则、资料与设置', 'data-open-bookshelf aria-haspopup="dialog" aria-controls="settingsDialog" aria-expanded="false"'],
+    map: ['roomMap', '地图桌', '地图资料 · 待绘制', 'data-room-placeholder="map" aria-haspopup="dialog"'],
+    character: ['roomCharacter', '甘阿·道夫', '法师 ' + level + ' 级 · 进入角色卡', 'data-portal-route="character"'],
+    journal: ['roomJournal', '冒险日记', '跑团记录 · 待开启', 'data-room-placeholder="journal" aria-haspopup="dialog"']
+  };
+  const asset = file => './assets/images/room/' + file + '?v=20260914-original-pixels';
+  const artwork = ['background.png', ...spec.layers.map(layer => layer.file)].map((file, index) =>
+    '<img class="room-layer" data-room-layer="' + (index ? spec.layers[index - 1].id : 'background') + '" src="' + asset(file) + '" width="' + spec.width + '" height="' + spec.height + '" alt="" draggable="false" fetchpriority="high" />'
+  ).join('');
+  const objects = spec.layers.map((layer, index) => {
+    const [id, title, subtitle, attrs] = labels[layer.id];
+    return '<button class="room-object room-' + layer.id + '" id="' + id + '" type="button" ' + attrs + ' style="--label-x:' + (100 * layer.anchor[0] / spec.width) + '%;--label-y:' + (100 * layer.anchor[1] / spec.height) + '%;z-index:' + (index + 2) + '" data-room-anchor="' + layer.anchor[0] / spec.width + '">' +
+      '<svg class="room-hit-area" viewBox="0 0 ' + spec.width + ' ' + spec.height + '" aria-hidden="true"><polygon points="' + layer.polygon.map(p => p.join(',')).join(' ') + '" /></svg>' +
+      '<span class="room-object-label"><strong>' + title + '</strong><small>' + subtitle + '</small></span></button>';
+  }).join('');
+  return '<section class="room-viewport" aria-label="可左右探索的书房" tabindex="0"><div class="room-stage"><div class="room-artwork" role="img" aria-label="原画中的黑塔书房：案板墙在左侧，甘阿·道夫坐在地图桌后，书架在右侧，日记放在桌上。">' + artwork + '</div>' + objects + '</div></section>';
 }
 
 let roomScrollPosition = null;
@@ -16,12 +33,20 @@ function initializeRoomScene(root) {
   const viewport = root.querySelector(".room-viewport");
   requestAnimationFrame(() => {
     if (!viewport.isConnected) return;
-    viewport.scrollLeft = roomScrollPosition ?? Math.max(0, (viewport.scrollWidth - viewport.clientWidth) * 0.52);
+    viewport.scrollLeft = roomScrollPosition ?? Math.max(0, (viewport.scrollWidth - viewport.clientWidth) * 0.66);
   });
   viewport.addEventListener("scroll", () => { roomScrollPosition = viewport.scrollLeft; }, { passive: true });
+  root.querySelectorAll('.room-object').forEach((button) => button.addEventListener('focus', () => {
+    if (!button.matches(':focus-visible')) return;
+    const label = button.querySelector('.room-object-label').getBoundingClientRect();
+    const visible = viewport.getBoundingClientRect();
+    if (label.left < visible.left + 12 || label.right > visible.right - 12) {
+      viewport.scrollTo({ left: Number(button.dataset.roomAnchor) * viewport.querySelector('.room-stage').clientWidth - viewport.clientWidth / 2, behavior: 'auto' });
+    }
+  }));
   root.querySelectorAll("[data-room-focus]").forEach((button) => button.addEventListener("click", () => {
     const target = document.getElementById(button.dataset.roomFocus);
-    viewport.scrollTo({ left: target.offsetLeft + target.offsetWidth / 2 - viewport.clientWidth / 2, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    viewport.scrollTo({ left: Number(target.dataset.roomAnchor) * viewport.querySelector(".room-stage").clientWidth - viewport.clientWidth / 2, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
     target.focus({ preventScroll: true });
   }));
 }

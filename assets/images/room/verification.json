@@ -1,0 +1,19 @@
+{
+  "source_sha256": "b1161a3db8dfd5b6801a4302a57e5fad6761f1892fb33d8877afe52ee3ca7667",
+  "size": [
+    1672,
+    941
+  ],
+  "compared_pixels": 1573352,
+  "different_pixels": 0,
+  "maximum_channel_error": 0,
+  "opaque_pixels_by_layer": {
+    "background.png": 506260,
+    "relationship-board.png": 156166,
+    "bookshelf.png": 333014,
+    "map-table.png": 381232,
+    "wizard.png": 169963,
+    "journal.png": 26717
+  },
+  "method": "disjoint original-pixel extraction; no repaint, rescale, lighting or shadow changes"
+}

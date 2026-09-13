@@ -1,40 +1,26 @@
-# The Black Tower 房间素材与图层
+# The Black Tower 原图拆层
 
-采用内置 imagegen 工具生成。背景只含建筑与照明；五件物品各自使用保留 RGBA alpha 的独立 PNG，名称由 HTML 输出。原完整场景图不参与最终页面。
+当前唯一画面来源为用户确认并重新提供的原图，保存在 assets/images/room/source.png。此前分别生成的家具和人物已被替换。本次按用户要求直接提取原像素，不调用图像生成工具。
 
-素材目录：`assets/images/room/`。`room.js` 负责按钮与标签，`room.css` 负责位置、遮挡、悬停反馈及手机横向探索。
+## 素材与坐标
 
-| 文件 | 用途 |
-| --- | --- |
-| background.png | 建筑背景 |
-| relationship-board.png | 人物关系网 |
-| map-table.png | 地图占位入口 |
-| bookshelf.png | 书架入口 |
-| wizard.png | 甘阿·道夫角色入口 |
-| journal.png | 跑团日记占位入口 |
+- assets/images/room/layers.json：物件轮廓、图层归属顺序、文字锚点。
+- assets/images/room/background.png：原图剩余环境像素，物件区域透明。
+- relationship-board.png、bookshelf.png、map-table.png、wizard.png、journal.png：各物件在原图中可见的像素，均位于 assets/images/room/。
+- 六张图都保留 1672×941 画布，用相同原点与缩放倍率叠放；不是重新摆放的独立家具。
+- 阴影、光源、桌边遮挡、手部和日记接触关系均沿用原画像素。被其他物品遮挡的部分没有补画，因此这套图层适合固定场景交互，不应直接拿去拖动家具。
 
-## 最终生成提示词
+## 页面合成
 
-### background
+room.css 保持画布宽高比。超宽屏居中留边，手机竖屏横向探索。所有图层在同一个隔离容器中使用 plus-lighter 合成，使透明边缘缩放时的覆盖量相加，避免普通 alpha 叠加产生黑缝。
 
-Edit the supplied fantasy study image into a CLEAN EMPTY ENVIRONMENT BACKGROUND for a layered point-and-click game. Preserve exactly the landscape 16:9 camera perspective, stone Gothic architecture, central blue moonlit arched window, warm amber candle lighting, dark detailed painterly realism, stone floor and atmosphere. REMOVE the full investigation board on the left wall, the whole bookshelf on the right, ALL foreground tables and all items on them, the wizard and his chair, and the diary. Reconstruct clean bare stone wall behind left board, bare stone wall behind the right bookshelf and the full empty floor behind furniture and wizard. Keep subtle architectural candle sconces and window. No foreground furniture, no books, no people, no loose objects, no texts, no UI. This is one empty room background, objects will be added as separate transparent layers. Output landscape 16:9.
+独立 SVG 多边形提供物件点击范围；独立 HTML 标签提供名称、说明与键盘焦点反馈。取消素材上的额外投影、亮度改变和悬停位移，避免破坏原图的光影关系。
 
-### board
+## 可复现检验
 
-Extract/recreate ONLY the left investigation corkboard from the reference as an independent game prop on a genuinely TRANSPARENT BACKGROUND with alpha. Keep the reference's realistic fantasy painted aesthetic and warm amber side-light, aged carved dark wood frame, cream parchment notes, small character portrait sketches and red threads. Include board frame and its pinned materials ONLY, not wall, candles, desk or surrounding objects. Maintain slight room perspective with the right edge mildly receding as in reference. One whole rectangular board, straight coherent geometry, tightly framed with a small transparent margin, no cropped edges. No readable text, no captions, no logos, no checkerboard baked into the image. A high quality isolated transparent PNG game sprite, roughly 4:3.
+- Python（Pillow、numpy）：python scripts/extract-room-layers.py；加 --check 只检查现有输出。
+- npm test：独立 Node PNG 解码测试核对用户原图 SHA-256、每个像素恰好归属一个图层及完整 RGB 重构。
+- 启动 npm run preview 后访问 /scripts/room-visual-check.html，在原图、拆分图层和实际 CSS 差异图之间切换，并查看浏览器缩放比较。
+- 数值结果：assets/images/room/verification.json。
 
-### shelf
-
-A single isolated fantasy game sprite. An antique dark walnut bookcase filled with old blue, burgundy and brown leather books and a few brass astronomy instruments. Full standing bookcase with feet. Front three quarter view. Painterly realistic illustrated game art. Transparent background. PNG with alpha transparency, no backdrop, no floor, no checkerboard pattern. Landscape image.
-
-### table
-
-Create ONLY the foreground wooden MAP TABLE from the supplied reference as a standalone, fully isolated game prop with actual transparent alpha channel, RGBA PNG, background alpha zero. Preserve realistic detailed fantasy illustration, amber candlelight and cool blue rim light. A broad heavy antique rectangular oak table, view from slightly above the near corner, its top visible with an open parchment map, brass compass, rolled scrolls and one small candle. Include the FULL table and all legs down to their feet, no edges cropped, small transparent margin. No wizard or chair, no journal or quill, no bookshelf or wall or floor. Keep right half of tabletop relatively clear for a separately composited journal. No text or floating labels. No checkerboard pattern baked into pixels. Wide horizontal sprite, roughly 3:2.
-
-### wizard
-
-A single isolated fantasy game sprite. An elderly white bearded wizard wearing dark embroidered robes and a wide pointed hat, seated in a carved wooden chair, full body and chair and feet. Warm candlelight from the left, cool blue rim light from the right. Painterly realistic illustrated game art. Transparent background. PNG with alpha transparency, no backdrop, no floor, no checkerboard pattern. Landscape image.
-
-### journal
-
-Create ONLY a closed antique leather adventure journal and white quill as one tightly framed isolated game prop, actual transparent alpha RGBA PNG. Match the supplied reference's lower table journal: dark burgundy leather cover, worn golden metal corners, ornate gold circular arcane embossing without letters, thick parchment pages, three-quarter view from slightly above as if lying flat on the tabletop; a white feather quill rests diagonally beside it. Warm amber highlights, realistic detailed painterly fantasy style. The book and quill only. No table, floor, map, hands, shadow plane or room. Fully transparent background alpha zero, no checkerboard baked in, no white or black background. No readable text. Wide sprite roughly 4:3.
+2026-09-14 验收：1,573,352 个原图像素，重构差异 0。浏览器 1672×941 原尺寸差异 0；1279×720、693×390、1500×844 缩放的最大通道差为 1/255，平均通道差小于 0.001/255。CSS 差异图检查无可见物件轮廓与接缝。桌面、390×844 竖屏和844×390 横屏逐项检查五件物品、文字标签、导览及关闭返回。

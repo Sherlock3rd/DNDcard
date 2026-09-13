@@ -1,9 +1,12 @@
 /* Each physical object owns its artwork, hit target and caption. */
 body[data-route="portal"] { overflow: hidden; }
-.study-room { position: relative; height: 100svh; min-height: 420px; color: #eee4cf; background: #090c12; }
-.room-viewport { position: absolute; inset: 0; overflow: auto; scrollbar-width: thin; scrollbar-color: #786148 #11151a; }
-.room-stage { position: relative; width: max(100%, calc(100svh * 1.777)); min-height: 420px; height: 100%; isolation: isolate; }
-.room-art { position: absolute; width: 100%; height: 100%; object-fit: fill; pointer-events: none; }
+.study-room { position: relative; height: 100svh; color: #eee4cf; background: #090c12; }
+.room-viewport { position: absolute; inset: 0; display: flex; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
+.room-stage { position: relative; flex: 0 0 auto; margin-inline: auto; width: calc(100svh * 1672 / 941); height: 100svh; isolation: isolate; }
+.room-artwork { position: absolute; inset: 0; isolation: isolate; pointer-events: none; }
+.room-layer { position: absolute; inset: 0; display: block; width: 100%; height: 100%; pointer-events: none; mix-blend-mode: plus-lighter; }
+.room-hit-area { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.room-hit-area polygon { fill: transparent; pointer-events: fill; }
 .room-heading { position: absolute; inset: 0 0 auto; z-index: 10; display: flex; justify-content: space-between; align-items: center; padding: 24px 36px 50px; background: linear-gradient(#080c13e8, transparent); pointer-events: none; }
 .room-wordmark { display: flex; align-items: center; gap: 15px; text-decoration: none; color: #f3e7cd; pointer-events: auto; }
 .room-wordmark h1 { margin: 0; font: 500 clamp(24px, 2.8vw, 38px)/1.1 Georgia, serif; letter-spacing: .025em; }
@@ -11,26 +14,14 @@ body[data-route="portal"] { overflow: hidden; }
 .room-seal { width: 40px; height: 48px; display: grid; place-items: center; border: 1px solid #b2975e; font: 28px Georgia, serif; border-radius: 20px 20px 2px 2px; }
 .room-edition { text-align: right; font-size: 13px; letter-spacing: .18em; color: #d5c8b0; }
 .room-edition span { display: block; margin-top: 8px; font-size: 10px; color: #a49f95; }
-.room-object { position: absolute; display: block; padding: 0; margin: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; color: #f3e5c8; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.room-object { position: absolute; inset: 0; display: block; width: 100%; height: 100%; padding: 0; margin: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; color: #f3e5c8; pointer-events: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .room-object:hover { background: transparent; }
-.room-sprite { display: block; width: 100%; height: 100%; object-fit: contain; pointer-events: none; transition: filter .2s ease; filter: brightness(.82) drop-shadow(0 10px 8px #0007); }
-.room-object:hover .room-sprite, .room-object:focus-visible .room-sprite { filter: brightness(1.1) drop-shadow(0 0 7px #d5a75390); }
 .room-object:focus-visible { outline: none; }
-.room-object-label { position: absolute; left: 50%; top: 85%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 48px; min-width: 112px; width: max-content; padding: 9px 17px; background: #10151ee8; border: 1px solid #a288556e; box-shadow: 0 4px 15px #0008; border-radius: 2px; transition: border-color .2s, background .2s; }
+.room-object-label { position: absolute; left: var(--label-x); top: var(--label-y); transform: translate(-50%, -50%); pointer-events: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 48px; min-width: 112px; width: max-content; padding: 9px 17px; background: #10151ee8; border: 1px solid #a288556e; box-shadow: 0 4px 15px #0008; border-radius: 2px; transition: border-color .2s, background .2s; }
 .room-object-label::before { content: ''; position: absolute; height: 16px; width: 1px; background: #c6a565; left: 50%; bottom: 100%; }
 .room-object-label strong { font: 500 15px/1.5 Georgia, 'Microsoft YaHei', serif; letter-spacing: .12em; }
 .room-object-label small { color: #b5ad9d; font: 10px/1.5 sans-serif; margin-top: 2px; }
 .room-object:hover .room-object-label, .room-object:focus-visible .room-object-label { background: #25251eef; border-color: #e3c88e; }
-.room-board { left: 5%; top: 20%; width: 28%; height: 38%; z-index: 2; }
-.room-board .room-object-label { top: 88%; }
-.room-shelf { left: 72%; top: 17%; width: 27%; height: 60%; z-index: 2; }
-.room-shelf .room-object-label { top: 73%; }
-.room-character { left: 51%; top: 29%; width: 29%; height: 59%; z-index: 3; }
-.room-character .room-object-label { left: 80%; top: 42%; }
-.room-map { left: 23%; top: 51%; width: 43%; height: 44%; z-index: 4; }
-.room-map .room-object-label { left: 31%; top: 52%; }
-.room-journal { left: 46%; top: 65%; width: 8%; height: 10%; z-index: 5; }
-.room-journal .room-object-label { top: 105%; }
 .room-footer { position: absolute; inset: auto 0 0; z-index: 10; display: flex; align-items: end; justify-content: space-between; gap: 20px; padding: 45px 36px 21px; pointer-events: none; background: linear-gradient(transparent, #080c13f2); }
 .room-footer p { font-size: 11px; color: #beb6a6; margin: 0; }
 .room-footer p small { display: none; margin-top: 6px; font-size: 10px; color: #8f969f; }
@@ -61,7 +52,8 @@ body[data-route="portal"] { overflow: hidden; }
 }
 @media (max-height: 500px) and (min-width: 600px) {
  .study-room, .room-stage { min-height: 0; }
+ .room-journal .room-object-label { margin-top: -14px; }
  .room-heading { padding: 12px 20px 30px; }.room-wordmark h1 { font-size: 24px; }.room-seal { height: 36px; width: 30px; }.room-wordmark small { font-size: 8px; margin-top: 4px; }
  .room-footer { padding: 22px 15px 8px; }.room-footer p, .room-occupant { display: none; }.room-guide { margin-left: auto; }.room-object-label { min-height: 44px; padding: 5px 9px; }.room-object-label strong { font-size: 12px; }.room-object-label small { font-size: 9px; }
 }
-@media (prefers-reduced-motion: reduce) { .room-sprite, .room-object-label, .shelf-book { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .room-object-label, .shelf-book { transition: none; } }

@@ -26,11 +26,12 @@ test('room routes, independent transparent objects and bookshelf preserve saves'
     const before = saved();
     const route = async (selector) => { q(selector).click(); await new Promise(r => w.setTimeout(r, 15)); };
     assert.equal(w.document.title, 'The Black Tower');
+    assert.deepEqual(JSON.parse(JSON.stringify(w.ROOM_LAYER_SPEC)), JSON.parse(fs.readFileSync(path.join(root, 'assets/images/room/layers.json'), 'utf8')), 'runtime hit paths and anchors match the extraction manifest');
     assert.equal(q('#portalApp').hidden, false);
-    assert.equal(all('.room-object > img').length, 5);
-    assert.equal(new Set(all('.room-object > img').map(i => i.src)).size, 5);
-    for (const img of all('.room-object > img')) {
-      const png = fs.readFileSync(path.join(root, img.getAttribute('src')));
+    assert.equal(all('.room-layer[data-room-layer]:not([data-room-layer="background"])').length, 5);
+    assert.equal(new Set(all('.room-layer[data-room-layer]:not([data-room-layer="background"])').map(i => i.src)).size, 5);
+    for (const img of all('.room-layer[data-room-layer]:not([data-room-layer="background"])')) {
+      const png = fs.readFileSync(path.join(root, img.getAttribute('src').split('?')[0]));
       assert.equal(png[25], 6, `${img.src} must retain RGBA alpha`);
     }
     q('#openRelationshipButton').click();
