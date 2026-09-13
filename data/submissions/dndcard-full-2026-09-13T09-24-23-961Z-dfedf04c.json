@@ -1,0 +1,228 @@
+{
+  "format": "dndcard-snapshot",
+  "version": 1,
+  "scope": "full",
+  "exportedAt": "2026-09-13T09:24:23.961Z",
+  "payload": {
+    "manager": {
+      "profileVersion": 10,
+      "level": 4,
+      "abilities": {
+        "STR": 16,
+        "DEX": 15,
+        "CON": 14,
+        "INT": 17,
+        "WIS": 13,
+        "CHA": 6
+      },
+      "coins": {
+        "cp": 0,
+        "sp": 0,
+        "ep": 0,
+        "gp": 10,
+        "pp": 0
+      },
+      "spellbook": [
+        "light",
+        "fire-bolt",
+        "custom-spell-booming-blade",
+        "detect-magic",
+        "find-familiar",
+        "shield",
+        "thunderwave",
+        "mage-armor",
+        "custom-spell-absorb-elements",
+        "magic-missile",
+        "sleep",
+        "mirror-image",
+        "misty-step",
+        "comprehend-languages",
+        "see-invisibility",
+        "mage-hand"
+      ],
+      "prepared": [
+        "magic-missile",
+        "thunderwave",
+        "mirror-image",
+        "misty-step",
+        "comprehend-languages",
+        "see-invisibility",
+        "shield"
+      ],
+      "customSpells": [
+        {
+          "id": "custom-spell-booming-blade",
+          "name": "Booming Blade",
+          "nameZh": "轰雷剑",
+          "level": 0,
+          "school": "Evocation",
+          "classes": [
+            "Wizard"
+          ],
+          "castingTimeZh": "1 动作",
+          "rangeZh": "自身（5 尺）",
+          "durationZh": "1 轮",
+          "componentsZh": "S、M（价值至少 1 银币的近战武器）",
+          "ritual": false,
+          "concentration": false,
+          "descriptionZh": "以手中武器发动一次近战攻击，并以雷鸣能量包裹目标；目标若在效果结束前主动移动，会承受额外雷鸣伤害。",
+          "higherLevelZh": "角色等级提升时，武器攻击与移动触发的雷鸣伤害会提高。",
+          "custom": true
+        },
+        {
+          "id": "custom-spell-absorb-elements",
+          "name": "Absorb Elements",
+          "nameZh": "吸收元素",
+          "level": 1,
+          "school": "Abjuration",
+          "classes": [
+            "Wizard"
+          ],
+          "castingTimeZh": "1 反应",
+          "rangeZh": "自身",
+          "durationZh": "1 轮",
+          "componentsZh": "S",
+          "ritual": false,
+          "concentration": false,
+          "descriptionZh": "受到酸蚀、寒冷、火焰、闪电或雷鸣伤害时吸收部分能量，获得该伤害类型的临时抗性，并强化下一次近战攻击。",
+          "higherLevelZh": "使用更高环法术位时，下一次近战攻击的额外元素伤害提高。",
+          "custom": true
+        }
+      ],
+      "spellOverrides": {},
+      "customItems": [
+        {
+          "id": "custom-item-1789283515466",
+          "name": "1",
+          "nameZh": "卡夫统灵药",
+          "type": "Adventuring Gear",
+          "category": "",
+          "rarity": "Common",
+          "cost": "",
+          "weight": 0,
+          "damage": "",
+          "armorClass": null,
+          "properties": [],
+          "descriptionZh": "可以回血2d8+2，治愈疾病、治愈中毒，可以用五次",
+          "magic": false,
+          "custom": true
+        }
+      ],
+      "itemOverrides": {},
+      "inventory": [
+        {
+          "id": "equipment-longsword",
+          "quantity": 1,
+          "equipped": true,
+          "notes": "父亲遗物"
+        },
+        {
+          "id": "equipment-quarterstaff",
+          "quantity": 1,
+          "equipped": false,
+          "notes": ""
+        },
+        {
+          "id": "equipment-crossbow-light",
+          "quantity": 1,
+          "equipped": false,
+          "notes": ""
+        },
+        {
+          "id": "equipment-studded-leather-armor",
+          "quantity": 1,
+          "equipped": true,
+          "notes": "基础 AC 14"
+        },
+        {
+          "id": "equipment-component-pouch",
+          "quantity": 1,
+          "equipped": true,
+          "notes": ""
+        },
+        {
+          "id": "equipment-spellbook",
+          "quantity": 1,
+          "equipped": true,
+          "notes": "记录 10 个一环及以上法术"
+        },
+        {
+          "id": "equipment-playing-card-set",
+          "quantity": 1,
+          "equipped": true,
+          "notes": "母亲遗物 · 边角磨白"
+        },
+        {
+          "id": "magic-hat-of-disguise",
+          "quantity": 1,
+          "equipped": true,
+          "notes": "导师赠予 · 已同调"
+        },
+        {
+          "id": "equipment-crossbow-bolt",
+          "quantity": 1,
+          "equipped": false,
+          "notes": "1 包 · 共 20 支 · 轻弩弹药"
+        },
+        {
+          "id": "custom-item-1789283515466",
+          "quantity": 5,
+          "equipped": true,
+          "notes": ""
+        }
+      ],
+      "feats": [
+        {
+          "id": "feat-1787480514530",
+          "catalogId": "mobile",
+          "name": "移动（Mobile）",
+          "source": "D&D 5e 2014 玩家手册 · DM 许可",
+          "prerequisite": "",
+          "description": "速度提高 10 尺；疾走时更容易穿越困难地形；对生物发动近战攻击后可避开该生物的借机攻击。",
+          "configuration": "",
+          "acquiredAtLevel": 4
+        }
+      ],
+      "levelHistory": [
+        {
+          "level": 4,
+          "hpGain": 6,
+          "spells": [
+            "comprehend-languages",
+            "see-invisibility"
+          ],
+          "cantrip": "mage-hand",
+          "feat": {
+            "id": "feat-1787480514530",
+            "catalogId": "mobile",
+            "name": "移动（Mobile）",
+            "source": "D&D 5e 2014 玩家手册 · DM 许可",
+            "prerequisite": "",
+            "description": "速度提高 10 尺；疾走时更容易穿越困难地形；对生物发动近战攻击后可避开该生物的借机攻击。",
+            "configuration": "",
+            "acquiredAtLevel": 4
+          },
+          "abilities": {
+            "STR": 16,
+            "DEX": 15,
+            "CON": 14,
+            "INT": 17,
+            "WIS": 13,
+            "CHA": 6
+          },
+          "at": "2026-08-23T10:21:54.530Z"
+        }
+      ]
+    },
+    "state": {
+      "hp": 26,
+      "maxHp": 26,
+      "tempHp": 8,
+      "slot1": 1,
+      "slot2": 2,
+      "bladesongUses": 1,
+      "bladesongActive": true,
+      "conditions": []
+    }
+  }
+}
