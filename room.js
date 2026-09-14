@@ -13,7 +13,7 @@ function renderOriginalRoomLayers(level) {
     shelf: ['roomBookshelf', '书架', '规则、资料与设置', 'data-open-bookshelf aria-haspopup="dialog" aria-controls="settingsDialog" aria-expanded="false"'],
     map: ['roomMap', '地图桌', '费伦地图 · 地点与棋子', 'data-open-map-table'],
     character: ['roomCharacter', '甘阿·道夫', '法师 ' + level + ' 级 · 进入角色卡', 'data-portal-route="character"'],
-    journal: ['roomJournal', '冒险日记', '跑团记录 · 待开启', 'data-room-placeholder="journal" aria-haspopup="dialog"']
+    journal: ['roomJournal', '冒险日记', '余烬与旗帜 · 行旅手记', 'data-open-journal']
   };
   const asset = file => './assets/images/room/' + file + '?v=20260914-original-pixels';
   const artwork = ['background.png', ...spec.layers.map(layer => layer.file)].map((file, index) =>
@@ -49,6 +49,7 @@ function initializeRoomScene(root) {
 
 document.addEventListener("click", (event) => {
   if(event.target.closest('[data-open-map-table]')){window.location.href='./map.html';return;}
+  if(event.target.closest('[data-open-journal]')){window.location.href='./journal.html';return;}
   const placeholder = event.target.closest("[data-room-placeholder]");
   if (placeholder) {
     const isMap = placeholder.dataset.roomPlaceholder === "map";

@@ -1,0 +1,44 @@
+const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),{JSDOM}=require('jsdom');
+const root=path.resolve(__dirname,'..'),source=f=>fs.readFileSync(path.join(root,f),'utf8'),copy=v=>JSON.parse(JSON.stringify(v));
+function core(){const window={};const c=vm.createContext({window,console,structuredClone});vm.runInContext(source('journal-seed.js'),c);vm.runInContext(source('journal-core.js'),c);return window.JOURNAL_CORE}
+function storage(){const m=new Map();return {getItem:k=>m.get(k)??null,setItem:(k,v)=>m.set(k,v),m}}
+function server(){const rows=new Map();return {rows,offline:false,async load(u){if(this.offline)throw Error('offline');return copy(rows.get(u)||null)},async save(u,r,s){if(this.offline)throw Error('offline');const old=rows.get(u);if((old?.revision||0)!==r)return {status:'conflict',row:copy(old)};const row={revision:r+1,snapshot:copy(s)};rows.set(u,row);return {status:'saved',row:copy(row)}}}}
+function open(file='journal.html',raw=null,search=''){
+ const dom=new JSDOM(source(file),{url:'https://example.test/'+file+search,runScripts:'outside-only'}),w=dom.window,q=s=>w.document.querySelector(s);w.structuredClone=copy;w.requestAnimationFrame=()=>0;w.cancelAnimationFrame=()=>{};w.matchMedia=()=>({matches:false});w.HTMLDialogElement.prototype.showModal=function(){this.open=true};w.HTMLDialogElement.prototype.close=function(){this.open=false;this.dispatchEvent(new w.Event('close'))};
+ if(raw)w.localStorage.setItem('dndcard-journal-v1:guest',raw);w.localStorage.setItem('gandalf-5e-state','keep');w.localStorage.setItem('dndcard-map-v1:guest','keep');
+ if(file==='map.html'){Object.defineProperties(q('#viewport'),{clientWidth:{value:1200},clientHeight:{value:700}});w.HTMLElement.prototype.setPointerCapture=()=>{};w.HTMLElement.prototype.hasPointerCapture=()=>false;for(const f of ['map-bounds.js','map-camera-preview.js'])vm.runInContext(source(f),dom.getInternalVMContext(),{filename:f});}
+ for(const f of ['journal-seed.js','journal-core.js',file==='map.html'?'map-journal.js':'journal.js'])vm.runInContext(source(f),dom.getInternalVMContext(),{filename:f});
+ w.DND_CLOUD_CONFIG={url:'https://example.test',publishableKey:'test'};w.DND_SUPABASE={createClient:()=>({auth:{onAuthStateChange:()=>{},getSession:async()=>({data:{session:null}})}})};vm.runInContext(source('journal-sync.js'),dom.getInternalVMContext(),{filename:'journal-sync.js'});
+ return {w,q,close:()=>w.close(),raw:()=>w.localStorage.getItem('dndcard-journal-v1:guest'),snapshot:()=>JSON.parse(w.localStorage.getItem('dndcard-journal-v1:guest')).snapshot};
+}
+test('five first-person chapters preserve source facts and referenced illustrations; unknown locations remain unplaced',()=>{
+ const c=core(),s=c.initial();assert.equal(s.entries.length,5);assert.equal(new Set(s.entries.map(e=>e.image)).size,5);for(const e of s.entries){assert(e.body.includes('我'));assert(e.source.length>200);assert(fs.existsSync(path.join(root,e.image)));assert(!/\d{4}年/.test(e.day))}assert.equal(s.places.filter(p=>p.x===null).length,3);assert.equal(s.places[0].x,1036);assert(s.entries[0].body.includes('五百枚金币'));assert(s.entries[2].body.includes('五个'));
+ for(const field of ['body','title','day']){const bad=copy(s);bad.entries[0][field]='';assert.throws(()=>c.validate(bad))}const bad=copy(s);bad.entries[0].image='javascript:alert(1)';assert.throws(()=>c.validate(bad));bad.entries[0].image='';bad.entries[0].placeIds=['unknown'];assert.throws(()=>c.validate(bad));
+});
+test('book browsing and editor cancel are read-only; committed edits restore after reload and retain multi-place links',()=>{
+ const a=open();try{const original=a.raw();a.q('#next').click();assert(a.q('#chapterTitle').textContent.includes('出奔'));a.q('#editEntry').click();a.q('#entryBody').value='cancelled';a.q('[data-cancel-edit]').click();assert.equal(a.raw(),original);
+ a.q('#editEntry').click();a.q('#entryBody').value='我记下了今天的新补充。';a.q('#entryForm').dispatchEvent(new a.w.Event('submit',{bubbles:true,cancelable:true}));assert.equal(a.snapshot().entries[1].body,'我记下了今天的新补充。');assert.equal(a.snapshot().entries[1].placeIds.length,2);
+ const b=open('journal.html',a.raw(),'#embers-02');try{assert(b.q('#chapterBody').textContent.includes('新补充'));assert.equal(b.w.localStorage.getItem('gandalf-5e-state'),'keep');assert.equal(b.w.localStorage.getItem('dndcard-map-v1:guest'),'keep')}finally{b.close()}
+ }finally{a.close()}
+});
+test('new chapter persists with stable anchor and rejects unsafe image URLs',()=>{
+ const a=open();try{a.q('#newEntry').click();a.q('#entryTitle').value='第二日';a.q('#entryBody').value='我在堡垒醒来。';a.q('#entryImage').value='javascript:alert(1)';a.q('#entryForm').dispatchEvent(new a.w.Event('submit',{cancelable:true}));assert.equal(a.snapshot().entries.length,5);a.q('#entryImage').value='';a.q('#entryForm').dispatchEvent(new a.w.Event('submit',{cancelable:true}));assert.equal(a.snapshot().entries.length,6);assert.equal(a.q('#pageProgress').textContent,'6 / 6')}finally{a.close()}
+});
+test('map location picking writes journal coordinates, links back to chapters, cancellation changes nothing',()=>{
+ const a=open('map.html',null,'?journalPlace=mining-town');const event=(type,x,y)=>{const e=new a.w.Event(type,{bubbles:true});Object.assign(e,{button:0,pointerId:1,clientX:x,clientY:y});a.q('#viewport').dispatchEvent(e)};
+ try{const raw=a.raw();a.q('#positionJournalPlace').click();a.q('#cancelJournalPlace').click();assert.equal(a.raw(),raw);a.q('#positionJournalPlace').click();event('pointerdown',640,360);event('pointerup',640,360);const p=a.snapshot().places.find(p=>p.id==='mining-town');assert(Number.isFinite(p.x));assert(Number.isFinite(p.y));assert(a.q('#journalPlaceEntries a').href.includes('#embers-04'));assert.equal(a.w.localStorage.getItem('dndcard-map-v1:guest'),'keep');const b=open('journal.html',a.raw(),'#embers-04');try{assert([...b.w.document.querySelectorAll('#chapterPlaces a')].some(a=>a.textContent.includes('地图')))}finally{b.close()}}finally{a.close()}
+});
+test('journal cloud round-trip, offline restore, conflict backups and account isolation',async()=>{
+ const c=core(),remote=server(),local=storage(),a=new c.Store({storage:local,remote});await a.setUser('A');let s=copy(a.entry.snapshot);s.entries[0].body='我在A的日志。';a.save(s);await a.sync();assert.equal(a.status,'synced');
+ const b=new c.Store({storage:storage(),remote});await b.setUser('A');assert.equal(b.entry.snapshot.entries[0].body,'我在A的日志。');s=copy(b.entry.snapshot);s.entries[0].body='另一个设备的版本';b.save(s);await b.sync();s=copy(a.entry.snapshot);s.entries[0].body='我的离线版本';remote.offline=true;a.save(s);await a.sync();assert.equal(a.status,'error');const restored=new c.Store({storage:local,remote});await restored.setUser('A');assert.equal(restored.entry.snapshot.entries[0].body,'我的离线版本');remote.offline=false;await restored.sync();assert.equal(restored.status,'conflict');await restored.resolve(false);assert.equal(restored.entry.snapshot.entries[0].body,'另一个设备的版本');assert([...local.m.keys()].some(k=>k.includes(':backup:')));await restored.setUser('B');assert.notEqual(restored.entry.snapshot.entries[0].body,'另一个设备的版本');assert.equal(remote.rows.has('B'),false);
+});
+test('bound journal place follows the physical piece; clearing with confirmation leaves the piece intact',()=>{
+ const a=open('map.html',null,'?journalPlace=mining-town'),piece=a.q('.piece');const pointer=(type,x,y)=>{const e=new a.w.Event(type,{bubbles:true});Object.assign(e,{button:0,pointerId:1,clientX:x,clientY:y});piece.dispatchEvent(e)};
+ try{a.q('#positionJournalPlace').click();pointer('pointerdown',600,350);const bound=a.snapshot().places.find(p=>p.id==='mining-town');assert(bound.pieceId);a.q('#moveMode').click();pointer('pointerdown',600,350);pointer('pointermove',760,420);pointer('pointerup',760,420);assert.notEqual(a.snapshot().places.find(p=>p.id==='mining-town').x,bound.x);
+  a.q('#clearJournalPlace').click();const raw=a.raw();a.q('#keepPlace').click();assert.equal(a.raw(),raw);a.q('#clearJournalPlace').click();a.q('#confirmClearPlace').click();const cleared=a.snapshot().places.find(p=>p.id==='mining-town');assert.equal(cleared.x,null);assert.equal(cleared.pieceId,null);assert.equal(a.w.document.querySelectorAll('.piece').length,1);
+ }finally{a.close()}
+});
+test('JSONB key ordering does not cause false server read-back errors',async()=>{
+ const c=core(),remote=server(),original=remote.save.bind(remote);const reordered=v=>Array.isArray(v)?v.map(reordered):v&&typeof v==='object'?Object.fromEntries(Object.entries(v).reverse().map(([k,val])=>[k,reordered(val)])):v;
+ remote.save=async(...args)=>reordered(await original(...args));const a=new c.Store({storage:storage(),remote});await a.setUser('A');a.save(c.initial());await a.sync();assert.equal(a.status,'synced');assert(c.equal(a.entry.snapshot,reordered(a.entry.snapshot)));
+});

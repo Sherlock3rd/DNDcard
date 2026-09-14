@@ -43,4 +43,4 @@ function mapSnapshot(){return {version:1,mapId:'faerun-3.5',pieces:pieces.map(p=
 function saveMap(){document.dispatchEvent(new CustomEvent('map:save',{detail:mapSnapshot()}))}
 window.MapTable={read:mapSnapshot,canApply:()=>!pieceDrag&&!drag&&!mode&&$('#editor').hidden,
  apply(snapshot){setMoveMode(false);drag=null;select(null);for(const p of pieces)p.el.remove();pieces.length=0;
- for(const saved of snapshot.pieces){const p=create(Object.values(types).flat().find(t=>t[1]===saved.kind),saved.x,saved.y);p.id=saved.id;p.name=saved.name;p.label.textContent=saved.name}home(true)}};
+ for(const saved of snapshot.pieces){const p=create(Object.values(types).flat().find(t=>t[1]===saved.kind),saved.x,saved.y);p.id=saved.id;p.name=saved.name;p.label.textContent=saved.name}home(true);document.dispatchEvent(new Event('map:restored'))}};

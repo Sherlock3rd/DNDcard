@@ -1,0 +1,38 @@
+{
+  "tool": "built-in image_gen",
+  "reference": "codex-clipboard-9c00f0d9-ae18-4996-9f63-6f2aa3a646a6.png",
+  "shared": "Use case: illustration-story. Create one original landscape chapter illustration, 1536x1024 or wider landscape. Reference image is STYLE ONLY: muted ash grey, dusty ochre and old gold, painterly brushwork and fine stone architecture, overcast luminous sky, restrained low saturation, atmospheric medieval dark fantasy, strong environmental storytelling, distant small figures. NOT a screenshot, no UI, no letters or watermark, no panel collage. Do not copy graveyard/skeletons from reference; illustrate specified scene. Adventurers are seven adult companions, seen small or from behind without inventing detailed race/face costumes; Gandalf is this campaign's cloaked sword-and-magic adventurer, NOT Tolkien's movie wizard. ",
+  "scenes": [
+    [
+      "01-bequest",
+      "Inside a once-grand impoverished nobleman's manor at misty dusk in Baldur's Gate. An elderly dying employer lies in a dim bed beside a small table with a heavy pouch of coins, seven subdued mercenary companions gathered in worn travel cloaks; through an open weathered crimson-painted doorway or tall window one old wooden carriage and two aging horses wait in a rain-wet courtyard. Intimate solemn broad composition, candle glow gentle, not funeral or gore. Focus on the last gift and fading household."
+    ],
+    [
+      "02-departure",
+      "A huge medieval port-city gate recedes in early morning fog behind exactly one worn wooden wagon drawn by exactly two old horses. Seven travelling companions, some on foot and some riding the wagon, head away toward open southeast wilderness. Wet cobbles transition into a dusty road, enormous grey city walls, distant pale sun. Seen from behind on a raised vantage, bittersweet quiet new beginning."
+    ],
+    [
+      "03-recruitment",
+      "A road curves past dead woodland and boulders. A disciplined group of seven travelling adventurers beside their one old horse-drawn wagon faces five ragged highwaymen. One calm unarmed negotiator stands between groups; beside him another traveller holds a very small eerie blue flame in an open palm. The one-eyed bandit leader drops his blade and kneels, other four hesitate behind him. Negotiation and surprising surrender, no fighting, no extra soldiers. Muted grey ochre palette, only a tiny cold blue flame."
+    ],
+    [
+      "04-town",
+      "Approach through a narrow mountain pass to a small dwarven mining town with stone houses, smoking chimneys, mine carts and rugged grey peaks. At town entrance a stocky mayor with a long white beard discusses a request with the travellers around their worn wagon and two horses. Small figures, architecture dominant, no giant fantasy city. A broken fort barely visible on a southern rocky ridge in distance. Grey-gold painted illustration, no text."
+    ],
+    [
+      "05-banner",
+      "At sunset after victory, seven travel-worn adventurers stand atop the shattered tower of a reclaimed modest stone fortress. A plain unfurled banner without emblem rises over the ruins; a cloaked sword-bearing traveller surveys the land, a companion kneels by a wall crack holding a handful of soil beside a single small wildflower. Below in courtyard their one battered wagon and two aged horses; far beyond a small mining town's chimney smoke. Restrained gold light edges broken stones under a sweeping grey sky, hopeful melancholy, no corpses or active combat."
+    ]
+  ],
+  "corrections": [
+    "Departure: add the missing seventh main companion riding the wagon.",
+    "Recruitment: correct group counts to seven companions and five bandits, retaining style and composition."
+  ],
+  "outputs": [
+    "assets/images/journal/01-bequest.png",
+    "assets/images/journal/02-departure.png",
+    "assets/images/journal/03-recruitment.png",
+    "assets/images/journal/04-town.png",
+    "assets/images/journal/05-banner.png"
+  ]
+}

@@ -5,7 +5,7 @@
   "scripts": {
     "preview": "node scripts/serve.js",
     "build:vendor": "node scripts/build-vendor.js",
-    "test": "node scripts/audit-icon-mapping.js && node scripts/audit-feat-catalog.js && node scripts/audit-modifier-sync.js && node scripts/audit-item-editor.js && node --test scripts/cloud-sync.test.js scripts/room.test.js scripts/room-art.test.js"
+    "test": "node scripts/audit-icon-mapping.js && node scripts/audit-feat-catalog.js && node scripts/audit-modifier-sync.js && node scripts/audit-item-editor.js && node --test scripts/cloud-sync.test.js scripts/room.test.js scripts/room-art.test.js scripts/journal.test.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.116.0"

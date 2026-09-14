@@ -39,7 +39,7 @@
     try{
       const config=window.DND_CLOUD_CONFIG;
       if(!client){
-        client=window.DND_SUPABASE.createClient(config.url,config.publishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false},global:{fetch:(url,options)=>fetch(url,{...options,signal:options?.signal||AbortSignal.timeout(15000)})}});
+        client=window.DND_SHARED_CLOUD_CLIENT||(window.DND_SHARED_CLOUD_CLIENT=window.DND_SUPABASE.createClient(config.url,config.publishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false},global:{fetch:(url,options)=>fetch(url,{...options,signal:options?.signal||AbortSignal.timeout(15000)})}}));
         client.auth.onAuthStateChange((_event,session)=>{
           const sequence=++authSequence;
           setTimeout(async()=>{if(sequence!==authSequence)return;try{ready=true;await store.setUser(session?.user.id||null)}catch(e){ready=false;store.report('storage-error',e.message)}},0);

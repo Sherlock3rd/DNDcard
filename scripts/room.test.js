@@ -40,10 +40,8 @@ test('room routes, independent transparent objects and bookshelf preserve saves'
     q('#relationshipDialog').close();
     assert.ok(q('#roomMap').hasAttribute('data-open-map-table'));
     assert.equal(q('#roomMap').hasAttribute('data-room-placeholder'), false);
-    for (const id of ['roomJournal']) {
-      q('#' + id).click(); assert.equal(q('#roomPlaceholderDialog').open, true);
-      q('[data-close-room-placeholder]').click(); assert.equal(q('#roomPlaceholderDialog').open, false);
-    }
+    assert.ok(q('#roomJournal').hasAttribute('data-open-journal'));
+    assert.equal(q('#roomJournal').hasAttribute('data-room-placeholder'), false);
     assert.equal(all('.shelf-book').length, 7);
     for (const name of ['classes', 'spell-library', 'item-library', 'rules']) {
       q('[data-open-bookshelf]').click();
