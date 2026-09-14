@@ -38,7 +38,9 @@ test('room routes, independent transparent objects and bookshelf preserve saves'
     assert.equal(q('#relationshipDialog').open, true);
     assert.ok(q('#relationshipDialog').textContent.includes('甘阿·道夫'));
     q('#relationshipDialog').close();
-    for (const id of ['roomMap', 'roomJournal']) {
+    assert.ok(q('#roomMap').hasAttribute('data-open-map-table'));
+    assert.equal(q('#roomMap').hasAttribute('data-room-placeholder'), false);
+    for (const id of ['roomJournal']) {
       q('#' + id).click(); assert.equal(q('#roomPlaceholderDialog').open, true);
       q('[data-close-room-placeholder]').click(); assert.equal(q('#roomPlaceholderDialog').open, false);
     }

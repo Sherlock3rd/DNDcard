@@ -1,0 +1,464 @@
+{
+  "source": "faerun-user-original.jpg",
+  "width": 4763,
+  "height": 3185,
+  "scope": "Original-map labels checked around Baldur and the northern / inland view; other regions still include separately identified OCR candidates.",
+  "labels": [
+    {
+      "text": "BALDUR’S",
+      "x": 1024.5,
+      "y": 1124.5,
+      "height": 17
+    },
+    {
+      "text": "GATE",
+      "x": 1026,
+      "y": 1143,
+      "height": 17
+    },
+    {
+      "text": "博得之门",
+      "x": 1000,
+      "y": 1157.5,
+      "height": 20
+    },
+    {
+      "text": "ORLUMBOR",
+      "x": 880.5,
+      "y": 1024,
+      "height": 24
+    },
+    {
+      "text": "奥兰博",
+      "x": 879.5,
+      "y": 1040.5,
+      "height": 19
+    },
+    {
+      "text": "巨魔之山",
+      "x": 1031.5,
+      "y": 1025.5,
+      "height": 21,
+      "angle": -5
+    },
+    {
+      "text": "龙矛城堡",
+      "x": 1094,
+      "y": 891,
+      "height": 20
+    },
+    {
+      "text": "DRAGONSPEAR",
+      "x": 1091.5,
+      "y": 856.5,
+      "height": 17
+    },
+    {
+      "text": "CASTLE",
+      "x": 1083.75,
+      "y": 875,
+      "height": 18
+    },
+    {
+      "text": "BOARESKYR",
+      "x": 1224.5,
+      "y": 963,
+      "height": 14
+    },
+    {
+      "text": "BRIDGE",
+      "x": 1225,
+      "y": 982,
+      "height": 18
+    },
+    {
+      "text": "SOUBAR",
+      "x": 1290,
+      "y": 1001.5,
+      "height": 17
+    },
+    {
+      "text": "索巴",
+      "x": 1290,
+      "y": 1015.5,
+      "height": 18
+    },
+    {
+      "text": "崔尔镇",
+      "x": 1316.5,
+      "y": 1086.5,
+      "height": 18
+    },
+    {
+      "text": "ELTUREL",
+      "x": 1336.5,
+      "y": 1119,
+      "height": 14
+    },
+    {
+      "text": "艾尔托瑞尔",
+      "x": 1353,
+      "y": 1132.5,
+      "height": 17
+    },
+    {
+      "text": "斯克努贝尔",
+      "x": 1434,
+      "y": 1117.5,
+      "height": 17
+    },
+    {
+      "text": "湾岸公路",
+      "x": 1080,
+      "y": 1202.5,
+      "height": 20,
+      "angle": 69
+    },
+    {
+      "text": "利齿森林",
+      "x": 1214,
+      "y": 1281,
+      "height": 22
+    },
+    {
+      "text": "绿巢",
+      "x": 1420,
+      "y": 1242,
+      "height": 18
+    },
+    {
+      "text": "GREENEST",
+      "x": 1415.75,
+      "y": 1255.5,
+      "height": 17
+    },
+    {
+      "text": "贝尔苟斯特",
+      "x": 1117,
+      "y": 1313.5,
+      "height": 18
+    },
+    {
+      "text": "BEREGOST",
+      "x": 1114,
+      "y": 1327.5,
+      "height": 17
+    },
+    {
+      "text": "烛堡",
+      "x": 977.5,
+      "y": 1328.5,
+      "height": 18
+    },
+    {
+      "text": "CANDLEKEEP",
+      "x": 978.5,
+      "y": 1344,
+      "height": 17
+    },
+    {
+      "text": "DURLAG’S",
+      "x": 1218,
+      "y": 1336,
+      "height": 17
+    },
+    {
+      "text": "TOWER",
+      "x": 1219.5,
+      "y": 1356,
+      "height": 14
+    },
+    {
+      "text": "杜拉格之塔",
+      "x": 1215.5,
+      "y": 1370,
+      "height": 20
+    },
+    {
+      "text": "纳斯凯尔",
+      "x": 1233.5,
+      "y": 1389,
+      "height": 18
+    },
+    {
+      "text": "NASHKEL",
+      "x": 1225.5,
+      "y": 1402.5,
+      "height": 13
+    },
+    {
+      "text": "失落之峰",
+      "x": 1007.5,
+      "y": 463,
+      "height": 20,
+      "angle": 0,
+      "source": "Original map, visual check 2026-09-14"
+    },
+    {
+      "text": "石桥",
+      "x": 852.5,
+      "y": 547.5,
+      "height": 19,
+      "angle": 0,
+      "source": "Original map, visual check 2026-09-14"
+    },
+    {
+      "text": "西康布",
+      "x": 957.25,
+      "y": 665.75,
+      "height": 19.03,
+      "angle": -1.15,
+      "source": "Original map, visual check 2026-09-14"
+    },
+    {
+      "text": "德林毕尔河",
+      "x": 933,
+      "y": 733,
+      "height": 24,
+      "angle": -19.87,
+      "source": "Original map, visual check 2026-09-14"
+    },
+    {
+      "text": "迷雾森林",
+      "x": 980.25,
+      "y": 790.25,
+      "height": 24,
+      "angle": 25.62,
+      "source": "Original map, visual check 2026-09-14"
+    },
+    {
+      "text": "蜥蜴沼泽",
+      "x": 851,
+      "y": 840.5,
+      "height": 17,
+      "angle": 0,
+      "source": "Original map, visual check 2026-09-14"
+    },
+    {
+      "text": "巨魔咆哮森林",
+      "x": 972,
+      "y": 927.5,
+      "height": 21,
+      "angle": 0,
+      "source": "Original map, visual check 2026-09-14"
+    },
+    {
+      "text": "黑路",
+      "x": 1588.75,
+      "y": 494.5,
+      "height": 22.36,
+      "angle": -9.82,
+      "source": "Original map, visual check 2026-09-14"
+    },
+    {
+      "text": "洛克镇",
+      "x": 1251.5,
+      "y": 573,
+      "height": 22,
+      "angle": 0,
+      "source": "Original map, visual check 2026-09-14"
+    },
+    {
+      "text": "孤寂荒原",
+      "x": 1446.5,
+      "y": 597,
+      "height": 14,
+      "angle": 0,
+      "source": "Original map, visual check 2026-09-14"
+    },
+    {
+      "text": "远星湖",
+      "x": 1192.5,
+      "y": 700.75,
+      "height": 19.24,
+      "angle": -8.65,
+      "source": "Original map, visual check 2026-09-14"
+    },
+    {
+      "text": "毒蛇山脉",
+      "x": 1268.5,
+      "y": 776,
+      "height": 24,
+      "angle": 0,
+      "source": "Original map, visual check 2026-09-14"
+    },
+    {
+      "text": "剑漠地区",
+      "x": 1754,
+      "y": 800,
+      "height": 20,
+      "angle": 0,
+      "source": "Original map, visual check 2026-09-14"
+    },
+    {
+      "text": "龙之井",
+      "x": 1640,
+      "y": 796.5,
+      "height": 21,
+      "angle": 0,
+      "source": "Original map, visual check 2026-09-14"
+    },
+    {
+      "text": "失魂山",
+      "x": 1488.5,
+      "y": 835.5,
+      "height": 21,
+      "angle": 0,
+      "source": "Original map, visual check 2026-09-14"
+    },
+    {
+      "text": "远海沼泽",
+      "x": 1773.5,
+      "y": 866.5,
+      "height": 17,
+      "angle": 0,
+      "source": "Original map, visual check 2026-09-14"
+    },
+    {
+      "text": "抵达河",
+      "x": 1452,
+      "y": 924.25,
+      "height": 24,
+      "angle": 27.9,
+      "source": "Original map, visual check 2026-09-14"
+    },
+    {
+      "text": "黑暗堡",
+      "x": 1558,
+      "y": 919.5,
+      "height": 17,
+      "angle": 0,
+      "source": "Original map, visual check 2026-09-14"
+    },
+    {
+      "text": "巨龙森林",
+      "x": 1342,
+      "y": 967,
+      "height": 24,
+      "angle": 0,
+      "source": "Original map, visual check 2026-09-14"
+    },
+    {
+      "text": "山边镇",
+      "x": 1416,
+      "y": 963.75,
+      "height": 18.03,
+      "angle": -3.99,
+      "source": "Original map, visual check 2026-09-14"
+    },
+    {
+      "text": "河岸森林",
+      "x": 1458.5,
+      "y": 1033.5,
+      "height": 20,
+      "angle": -2.56,
+      "source": "Original map, visual check 2026-09-14"
+    },
+    {
+      "text": "图恩沼泽",
+      "x": 1709,
+      "y": 1011,
+      "height": 20,
+      "angle": 0,
+      "source": "Original map, visual check 2026-09-14"
+    },
+    {
+      "text": "至高荒原",
+      "x": 1137,
+      "y": 796,
+      "height": 26,
+      "source": "Original map, visual check 2026-09-14"
+    },
+    {
+      "text": "白骨战场",
+      "x": 1582,
+      "y": 801,
+      "height": 20,
+      "source": "Original map, visual check 2026-09-14"
+    },
+    {
+      "text": "艾弗瑞斯卡",
+      "x": 1571,
+      "y": 710.5,
+      "height": 17,
+      "source": "Original map, visual check 2026-09-14"
+    },
+    {
+      "text": "邪术师之墓",
+      "x": 1074.5,
+      "y": 981,
+      "height": 18,
+      "source": "Original map, visual check 2026-09-14"
+    },
+    {
+      "text": "赫鲁斯瓦",
+      "x": 1534,
+      "y": 988,
+      "height": 20,
+      "source": "Original map, visual check 2026-09-14"
+    },
+    {
+      "text": "卡姆欧普",
+      "x": 1518.25,
+      "y": 960.5,
+      "height": 20,
+      "source": "Original map, visual check 2026-09-14"
+    },
+    {
+      "text": "阿斯布莱温",
+      "x": 1542.5,
+      "y": 1115,
+      "height": 18,
+      "source": "Original map, visual check 2026-09-14"
+    },
+    {
+      "text": "波斯库",
+      "x": 1778,
+      "y": 1121,
+      "height": 18,
+      "source": "Original map, visual check 2026-09-14"
+    },
+    {
+      "text": "至高森林",
+      "x": 1170,
+      "y": 450,
+      "height": 28,
+      "source": "Original map, visual check 2026-09-14"
+    },
+    {
+      "text": "失落之地",
+      "x": 1372,
+      "y": 479,
+      "height": 22,
+      "source": "Original map, visual check 2026-09-14"
+    },
+    {
+      "text": "死亡之地",
+      "x": 1165,
+      "y": 1103,
+      "height": 20,
+      "source": "Original map, visual check 2026-09-14"
+    },
+    {
+      "text": "巨魔之爪",
+      "x": 1184,
+      "y": 1048,
+      "height": 20,
+      "source": "Original map, visual check 2026-09-14"
+    },
+    {
+      "text": "喧水城",
+      "x": 1170,
+      "y": 593,
+      "height": 18,
+      "source": "Original map, visual check 2026-09-14"
+    },
+    {
+      "text": "风暴角山脉",
+      "x": 1835,
+      "y": 901,
+      "height": 24,
+      "source": "Original map, visual check 2026-09-14"
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 function renderRoomScene(level) {
   return `<header class="room-heading"><a class="room-wordmark" href="#portal" aria-label="书房主页"><span class="room-seal" aria-hidden="true">B</span><span><h1>The Black Tower</h1><small>PRIVATE ADVENTURE ARCHIVE</small></span></a><span class="room-edition">黑塔 · 私人书房<span>归来，落座，再启程</span></span></header>
     ${renderOriginalRoomLayers(level)}
-    <footer class="room-footer"><p><span class="room-spark" aria-hidden="true"></span>点击房间内的物品，翻开你的冒险档案。<small>左右滑动探索房间，也可使用下方导览。</small></p><nav class="room-guide" aria-label="房间位置导览"><button type="button" data-room-focus="openRelationshipButton">案板墙</button><button type="button" data-room-focus="roomMap">地图桌</button><button type="button" data-room-focus="roomBookshelf">书架</button><button type="button" data-room-focus="roomCharacter">甘阿·道夫</button><button type="button" data-room-focus="roomJournal">日记本</button></nav><span class="room-occupant">一间书房<span>SRD 5.1 · CC BY 4.0</span></span></footer>`;
+    <footer class="room-footer"><p><span class="room-spark" aria-hidden="true"></span>点击房间内的物品，翻开你的冒险档案。<small>左右滑动探索房间，点击物品打开档案。</small></p><span class="room-occupant">一间书房<span>SRD 5.1 · CC BY 4.0</span></span></footer>`;
 }
 
 
@@ -11,7 +11,7 @@ function renderOriginalRoomLayers(level) {
   const labels = {
     board: ['openRelationshipButton', '案板墙', '人物关系网', 'aria-haspopup="dialog" aria-controls="relationshipDialog"'],
     shelf: ['roomBookshelf', '书架', '规则、资料与设置', 'data-open-bookshelf aria-haspopup="dialog" aria-controls="settingsDialog" aria-expanded="false"'],
-    map: ['roomMap', '地图桌', '地图资料 · 待绘制', 'data-room-placeholder="map" aria-haspopup="dialog"'],
+    map: ['roomMap', '地图桌', '费伦地图 · 地点与棋子', 'data-open-map-table'],
     character: ['roomCharacter', '甘阿·道夫', '法师 ' + level + ' 级 · 进入角色卡', 'data-portal-route="character"'],
     journal: ['roomJournal', '冒险日记', '跑团记录 · 待开启', 'data-room-placeholder="journal" aria-haspopup="dialog"']
   };
@@ -44,14 +44,11 @@ function initializeRoomScene(root) {
       viewport.scrollTo({ left: Number(button.dataset.roomAnchor) * viewport.querySelector('.room-stage').clientWidth - viewport.clientWidth / 2, behavior: 'auto' });
     }
   }));
-  root.querySelectorAll("[data-room-focus]").forEach((button) => button.addEventListener("click", () => {
-    const target = document.getElementById(button.dataset.roomFocus);
-    viewport.scrollTo({ left: Number(target.dataset.roomAnchor) * viewport.querySelector(".room-stage").clientWidth - viewport.clientWidth / 2, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
-    target.focus({ preventScroll: true });
-  }));
+
 }
 
 document.addEventListener("click", (event) => {
+  if(event.target.closest('[data-open-map-table]')){window.location.href='./map.html';return;}
   const placeholder = event.target.closest("[data-room-placeholder]");
   if (placeholder) {
     const isMap = placeholder.dataset.roomPlaceholder === "map";
