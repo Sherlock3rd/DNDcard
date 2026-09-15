@@ -9,12 +9,12 @@
  function getPosition(p){const bound=p.pieceId?pieces.find(x=>String(x.id)===p.pieceId):null;return bound?{x:bound.x,y:bound.y}:p}
  const entryViews=new WeakMap();
  function showEntries(target,placeIds){
-  const entries=book.entries.filter(e=>e.placeIds.some(id=>placeIds.includes(id))).map(e=>({id:e.id,title:e.title,day:e.day,people:e.people,places:e.placeIds.map(id=>{const p=book.places.find(p=>p.id===id),piece=p?.pieceId?pieces.find(item=>String(item.id)===p.pieceId):null;return p?p.name+(piece&&piece.name!==p.name?'（地图棋子：'+piece.name+'）':''):''}).filter(Boolean)}));
+  const entries=book.entries.filter(e=>e.placeIds.some(id=>placeIds.includes(id))).map(e=>({id:e.id,title:e.title,day:e.day,people:e.people}));
   // Panning repaints the map; keep the detail DOM and its scroll position intact.
   const key=JSON.stringify(entries);if(entryViews.get(target)===key&&target.childNodes.length)return;entryViews.set(target,key);target.replaceChildren();
   const h=document.createElement('h3');h.textContent='关联冒险日志';target.append(h);
   if(!entries.length){const p=document.createElement('p');p.className='journal-entry-empty';p.textContent=placeIds.length?'这个地点尚未收录日志。':'尚未关联冒险日志，可在日记的“沿途记号”中关联此棋子。';target.append(p);return}
-  for(const e of entries){const card=document.createElement('article');card.className='journal-entry-record';const a=document.createElement('a');a.href='./journal.html#'+encodeURIComponent(e.id);a.textContent=e.title;card.append(a);const fields=document.createElement('dl');for(const [label,value] of [['时间',e.day],['地点',e.places.join('、')||'未记录'],['人物',e.people.join('、')||'未记录']]){const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=label;dd.textContent=value;fields.append(dt,dd)}card.append(fields);target.append(card)}
+  for(const e of entries){const card=document.createElement('article');card.className='journal-entry-record';const a=document.createElement('a');a.href='./journal.html#'+encodeURIComponent(e.id);a.textContent=e.title;card.append(a);const fields=document.createElement('dl');for(const [label,value] of [['时间',e.day],['人物',e.people.join('、')||'未记录']]){const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=label;dd.textContent=value;fields.append(dt,dd)}card.append(fields);target.append(card)}
  }
  function stop(){placing=false;start=null;q('#cancelJournalPlace').hidden=true;q('#positionJournalPlace').textContent='在地图指定落点';viewport.classList.remove('journal-positioning')}
  function focus(p){const pos=getPosition(p);if(pos.x===null)return;stopRebound();x=viewport.clientWidth/2-pos.x*scale;y=viewport.clientHeight/2-pos.y*scale;clampView();paint()}
