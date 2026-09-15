@@ -31,3 +31,25 @@ select{width:100%;font:inherit;background:#14130f;color:#e8d7b9;border:1px solid
 #boardZoneForm{max-height:calc(100dvh - 72px);display:flex;flex-direction:column}#boardZoneError{color:#e1a082}
 @media(prefers-reduced-motion:no-preference){.case-ward::after{animation:ward-breath 7s ease-in-out infinite}@keyframes ward-breath{50%{opacity:.4}}}
 .ward-handle{transform:scale(var(--ward-control-scale,1))}
+/* All card kinds start alike; only an explicit saved style changes their colors. */
+.case-node[data-kind],.case-node[data-kind]:hover{width:156px;min-height:200px;padding:12px 10px 10px;background:var(--card-fill,#d5c39b);border:2px solid var(--card-border,#706349);color:var(--card-text,#322a1d);border-radius:38px 38px 3px 3px;transform:translate(-50%,-50%);box-shadow:2px 7px 9px #0008;text-shadow:none}
+.case-node[data-shape=square]{border-radius:2px}.case-node[data-shape=rounded]{border-radius:18px}
+.case-node[data-kind] strong{font-size:17px;letter-spacing:1px;color:var(--card-text)}
+.case-node[data-kind] small,.case-node[data-kind] .node-kind{color:var(--card-text)}
+.case-node[data-kind] .node-kind{letter-spacing:4px}
+.case-node[data-kind] .node-portrait{height:108px;border:1px solid var(--card-border);border-radius:28px 28px 2px 2px;background:transparent;filter:none}
+.case-node[data-shape=square] .node-portrait{border-radius:0}.case-node[data-shape=rounded] .node-portrait{border-radius:9px}
+.case-node[data-kind]::before{width:8px;height:8px;top:5px;left:10px;border:0;border-radius:50%;transform:none;background:radial-gradient(circle at 35% 30%,#eddaa1,#937240 50%,#35251a);box-shadow:1px 3px 2px #0009}
+.case-node[data-kind].selected,.case-node[data-kind].connect-source{outline:2px dashed #f4eddc;outline-offset:4px}
+.case-thread,.case-thread.selected{stroke:var(--thread-color,#b07965);stroke-width:var(--thread-width,3)}
+.case-seal,.case-seal:hover{background:#30291f;color:#e8d8b7;border-color:var(--thread-color,#b07965)}
+.case-seal.selected{outline:2px dashed #f4eddc;outline-offset:3px;color:#e8d8b7}
+#boardDetailActions{flex-wrap:wrap}
+#boardStyleForm{max-height:calc(100dvh - 72px);overflow:auto}
+#boardStyleFields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 16px}
+#boardStyleFields input[type=color]{height:44px;padding:4px;cursor:pointer}
+#boardStylePreview{display:flex;justify-content:center;align-items:center;min-height:90px;padding:18px;background:#343a2e;border:1px solid #77603b}
+#boardStylePreview .style-card{position:relative;left:auto;top:auto;transform:none;min-height:125px;pointer-events:none}
+#boardStylePreview svg{width:100%;height:70px}
+#boardStyleError{color:#e1a082}
+#boardStyleForm menu{flex-wrap:wrap}

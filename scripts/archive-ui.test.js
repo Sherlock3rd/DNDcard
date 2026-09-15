@@ -114,3 +114,21 @@ test('ward creation, all-corner resizing, cancellation and deletion sync indepen
  a.q('#boardRemove').click();a.q('#boardKeep').click();assert(snapshot().zones.some(z=>z.id===id));a.q('#boardRemove').click();a.q('#boardConfirmDelete').click();await store.sync();assert(!server.parts.board.snapshot.zones.some(z=>z.id===id));assert.deepEqual(server.parts.board.snapshot.nodes,before.board.snapshot.nodes);assert.deepEqual(server.parts.board.snapshot.edges,before.board.snapshot.edges);for(const part of ['character','map','journal'])assert.deepEqual(server.parts[part],before[part]);
  }finally{a.w.close()}
 });
+
+test('caseboard explicit styles survive editing, cancellation, reset, sync and another device',async()=>{
+ const server=copy(seed),a=page('caseboard.html',server,{storedKey:'a'.repeat(64)});
+ const submit=id=>a.q(id).dispatchEvent(new a.w.Event('submit',{bubbles:true,cancelable:true}));
+ try{
+  await a.ready();const store=a.w.ADVENTURE_ARCHIVE.stores.get('board'),original=copy(a.w.CaseboardAPI.read());a.q('#boardEdit').click();
+  a.q('.case-node').click();a.q('#boardStyle').click();a.q('#boardStyle-color').value='#123456';a.q('#boardStyle-color').dispatchEvent(new a.w.Event('input'));a.q('[data-close-style]').click();assert.deepEqual(copy(a.w.CaseboardAPI.read()),original);assert.equal(a.calls.length,0);
+  a.q('#boardStyle').click();a.q('#boardStyle-color').value='#123456';a.q('#boardStyle-border').value='#abc123';a.q('#boardStyle-text').value='#ffffff';a.q('#boardStyle-shape').value='rounded';submit('#boardStyleForm');await store.sync();
+  const nodeStyle=copy(a.w.CaseboardAPI.read().nodes[0].style);assert.equal(nodeStyle.color,'#123456');assert.equal(a.q('.case-node').style.getPropertyValue('--card-fill'),'#123456');
+  a.q('#boardModify').click();a.q('#boardName').value='只修改文字';submit('#boardPersonForm');await store.sync();assert.deepEqual(copy(a.w.CaseboardAPI.read().nodes[0].style),nodeStyle);
+  a.q('#boardCloseDetails').click();a.q('.case-seal').click();a.q('#boardStyle').click();a.q('#boardStyle-color').value='#00aabb';a.q('#boardStyle-width').value='6';a.q('#boardStyle-pattern').value='dotted';submit('#boardStyleForm');await store.sync();
+  const edgeStyle=copy(a.w.CaseboardAPI.read().edges[0].style);a.q('#boardModify').click();a.q('#boardEdgeNote').value='冒险团成员';submit('#boardEdgeForm');await store.sync();assert.deepEqual(copy(a.w.CaseboardAPI.read().edges[0].style),edgeStyle);assert(!a.q('.case-seal').classList.contains('membership'));assert.equal(a.q('.case-thread').getAttribute('stroke-dasharray'),'1 7');
+  const b=page('caseboard.html',server);try{await b.ready();assert.deepEqual(copy(b.w.CaseboardAPI.read().nodes[0].style),nodeStyle);assert.deepEqual(copy(b.w.CaseboardAPI.read().edges[0].style),edgeStyle)}finally{b.w.close()}
+  a.q('#boardStyle').click();a.q('#boardStyleReset').click();a.q('[data-close-style]').click();assert.deepEqual(copy(a.w.CaseboardAPI.read().edges[0].style),edgeStyle);
+  a.q('#boardStyle').click();a.q('#boardStyleReset').click();submit('#boardStyleForm');await store.sync();assert.deepEqual(copy(server.parts.board.snapshot.edges[0].style),copy(a.w.CASEBOARD_CORE.defaults.edge));
+  for(const part of ['character','map','journal'])assert.deepEqual(server.parts[part],seed.parts[part]);
+ }finally{a.w.close()}
+});
