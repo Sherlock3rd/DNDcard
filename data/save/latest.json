@@ -61,7 +61,7 @@
       "updatedAt": "2026-09-15T12:42:42.719659+00:00"
     },
     "board": {
-      "revision": 15,
+      "revision": 23,
       "snapshot": {
         "edges": [
           {
@@ -204,7 +204,8 @@
             "notes": "",
             "status": "",
             "portrait": "assets/images/caseboard-v2/gandalf.png",
-            "appearance": ""
+            "appearance": "",
+            "mapPieceId": "current-position"
           },
           {
             "x": 520,
@@ -217,7 +218,8 @@
             "notes": "",
             "status": "",
             "portrait": "assets/images/caseboard-v2/sairen.png",
-            "appearance": ""
+            "appearance": "",
+            "mapPieceId": "current-position"
           },
           {
             "x": 805,
@@ -230,7 +232,8 @@
             "notes": "",
             "status": "",
             "portrait": "assets/images/caseboard-v2/shire.png",
-            "appearance": ""
+            "appearance": "",
+            "mapPieceId": "current-position"
           },
           {
             "x": 835,
@@ -243,7 +246,8 @@
             "notes": "",
             "status": "",
             "portrait": "assets/images/caseboard-v2/zuo.png",
-            "appearance": ""
+            "appearance": "",
+            "mapPieceId": "current-position"
           },
           {
             "x": 600,
@@ -256,7 +260,8 @@
             "notes": "",
             "status": "",
             "portrait": "assets/images/caseboard-v2/mura.png",
-            "appearance": ""
+            "appearance": "",
+            "mapPieceId": "current-position"
           },
           {
             "x": 300,
@@ -269,7 +274,8 @@
             "notes": "",
             "status": "",
             "portrait": "assets/images/caseboard-v2/feiyi.png",
-            "appearance": ""
+            "appearance": "",
+            "mapPieceId": "current-position"
           },
           {
             "x": 165,
@@ -282,7 +288,8 @@
             "notes": "",
             "status": "",
             "portrait": "assets/images/caseboard-v2/aili.png",
-            "appearance": ""
+            "appearance": "",
+            "mapPieceId": "current-position"
           },
           {
             "x": 1504.3983312101197,
@@ -295,7 +302,8 @@
             "notes": "",
             "status": "矿坑事故",
             "portrait": "assets/images/caseboard-v2/iron-village.png",
-            "appearance": ""
+            "appearance": "",
+            "mapPieceId": "b731ff7d-69e0-48f6-a9d9-bad69ae47f3c"
           },
           {
             "x": 1189.601474612301,
@@ -308,7 +316,8 @@
             "notes": "",
             "status": "",
             "portrait": "assets/images/caseboard-v2/chief.png",
-            "appearance": ""
+            "appearance": "",
+            "mapPieceId": "b731ff7d-69e0-48f6-a9d9-bad69ae47f3c"
           },
           {
             "x": 1656.8717653824037,
@@ -321,7 +330,8 @@
             "notes": "",
             "status": "已救援",
             "portrait": "assets/images/caseboard-v2/pazu.png",
-            "appearance": ""
+            "appearance": "",
+            "mapPieceId": "b731ff7d-69e0-48f6-a9d9-bad69ae47f3c"
           },
           {
             "x": 1570,
@@ -334,7 +344,8 @@
             "notes": "被误认为叛徒 · 误杀",
             "status": "已故",
             "portrait": "assets/images/caseboard-v2/maruk.png",
-            "appearance": ""
+            "appearance": "",
+            "mapPieceId": "b731ff7d-69e0-48f6-a9d9-bad69ae47f3c"
           },
           {
             "x": 1180,
@@ -347,7 +358,8 @@
             "notes": "矿坑遇难者之一",
             "status": "已故",
             "portrait": "assets/images/caseboard-v2/morris.png",
-            "appearance": ""
+            "appearance": "",
+            "mapPieceId": "b731ff7d-69e0-48f6-a9d9-bad69ae47f3c"
           },
           {
             "x": 2700,
@@ -360,7 +372,8 @@
             "notes": "民兵团、镇公所、地下墓穴、海德家、守夜人酒馆、铁匠铺；另有渡鸦商行商人。",
             "status": "",
             "portrait": "assets/images/caseboard-v2/raven-town.png",
-            "appearance": ""
+            "appearance": "",
+            "mapPieceId": "f33034f5-e350-4cdb-b8d7-6731d9b0fb35"
           },
           {
             "x": 2020,
@@ -373,7 +386,8 @@
             "notes": "渡鸦镇牧师；渡鸦镇民兵团。",
             "status": "",
             "portrait": "assets/images/caseboard-v2/raven-militia-priest.png",
-            "appearance": ""
+            "appearance": "",
+            "mapPieceId": "f33034f5-e350-4cdb-b8d7-6731d9b0fb35"
           },
           {
             "x": 2280,
@@ -386,7 +400,8 @@
             "notes": "渡鸦镇民兵队长；渡鸦镇民兵团。",
             "status": "",
             "portrait": "assets/images/caseboard-v2/raven-militia-captain.png",
-            "appearance": ""
+            "appearance": "",
+            "mapPieceId": "f33034f5-e350-4cdb-b8d7-6731d9b0fb35"
           },
           {
             "x": 2560,
@@ -399,7 +414,8 @@
             "notes": "渡鸦镇镇长；渡鸦镇镇公所。",
             "status": "",
             "portrait": "assets/images/caseboard-v2/raven-mayor.png",
-            "appearance": ""
+            "appearance": "",
+            "mapPieceId": "f33034f5-e350-4cdb-b8d7-6731d9b0fb35"
           },
           {
             "x": 2820,
@@ -412,7 +428,8 @@
             "notes": "镇长秘书；渡鸦镇镇公所。",
             "status": "",
             "portrait": "assets/images/caseboard-v2/raven-secretary.png",
-            "appearance": ""
+            "appearance": "",
+            "mapPieceId": "f33034f5-e350-4cdb-b8d7-6731d9b0fb35"
           },
           {
             "x": 3100,
@@ -425,7 +442,8 @@
             "notes": "前民兵队长；地下墓穴。",
             "status": "",
             "portrait": "assets/images/caseboard-v2/raven-former-captain.png",
-            "appearance": ""
+            "appearance": "",
+            "mapPieceId": "f33034f5-e350-4cdb-b8d7-6731d9b0fb35"
           },
           {
             "x": 3360,
@@ -438,11 +456,12 @@
             "notes": "地下墓穴。",
             "status": "",
             "portrait": "assets/images/caseboard-v2/raven-necromancer.png",
-            "appearance": ""
+            "appearance": "",
+            "mapPieceId": "f33034f5-e350-4cdb-b8d7-6731d9b0fb35"
           },
           {
-            "x": 2020,
-            "y": 1010,
+            "x": 1996.9291658309157,
+            "y": 947.3791643982,
             "id": "raven-hyde-father",
             "kind": "person",
             "name": "海德老爷",
@@ -451,11 +470,12 @@
             "notes": "海德家长子；海德太老爷之子，安东尼奥·海德之父。",
             "status": "",
             "portrait": "assets/images/caseboard-v2/raven-hyde-father.png",
-            "appearance": ""
+            "appearance": "",
+            "mapPieceId": "f33034f5-e350-4cdb-b8d7-6731d9b0fb35"
           },
           {
-            "x": 2280,
-            "y": 1010,
+            "x": 2284.3944446036353,
+            "y": 1219.8347298235753,
             "id": "raven-hyde-grandson",
             "kind": "person",
             "name": "安东尼奥·海德",
@@ -464,11 +484,12 @@
             "notes": "截图职业栏：无；Lv.1。海德老爷之子。与姓名未明的铁匠学徒之间标注“盟友？”，关系未确认。",
             "status": "",
             "portrait": "assets/images/caseboard-v2/raven-hyde-grandson.png",
-            "appearance": ""
+            "appearance": "",
+            "mapPieceId": "f33034f5-e350-4cdb-b8d7-6731d9b0fb35"
           },
           {
-            "x": 2020,
-            "y": 1350,
+            "x": 2029.8875003581788,
+            "y": 1378.563889923628,
             "id": "raven-hyde-grandfather",
             "kind": "person",
             "name": "海德太老爷",
@@ -477,7 +498,8 @@
             "notes": "海德家太老爷；海德老爷之父。",
             "status": "死亡",
             "portrait": "assets/images/caseboard-v2/raven-hyde-grandfather.png",
-            "appearance": ""
+            "appearance": "",
+            "mapPieceId": "f33034f5-e350-4cdb-b8d7-6731d9b0fb35"
           },
           {
             "x": 3100,
@@ -490,7 +512,8 @@
             "notes": "守夜人酒馆老板；与玛卡吉拉为夫妻。",
             "status": "",
             "portrait": "assets/images/caseboard-v2/raven-tavern-husband.png",
-            "appearance": ""
+            "appearance": "",
+            "mapPieceId": "f33034f5-e350-4cdb-b8d7-6731d9b0fb35"
           },
           {
             "x": 3360,
@@ -503,11 +526,12 @@
             "notes": "守夜人酒馆老板娘；与隆特为夫妻。",
             "status": "",
             "portrait": "assets/images/caseboard-v2/raven-tavern-wife.png",
-            "appearance": ""
+            "appearance": "",
+            "mapPieceId": "f33034f5-e350-4cdb-b8d7-6731d9b0fb35"
           },
           {
             "x": 2690,
-            "y": 1010,
+            "y": 993.5208327363684,
             "id": "raven-smith-apprentice",
             "kind": "person",
             "name": "？？？",
@@ -516,7 +540,8 @@
             "notes": "姓名未明。截图职业栏：铁匠；Lv.1。渡鸦镇铁匠铺。与安东尼奥·海德之间标注“盟友？”，关系未确认。",
             "status": "",
             "portrait": "assets/images/caseboard-v2/raven-smith-apprentice.png",
-            "appearance": ""
+            "appearance": "",
+            "mapPieceId": "f33034f5-e350-4cdb-b8d7-6731d9b0fb35"
           },
           {
             "x": 3230,
@@ -529,6 +554,33 @@
             "notes": "渡鸦商行商人。",
             "status": "",
             "portrait": "assets/images/caseboard-v2/raven-merchant.png",
+            "appearance": "",
+            "mapPieceId": "f33034f5-e350-4cdb-b8d7-6731d9b0fb35"
+          },
+          {
+            "x": 1390.1662560342145,
+            "y": 1333.0137262331332,
+            "id": "7e4c656c-1f49-415b-b88c-11f666bcc9e6",
+            "kind": "person",
+            "name": "神秘蓝袍巫师",
+            "race": "人类",
+            "role": "法师",
+            "notes": "",
+            "status": "",
+            "portrait": "assets/images/caseboard-v2/blue-wizard.png",
+            "appearance": ""
+          },
+          {
+            "x": 2720.381509900261,
+            "y": -221.91551180638146,
+            "id": "1ae35a91-d16f-454a-8047-e1992033b047",
+            "kind": "person",
+            "name": "亚赞",
+            "race": "人类",
+            "role": "未知",
+            "notes": "据说是一位金发的、皮肤呈现被晒黑的深色，十分高大的匪兵头领。\n根据土匪的情报，他们曾经在渡鸦镇以东的森林进行过集会。",
+            "status": "",
+            "portrait": "assets/images/caseboard-v2/yazan.png",
             "appearance": ""
           }
         ],
@@ -618,7 +670,7 @@
         "boardId": "black-tower",
         "version": 1
       },
-      "updatedAt": "2026-09-15T15:19:03.277854+00:00"
+      "updatedAt": "2026-09-15T17:49:21.778571+00:00"
     },
     "journal": {
       "revision": 7,
@@ -1009,6 +1061,6 @@
   },
   "format": "dndcard-adventure",
   "version": 1,
-  "revision": 28,
-  "updatedAt": "2026-09-15T15:19:03.283185+00:00"
+  "revision": 36,
+  "updatedAt": "2026-09-15T17:49:21.792972+00:00"
 }
