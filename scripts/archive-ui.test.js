@@ -38,3 +38,24 @@ test('revoked owner link retains local edits and public visitors cannot upload',
   }finally{a.w.close()}
  }
 });
+
+test('journal aliases bind to one existing piece without renaming or duplicating it, then sync to another device',async()=>{
+ const server=copy(seed),mapBefore=copy(server.parts.map),a=page('journal.html',server,{storedKey:'a'.repeat(64)}),target=server.parts.map.snapshot.pieces.find(p=>p.kind!=='traveler');
+ try{await a.ready();const original=copy(server.parts.journal.snapshot),first=original.entries[0].placeIds[0];
+  a.q('[data-link-place="'+first+'"]').click();await wait(()=>a.q('#existingPiece').options.length>0);
+  a.q('#pieceSearch').value=target.name;a.q('#pieceSearch').dispatchEvent(new a.w.Event('input'));assert.equal(a.q('#existingPiece').options.length,1);
+  a.q('#existingPiece').value=target.id;a.q('#existingPiece').dispatchEvent(new a.w.Event('change'));a.q('#placeLinkForm').dispatchEvent(new a.w.Event('submit',{cancelable:true}));await wait(()=>!a.q('#placeLinkDialog').open);await a.w.ADVENTURE_ARCHIVE.stores.get('journal').sync();
+  const bound=server.parts.journal.snapshot.places.find(p=>p.id===first);assert.equal(bound.pieceId,target.id);assert.equal(bound.name,original.places.find(p=>p.id===first).name);assert.equal(bound.x,target.x);assert.deepEqual(server.parts.map,mapBefore);assert.deepEqual(server.parts.journal.snapshot.entries,original.entries);
+  a.q('#next').click();const second=original.entries[1].placeIds.find(id=>id!==first);a.q('[data-link-place="'+second+'"]').click();await wait(()=>a.q('#existingPiece').options.length>0);a.q('#existingPiece').value=target.id;a.q('#existingPiece').dispatchEvent(new a.w.Event('change'));a.q('#placeLinkForm').dispatchEvent(new a.w.Event('submit',{cancelable:true}));await wait(()=>!a.q('#placeLinkDialog').open);await a.w.ADVENTURE_ARCHIVE.stores.get('journal').sync();
+  assert.equal(server.parts.journal.snapshot.places.filter(p=>p.pieceId===target.id).length,2);
+  const b=page('journal.html',server);try{await b.ready();await wait(()=>b.q('#chapterPlaces').textContent.includes(target.name));assert.equal(b.w.JournalAPI.read().places.find(p=>p.id===first).pieceId,target.id)}finally{b.w.close()}
+  a.q('[data-link-place="'+second+'"]').click();await wait(()=>a.q('#existingPiece').options.length>0);a.q('#unlinkPiece').click();await a.w.ADVENTURE_ARCHIVE.stores.get('journal').sync();assert.equal(server.parts.journal.snapshot.places.find(p=>p.id===second).pieceId,null);assert.equal(server.parts.journal.snapshot.places.find(p=>p.id===first).pieceId,target.id);assert.deepEqual(server.parts.map,mapBefore);
+ }finally{a.w.close()}
+});
+
+test('cancel and a piece removed while choosing cannot write a journal association',async()=>{
+ const server=copy(seed),a=page('journal.html',server,{storedKey:'a'.repeat(64)});try{await a.ready();const before=copy(a.w.JournalAPI.read());a.q('[data-link-place]').click();await wait(()=>a.q('#existingPiece').options.length>0);a.q('[data-close-place-link]').click();assert.deepEqual(copy(a.w.JournalAPI.read()),before);assert.equal(a.calls.length,0);
+  a.q('[data-link-place]').click();await wait(()=>a.q('#existingPiece').options.length>0);const target=server.parts.map.snapshot.pieces[0];a.q('#existingPiece').value=target.id;a.q('#existingPiece').dispatchEvent(new a.w.Event('change'));server.parts.map.snapshot.pieces=server.parts.map.snapshot.pieces.filter(p=>p.id!==target.id);server.parts.map.revision++;server.revision++;
+  a.q('#placeLinkForm').dispatchEvent(new a.w.Event('submit',{cancelable:true}));await wait(()=>a.q('#pieceLinkError').textContent.includes('移除'));assert.equal(a.q('#placeLinkDialog').open,true);assert.deepEqual(copy(a.w.JournalAPI.read()),before);assert.equal(a.calls.length,0);
+ }finally{a.w.close()}
+});
