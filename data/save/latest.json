@@ -1,13 +1,13 @@
 {
   "parts": {
     "map": {
-      "revision": 19,
+      "revision": 24,
       "snapshot": {
         "mapId": "faerun-3.5",
         "pieces": [
           {
-            "x": 1406.0727640529035,
-            "y": 1116.0447566766945,
+            "x": 1347.3207640529035,
+            "y": 1148.5311566766945,
             "id": "current-position",
             "kind": "traveler",
             "name": "当前位置"
@@ -24,7 +24,8 @@
             "y": 1208.2929084362374,
             "id": "b731ff7d-69e0-48f6-a9d9-bad69ae47f3c",
             "kind": "village",
-            "name": "铁环镇"
+            "name": "铁环镇",
+            "notes": "铁环镇整个村庄家家户户都是工匠、手艺人。\n铁环镇的工匠组织了一个工会，专门负责出售矿石、工具等物品。\n东南西方向分布着四座矿山，金、银、石、铁矿，听说最近总有强盗。"
           },
           {
             "x": 1174.556605439173,
@@ -46,14 +47,21 @@
             "id": "c8f74109-0b15-4542-ada8-0c62524b18ae",
             "kind": "battle",
             "name": "墓园"
+          },
+          {
+            "x": 1114.6350497671895,
+            "y": 1159.502585248123,
+            "id": "449e762d-eb09-4bbd-9080-8caaa89e822e",
+            "kind": "event",
+            "name": "荒野商道"
           }
         ],
         "version": 1
       },
-      "updatedAt": "2026-09-14T14:44:02.798547+00:00"
+      "updatedAt": "2026-09-15T06:18:02.514706+00:00"
     },
     "journal": {
-      "revision": 1,
+      "revision": 6,
       "snapshot": {
         "places": [
           {
@@ -65,28 +73,28 @@
             "pieceId": null
           },
           {
-            "x": null,
-            "y": null,
+            "x": 1114.6350497671895,
+            "y": 1159.502585248123,
             "id": "wilderness-road",
             "name": "出城后的荒野商道",
             "note": "往东南方向，枯林与乱石附近；准确路段待定位。",
-            "pieceId": null
+            "pieceId": "449e762d-eb09-4bbd-9080-8caaa89e822e"
           },
           {
-            "x": null,
-            "y": null,
+            "x": 1171.695762867111,
+            "y": 1208.2929084362374,
             "id": "mining-town",
             "name": "矿业小镇",
             "note": "原始团录中出现铁环镇、石栏镇两种称呼，名称待核。",
-            "pieceId": null
+            "pieceId": "b731ff7d-69e0-48f6-a9d9-bad69ae47f3c"
           },
           {
-            "x": null,
-            "y": null,
+            "x": 1221.9765037025047,
+            "y": 1110.1753355641035,
             "id": "reclaimed-fort",
             "name": "南侧废堡 · 我们的家",
             "note": "小镇南侧商道要冲，具体落点待定位。",
-            "pieceId": null
+            "pieceId": "0c54b94c-e46a-44a9-bba6-efb8dc473cd5"
           }
         ],
         "entries": [
@@ -199,7 +207,7 @@
         "version": 1,
         "journalId": "gandalf-adventures"
       },
-      "updatedAt": "2026-09-14T15:00:22.18621+00:00"
+      "updatedAt": "2026-09-15T06:17:42.545343+00:00"
     },
     "character": {
       "revision": 3,
@@ -441,6 +449,6 @@
   },
   "format": "dndcard-adventure",
   "version": 1,
-  "revision": 1,
-  "updatedAt": "2026-09-15T04:59:20.101144+00:00"
+  "revision": 11,
+  "updatedAt": "2026-09-15T06:18:02.516139+00:00"
 }
