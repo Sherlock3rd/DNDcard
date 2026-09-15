@@ -60,6 +60,271 @@
       },
       "updatedAt": "2026-09-15T06:18:02.514706+00:00"
     },
+    "board": {
+      "revision": 1,
+      "snapshot": {
+        "edges": [
+          {
+            "id": "party--gandalf",
+            "to": "gandalf",
+            "from": "party",
+            "note": "冒险团成员"
+          },
+          {
+            "id": "party--sairen",
+            "to": "sairen",
+            "from": "party",
+            "note": "冒险团成员"
+          },
+          {
+            "id": "party--shire",
+            "to": "shire",
+            "from": "party",
+            "note": "冒险团成员"
+          },
+          {
+            "id": "party--zuo",
+            "to": "zuo",
+            "from": "party",
+            "note": "冒险团成员"
+          },
+          {
+            "id": "party--mura",
+            "to": "mura",
+            "from": "party",
+            "note": "冒险团成员"
+          },
+          {
+            "id": "party--feiyi",
+            "to": "feiyi",
+            "from": "party",
+            "note": "冒险团成员"
+          },
+          {
+            "id": "party--aili",
+            "to": "aili",
+            "from": "party",
+            "note": "冒险团成员"
+          },
+          {
+            "id": "party--iron-village",
+            "to": "iron-village",
+            "from": "party",
+            "note": "与铁环村关联"
+          },
+          {
+            "id": "iron-village--chief",
+            "to": "chief",
+            "from": "iron-village",
+            "note": "村庄领袖"
+          },
+          {
+            "id": "party--pazu",
+            "to": "pazu",
+            "from": "party",
+            "note": "被冒险团救下"
+          },
+          {
+            "id": "party--maruk",
+            "to": "maruk",
+            "from": "party",
+            "note": "被误认为叛徒 · 误杀"
+          },
+          {
+            "id": "iron-village--morris",
+            "to": "morris",
+            "from": "iron-village",
+            "note": "矿坑遇难者之一"
+          },
+          {
+            "id": "iron-village--pazu",
+            "to": "pazu",
+            "from": "iron-village",
+            "note": "与铁环村关联"
+          },
+          {
+            "id": "iron-village--maruk",
+            "to": "maruk",
+            "from": "iron-village",
+            "note": "与铁环村关联"
+          }
+        ],
+        "nodes": [
+          {
+            "x": 500,
+            "y": 565,
+            "id": "party",
+            "kind": "group",
+            "name": "冒险团",
+            "race": "七名同伴",
+            "role": "共同冒险",
+            "notes": "",
+            "status": "",
+            "portrait": "",
+            "appearance": ""
+          },
+          {
+            "x": 220,
+            "y": 220,
+            "id": "gandalf",
+            "kind": "person",
+            "name": "甘阿·道夫",
+            "race": "人类",
+            "role": "法师（剑咏）",
+            "notes": "",
+            "status": "",
+            "portrait": "assets/images/gandalf-bladesinger.png",
+            "appearance": ""
+          },
+          {
+            "x": 520,
+            "y": 170,
+            "id": "sairen",
+            "kind": "person",
+            "name": "赛伦",
+            "race": "人类",
+            "role": "牧师",
+            "notes": "",
+            "status": "",
+            "portrait": "assets/images/relationship-sairen.png",
+            "appearance": ""
+          },
+          {
+            "x": 805,
+            "y": 260,
+            "id": "shire",
+            "kind": "person",
+            "name": "夏尔-金歌",
+            "race": "人类",
+            "role": "吟游诗人",
+            "notes": "",
+            "status": "",
+            "portrait": "assets/images/relationship-shire-goldsong.png",
+            "appearance": ""
+          },
+          {
+            "x": 835,
+            "y": 705,
+            "id": "zuo",
+            "kind": "person",
+            "name": "左无峰",
+            "race": "人类",
+            "role": "拳师",
+            "notes": "",
+            "status": "",
+            "portrait": "assets/images/relationship-zuo-wufeng.png",
+            "appearance": ""
+          },
+          {
+            "x": 600,
+            "y": 950,
+            "id": "mura",
+            "kind": "person",
+            "name": "缪拉-青苔",
+            "race": "半精灵",
+            "role": "德鲁伊",
+            "notes": "",
+            "status": "",
+            "portrait": "assets/images/relationship-mura-moss.png",
+            "appearance": ""
+          },
+          {
+            "x": 300,
+            "y": 935,
+            "id": "feiyi",
+            "kind": "person",
+            "name": "费伊",
+            "race": "变体人类-不朽者",
+            "role": "魔器师",
+            "notes": "",
+            "status": "",
+            "portrait": "assets/images/relationship-feiyi.png",
+            "appearance": ""
+          },
+          {
+            "x": 165,
+            "y": 615,
+            "id": "aili",
+            "kind": "person",
+            "name": "艾黎",
+            "race": "人类",
+            "role": "边境行者",
+            "notes": "",
+            "status": "",
+            "portrait": "assets/images/relationship-aili.png",
+            "appearance": ""
+          },
+          {
+            "x": 1270,
+            "y": 590,
+            "id": "iron-village",
+            "kind": "place",
+            "name": "铁环村",
+            "race": "",
+            "role": "矮人聚落",
+            "notes": "",
+            "status": "矿坑事故",
+            "portrait": "assets/images/relationship-dwarf-village.png",
+            "appearance": ""
+          },
+          {
+            "x": 1160,
+            "y": 220,
+            "id": "chief",
+            "kind": "person",
+            "name": "艾德诺根",
+            "race": "矮人",
+            "role": "铁环村村长",
+            "notes": "",
+            "status": "",
+            "portrait": "assets/images/relationship-chief.png",
+            "appearance": ""
+          },
+          {
+            "x": 1570,
+            "y": 240,
+            "id": "pazu",
+            "kind": "person",
+            "name": "帕祖",
+            "race": "",
+            "role": "",
+            "notes": "",
+            "status": "已救援",
+            "portrait": "assets/images/relationship-pazu.png",
+            "appearance": ""
+          },
+          {
+            "x": 1570,
+            "y": 955,
+            "id": "maruk",
+            "kind": "person",
+            "name": "马鲁克",
+            "race": "矮人",
+            "role": "",
+            "notes": "被误认为叛徒 · 误杀",
+            "status": "已故",
+            "portrait": "assets/images/relationship-maruk.png",
+            "appearance": ""
+          },
+          {
+            "x": 1180,
+            "y": 980,
+            "id": "morris",
+            "kind": "person",
+            "name": "墨里斯",
+            "race": "矮人",
+            "role": "",
+            "notes": "矿坑遇难者之一",
+            "status": "已故",
+            "portrait": "assets/images/relationship-morris.png",
+            "appearance": ""
+          }
+        ],
+        "boardId": "black-tower",
+        "version": 1
+      },
+      "updatedAt": "2026-09-15T10:12:39.343741+00:00"
+    },
     "journal": {
       "revision": 7,
       "snapshot": {
@@ -449,6 +714,6 @@
   },
   "format": "dndcard-adventure",
   "version": 1,
-  "revision": 12,
-  "updatedAt": "2026-09-15T09:38:26.423952+00:00"
+  "revision": 13,
+  "updatedAt": "2026-09-15T10:12:39.359783+00:00"
 }
