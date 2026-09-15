@@ -1,0 +1,7 @@
+/* Traveler stays above all physical pieces, including a dragged/selected piece. Panels stay usable. */
+.piece[data-kind='traveler']{z-index:20!important}
+#viewport aside{z-index:40}
+#cancel{z-index:45}
+#pointNotes{display:block;width:100%;min-height:100px;max-height:35dvh;resize:vertical;margin:8px 0;padding:9px;background:#100f0c;color:#eadbbf;border:1px solid #78603b;font:inherit;line-height:1.7;user-select:text;touch-action:pan-y}
+.piece-notes h3{font-size:14px;font-weight:400;color:#e5cda4;margin:16px 0 6px}
+#pointNotesPreview{white-space:pre-wrap;overflow-wrap:anywhere;user-select:text;line-height:1.9}

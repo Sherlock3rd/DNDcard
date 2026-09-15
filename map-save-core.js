@@ -8,9 +8,10 @@
     const ids=new Set();let travelers=0;
     for(const p of s.pieces){
       if(!p||typeof p.id!=='string'||!p.id.length||p.id.length>100||ids.has(p.id)||!kinds.includes(p.kind)||typeof p.name!=='string'||!p.name.trim()||p.name.length>60||!Number.isFinite(p.x)||!Number.isFinite(p.y)||p.x<0||p.x>4763||p.y<0||p.y>3185)throw Error('地图棋子数据无效，原存档已保留');
+      if(p.notes!==undefined&&(typeof p.notes!=='string'||p.notes.length>4000))throw Error('棋子备注不能超过4000字');
       ids.add(p.id);if(p.kind==='traveler'&&++travelers>1)throw Error('当前位置棋子重复，原存档已保留');
     }
-    return {version:1,mapId,pieces:s.pieces.map(p=>({id:p.id,kind:p.kind,name:p.name,x:p.x,y:p.y}))};
+    return {version:1,mapId,pieces:s.pieces.map(p=>({id:p.id,kind:p.kind,name:p.name,...(p.notes!==undefined?{notes:p.notes}:{}),x:p.x,y:p.y}))};
   }
   const equal=(a,b)=>JSON.stringify(validate(a))===JSON.stringify(validate(b));
   const initial=()=>({version:1,mapId,pieces:[{id:'current-position',kind:'traveler',name:'当前位置',x:1047,y:1178}]});
