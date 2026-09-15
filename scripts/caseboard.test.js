@@ -35,3 +35,9 @@ test('wards validate bounds, preserve empty groups and upgrade legacy snapshots 
 });
 
 test('unbounded finite coordinates preserve negative positions and distant zones',()=>{const s=seed();s.nodes[0].x=-1000000;s.nodes[0].y=1000000;s.zones[0].x=-2000000;s.zones[0].y=-2000000;s.zones[0].width=4000000;s.zones[0].height=4000000;assert.deepEqual(core.validate(s),s)});
+
+test('person previews separate legacy levels and normalize death without mutating source data',()=>{
+ const n={role:'牧师 · Lv.5',status:'死亡'};assert.deepEqual(core.personPreview(n),{role:'牧师',level:5,status:'已故'});assert.equal(n.role,'牧师 · Lv.5');assert.equal(core.personPreview({...n,level:null}).level,null);assert.equal(core.personPreview({...n,level:12}).level,12);assert.equal(core.personPreview({role:'商人',status:''}).level,null);
+ for(const level of [null,1,20]){const s=seed();s.nodes[1].level=level;assert.equal(core.validate(s).nodes[1].level,level)}
+ for(const level of [0,21,1.5,'5','?',{},[]]){const s=seed();s.nodes[1].level=level;assert.throws(()=>core.validate(s),/等级/)}
+});

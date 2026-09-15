@@ -158,3 +158,15 @@ test('dragging text pans without native selection, and distant negative coordina
  }finally{a.w.close()}
 });
 test('empty caseboard has a finite usable initial camera',async()=>{const server=copy(seed);server.parts.board.snapshot.nodes=[];server.parts.board.snapshot.edges=[];server.parts.board.snapshot.zones=[];const a=page('caseboard.html',server);try{await a.ready();assertAllCardsFramed(a);assert(a.q('#boardThreads').getAttribute('viewBox').split(' ').map(Number).every(Number.isFinite))}finally{a.w.close()}});
+
+test('person level selection persists numbers and explicit unknown across devices; cancel and styles remain intact',async()=>{
+ const server=copy(seed),n=server.parts.board.snapshot.nodes[1];n.role='牧师 · Lv.5';n.status='死亡';n.style={color:'#123456'};const a=page('caseboard.html',server,{storedKey:'a'.repeat(64)});
+ const submit=()=>a.q('#boardPersonForm').dispatchEvent(new a.w.Event('submit',{cancelable:true}));
+ try{await a.ready();const card=()=>a.q('[data-id="'+n.id+'"]'),before=copy(a.w.CaseboardAPI.read());assert.equal(card().querySelector('.node-role').textContent,'牧师');assert.equal(card().querySelector('.node-level').textContent,'等级 5（已故）');assert.equal(a.calls.length,0);
+  a.q('#boardEdit').click();card().click();a.q('#boardModify').click();assert.equal(a.q('#boardLevel').value,'5');assert.equal(a.q('#boardRole').value,'牧师');a.q('#boardLevel').value='12';a.q('[data-close-person]').click();assert.deepEqual(copy(a.w.CaseboardAPI.read()),before);
+  a.q('#boardModify').click();a.q('#boardLevel').value='12';submit();await a.w.ADVENTURE_ARCHIVE.stores.get('board').sync();assert.equal(server.parts.board.snapshot.nodes[1].level,12);assert.equal(server.parts.board.snapshot.nodes[1].role,'牧师');assert.deepEqual(server.parts.board.snapshot.nodes[1].style,before.nodes[1].style);assert.equal(card().querySelector('.node-level').textContent,'等级 12（已故）');
+  a.q('#boardModify').click();a.q('#boardLevel').value='?';a.q('#boardStatus').value='未知';submit();await a.w.ADVENTURE_ARCHIVE.stores.get('board').sync();assert.equal(server.parts.board.snapshot.nodes[1].level,null);
+  const b=page('caseboard.html',server);try{await b.ready();assert.equal(b.q('[data-id="'+n.id+'"] .node-level').textContent,'等级 ？（未知）');assert.equal(b.w.CaseboardAPI.read().nodes[1].level,null)}finally{b.w.close()}
+  for(const part of ['character','map','journal'])assert.deepEqual(server.parts[part],seed.parts[part]);
+ }finally{a.w.close()}
+});
