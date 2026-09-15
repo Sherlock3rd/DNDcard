@@ -1,0 +1,210 @@
+{
+  "source": "用户提供的渡鸦镇人物关系截图（2026-09-15），姓名待核对；只录入可见资料。",
+  "nodes": [
+    {
+      "id": "raven-town",
+      "kind": "place",
+      "name": "渡鸦镇",
+      "role": "人物与线索",
+      "notes": "民兵团、镇公所、地下墓穴、海德家、守夜人酒馆、铁匠铺；另有渡鸦商行商人。",
+      "x": 2700,
+      "y": 160
+    },
+    {
+      "id": "raven-militia-priest",
+      "name": "雷克斐",
+      "role": "牧师 · Lv.5",
+      "notes": "渡鸦镇牧师；渡鸦镇民兵团。",
+      "x": 2020,
+      "y": 530
+    },
+    {
+      "id": "raven-militia-captain",
+      "name": "萨特·萨拉利安",
+      "role": "战士 · Lv.5",
+      "notes": "渡鸦镇民兵队长；渡鸦镇民兵团。",
+      "x": 2280,
+      "y": 530
+    },
+    {
+      "id": "raven-mayor",
+      "name": "拜里斯·波特",
+      "role": "渡鸦镇镇长 · Lv.1",
+      "notes": "渡鸦镇镇长；渡鸦镇镇公所。",
+      "x": 2560,
+      "y": 530
+    },
+    {
+      "id": "raven-secretary",
+      "name": "玛丽丝",
+      "role": "秘书 · Lv.1",
+      "notes": "镇长秘书；渡鸦镇镇公所。",
+      "x": 2820,
+      "y": 530
+    },
+    {
+      "id": "raven-former-captain",
+      "name": "克里夫",
+      "role": "前圣武士 · Lv.1",
+      "notes": "前民兵队长；地下墓穴。",
+      "x": 3100,
+      "y": 530
+    },
+    {
+      "id": "raven-necromancer",
+      "name": "艾迪洛特",
+      "role": "死灵法师 · Lv.1",
+      "notes": "地下墓穴。",
+      "x": 3360,
+      "y": 530
+    },
+    {
+      "id": "raven-hyde-father",
+      "name": "海德老爷",
+      "role": "珠宝商人 · Lv.1",
+      "notes": "海德家长子；海德太老爷之子，安东尼奥·海德之父。",
+      "x": 2020,
+      "y": 1010
+    },
+    {
+      "id": "raven-hyde-grandson",
+      "name": "安东尼奥·海德",
+      "role": "海德家长孙",
+      "notes": "截图职业栏：无；Lv.1。海德老爷之子。与姓名未明的铁匠学徒之间标注“盟友？”，关系未确认。",
+      "x": 2280,
+      "y": 1010
+    },
+    {
+      "id": "raven-hyde-grandfather",
+      "name": "海德太老爷",
+      "role": "珠宝商 · Lv.1",
+      "status": "死亡",
+      "notes": "海德家太老爷；海德老爷之父。",
+      "x": 2020,
+      "y": 1350
+    },
+    {
+      "id": "raven-tavern-husband",
+      "name": "隆特",
+      "role": "酒馆老板 · Lv.1",
+      "notes": "守夜人酒馆老板；与玛卡吉拉为夫妻。",
+      "x": 3100,
+      "y": 1010
+    },
+    {
+      "id": "raven-tavern-wife",
+      "name": "玛卡吉拉",
+      "role": "酒馆老板娘 · Lv.1",
+      "notes": "守夜人酒馆老板娘；与隆特为夫妻。",
+      "x": 3360,
+      "y": 1010
+    },
+    {
+      "id": "raven-smith-apprentice",
+      "name": "？？？",
+      "role": "铁匠学徒",
+      "notes": "姓名未明。截图职业栏：铁匠；Lv.1。渡鸦镇铁匠铺。与安东尼奥·海德之间标注“盟友？”，关系未确认。",
+      "x": 2690,
+      "y": 1010
+    },
+    {
+      "id": "raven-merchant",
+      "name": "莱特",
+      "role": "商人 · Lv.1",
+      "notes": "渡鸦商行商人。",
+      "x": 3230,
+      "y": 1400
+    }
+  ],
+  "edges": [
+    {
+      "id": "raven-hyde-grandfather--father",
+      "from": "raven-hyde-grandfather",
+      "to": "raven-hyde-father",
+      "note": "父子：海德太老爷为父，海德老爷为子。"
+    },
+    {
+      "id": "raven-hyde-father--grandson",
+      "from": "raven-hyde-father",
+      "to": "raven-hyde-grandson",
+      "note": "父子：海德老爷为父，安东尼奥·海德为子。"
+    },
+    {
+      "id": "raven-tavern-couple",
+      "from": "raven-tavern-husband",
+      "to": "raven-tavern-wife",
+      "note": "夫妻"
+    },
+    {
+      "id": "raven-hyde--smith",
+      "from": "raven-hyde-grandson",
+      "to": "raven-smith-apprentice",
+      "note": "盟友？（截图保留问号，关系未确认）"
+    }
+  ],
+  "zones": [
+    {
+      "id": "ward-raven-town",
+      "name": "渡鸦镇",
+      "tone": "lilac",
+      "x": 1840,
+      "y": 30,
+      "width": 1720,
+      "height": 1540
+    },
+    {
+      "id": "ward-raven-militia",
+      "name": "渡鸦镇民兵团",
+      "tone": "sage",
+      "x": 1900,
+      "y": 330,
+      "width": 500,
+      "height": 410
+    },
+    {
+      "id": "ward-raven-office",
+      "name": "渡鸦镇镇公所",
+      "tone": "sage",
+      "x": 2440,
+      "y": 330,
+      "width": 500,
+      "height": 410
+    },
+    {
+      "id": "ward-raven-crypt",
+      "name": "地下墓穴",
+      "tone": "sage",
+      "x": 2980,
+      "y": 330,
+      "width": 500,
+      "height": 410
+    },
+    {
+      "id": "ward-raven-hyde",
+      "name": "海德家",
+      "tone": "sage",
+      "x": 1900,
+      "y": 800,
+      "width": 500,
+      "height": 730
+    },
+    {
+      "id": "ward-raven-tavern",
+      "name": "守夜人酒馆",
+      "tone": "sage",
+      "x": 2980,
+      "y": 800,
+      "width": 500,
+      "height": 430
+    },
+    {
+      "id": "ward-raven-smith",
+      "name": "渡鸦镇铁匠铺",
+      "tone": "sage",
+      "x": 2440,
+      "y": 800,
+      "width": 500,
+      "height": 430
+    }
+  ]
+}

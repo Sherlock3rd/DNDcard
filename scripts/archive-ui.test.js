@@ -1,6 +1,6 @@
 const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),{JSDOM}=require('jsdom');
 const copy=v=>JSON.parse(JSON.stringify(v)),seed=JSON.parse(fs.readFileSync('data/save/latest.json','utf8'));
-const boardScope={};vm.runInNewContext(fs.readFileSync('caseboard-seed.js','utf8'),{window:boardScope});seed.parts.board||={revision:1,updatedAt:seed.updatedAt,snapshot:copy(boardScope.CASEBOARD_SEED)};
+const boardScope={};vm.runInNewContext(fs.readFileSync('caseboard-seed.js','utf8'),{window:boardScope});seed.parts.board={revision:1,updatedAt:seed.updatedAt,snapshot:copy(boardScope.CASEBOARD_SEED)};
 const wait=async fn=>{for(let i=0;i<100;i++){if(fn())return;await new Promise(r=>setTimeout(r,5))}throw Error('Timed out')};
 function page(file,server,options={}){
  const html=fs.readFileSync(file,'utf8'),dom=new JSDOM(html,{url:'https://example.test/'+file+(options.fragment||''),runScripts:'outside-only',pretendToBeVisual:true}),w=dom.window,ctx=dom.getInternalVMContext();let callback,session=null;const calls=[];let authCalls=0;
@@ -108,10 +108,21 @@ test('ward creation, all-corner resizing, cancellation and deletion sync indepen
  a.q('#boardNewZone').click();a.q('#boardZoneName').value='<新线索>';a.q('#boardZoneTone').value='lilac';a.q('#boardZoneForm').dispatchEvent(new a.w.Event('submit',{cancelable:true}));await store.sync();let z=server.parts.board.snapshot.zones.find(z=>z.name==='<新线索>');assert(z);assert.equal(a.q('.ward-title new'),null);const id=z.id,selector='[data-zone="'+id+'"]';
  title=a.q(selector+' .ward-title');pointer(title,'pointerdown',500,300);pointer(title,'pointermove',530,320);assert.equal(snapshot().zones.find(z=>z.id===id).x,z.x,'unfinished drag is not part of the save');pointer(title,'pointerup',530,320);await store.sync();assert.notEqual(server.parts.board.snapshot.zones.find(z=>z.id===id).x,z.x);
  for(const corner of ['nw','ne','sw','se']){const handle=a.q(selector+' [data-corner="'+corner+'"]'),old=snapshot();pointer(handle,'pointerdown',500,300);pointer(handle,'pointermove',520,310);pointer(handle,'pointercancel',520,310);assert.deepEqual(snapshot(),old);pointer(handle,'pointerdown',500,300);pointer(handle,'pointermove',corner.includes('w')?490:510,corner.includes('n')?290:310);pointer(handle,'pointerup',510,310);await store.sync();assert.notDeepEqual(snapshot().zones.find(z=>z.id===id),old.zones.find(z=>z.id===id))}
- const handle=a.q(selector+' [data-corner="se"]');pointer(handle,'pointerdown',500,300);pointer(handle,'pointermove',5000,5000);pointer(handle,'pointerup',5000,5000);await store.sync();z=snapshot().zones.find(z=>z.id===id);assert.equal(z.x+z.width,1800);assert.equal(z.y+z.height,1200);
- await new Promise(r=>setTimeout(r,1));a.q(selector+' .ward-title').click();a.q('#boardModify').click();a.q('#boardZoneWidth').value='1801';a.q('#boardZoneForm').dispatchEvent(new a.w.Event('submit',{cancelable:true}));assert(a.q('#boardZoneDialog').open);a.q('#boardZoneCancel').click();assert.equal(snapshot().zones.find(z=>z.id===id).width,z.width);
+ const handle=a.q(selector+' [data-corner="se"]');pointer(handle,'pointerdown',500,300);pointer(handle,'pointermove',5000,5000);pointer(handle,'pointerup',5000,5000);await store.sync();z=snapshot().zones.find(z=>z.id===id);assert.equal(z.x+z.width,a.w.CASEBOARD_CORE.width);assert.equal(z.y+z.height,a.w.CASEBOARD_CORE.height);
+ await new Promise(r=>setTimeout(r,1));a.q(selector+' .ward-title').click();a.q('#boardModify').click();a.q('#boardZoneWidth').value=String(a.w.CASEBOARD_CORE.width+1);a.q('#boardZoneForm').dispatchEvent(new a.w.Event('submit',{cancelable:true}));assert(a.q('#boardZoneDialog').open);a.q('#boardZoneCancel').click();assert.equal(snapshot().zones.find(z=>z.id===id).width,z.width);
  const b=page('caseboard.html',server);try{await b.ready();assert.deepEqual(copy(b.w.CaseboardAPI.read().zones),snapshot().zones)}finally{b.w.close()}
  a.q('#boardRemove').click();a.q('#boardKeep').click();assert(snapshot().zones.some(z=>z.id===id));a.q('#boardRemove').click();a.q('#boardConfirmDelete').click();await store.sync();assert(!server.parts.board.snapshot.zones.some(z=>z.id===id));assert.deepEqual(server.parts.board.snapshot.nodes,before.board.snapshot.nodes);assert.deepEqual(server.parts.board.snapshot.edges,before.board.snapshot.edges);for(const part of ['character','map','journal'])assert.deepEqual(server.parts[part],before[part]);
+ }finally{a.w.close()}
+});
+
+test('Raven Town regions frame actual groups without saving and portraits use original screenshot viewports',async()=>{
+ const server=copy(seed);server.parts.board.snapshot=require('./prepare-raven-town').prepare(server.parts.board.snapshot);const a=page('caseboard.html',server);
+ try{await a.ready();const before=copy(a.w.CaseboardAPI.read()),region=a.q('#boardRegion');
+  assert.equal(a.q('#boardWorld').style.width,'3600px');assert.equal(a.q('#boardThreads').getAttribute('viewBox'),'0 0 3600 1600');
+  region.value='ward-raven-hyde';region.dispatchEvent(new a.w.Event('change'));assert.equal(a.calls.length,0);assert.deepEqual(copy(a.w.CaseboardAPI.read()),before);
+  const portrait=a.q('[data-id="raven-mayor"] svg');assert.equal(portrait.getAttribute('viewBox'),'389 92 60 60');assert.equal(portrait.querySelector('image').getAttribute('href'),'assets/images/raven-town-reference-1.png');
+  a.q('[data-id="raven-mayor"]').click();assert.equal(a.q('#boardDetailBody svg').getAttribute('aria-label'),'拜里斯·波特');
+  a.viewSize.width=390;a.viewSize.height=680;a.w.dispatchEvent(new a.w.Event('resize'));region.value='ward-raven-smith';region.dispatchEvent(new a.w.Event('change'));assert.equal(a.calls.length,0);
  }finally{a.w.close()}
 });
 
