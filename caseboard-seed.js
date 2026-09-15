@@ -18,5 +18,6 @@
  function edge(from,to,note){edges.push({id:from+'--'+to,from,to,note})}
  for(const id of ['gandalf','sairen','shire','zuo','mura','feiyi','aili'])edge('party',id,'冒险团成员');
  edge('party','iron-village','与铁环村关联');edge('iron-village','chief','村庄领袖');edge('party','pazu','被冒险团救下');edge('party','maruk','被误认为叛徒 · 误杀');edge('iron-village','morris','矿坑遇难者之一');edge('iron-village','pazu','与铁环村关联');edge('iron-village','maruk','与铁环村关联');
- root.CASEBOARD_SEED={version:1,boardId:'black-tower',nodes,edges};
+ const zones=[{id:'ward-party',name:'冒险团',tone:'sage',x:40,y:55,width:910,height:1045},{id:'ward-village',name:'铁环村 · 矿坑线索',tone:'amber',x:1040,y:85,width:700,height:1035}];
+ root.CASEBOARD_SEED={version:1,boardId:'black-tower',nodes,edges,zones};
 })(typeof window==='undefined'?globalThis:window);
