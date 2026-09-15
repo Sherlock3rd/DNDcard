@@ -1,0 +1,236 @@
+{
+  "mode": "built-in image_gen",
+  "assets": [
+    {
+      "id": "raven-town",
+      "prompt": "Create a standalone square establishing landscape illustration of Raven Town (渡鸦镇), a modest medieval fantasy town. Narrow cobbled streets, weathered timber and stone houses, a small town hall, an inn and blacksmith workshop, a few ravens on rooftops, dusk mist and warm window light. Match the reference's realistic dark fantasy cinematic painted style, restrained charcoal/antique gold colors, physically coherent perspective and lighting. The reference is style only; this town is above ground, not a cavern city. No text, no UI, no border, no montage. 1024x1024, show the whole town from a gentle elevated viewpoint.",
+      "refs": [
+        "D:/gameDesign/DNDcard/assets/images/relationship-dwarf-village.png"
+      ],
+      "target": "assets/images/caseboard-v2/raven-town.png"
+    },
+    {
+      "id": "iron-village",
+      "prompt": "Regenerate the reference as ONE standalone square landscape of the same dwarven settlement of Iron Ring Village (铁环村): layered stone buildings inside a vast rocky cavern, stone bridges, deep cool blue cave atmosphere and coherent warm forge/window lights. Preserve its underground dwarven identity. Match realistic detailed dark fantasy cinematic painting. Clear architecture at small thumbnail size, one scene, no text, no UI, no frame. 1024x1024.",
+      "refs": [
+        "D:/gameDesign/DNDcard/assets/images/relationship-dwarf-village.png"
+      ],
+      "target": "assets/images/caseboard-v2/iron-village.png"
+    },
+    {
+      "id": "gandalf",
+      "prompt": "Regenerate ONE standalone square head-and-shoulders portrait of the same elderly human wizard shown in the reference, 甘阿·道夫. Preserve his recognizable face, long grey beard, black pointed hat, black and antique-gold robes. Human skin and eyes. Reframe as an intimate centered portrait, face clearly lit by soft warm light with subtle cool moonlit background, realistic detailed dark fantasy painting. Full head and shoulders visible, readable face at small size. No sword crossing the face, no text, no UI, no border, no collage. 1024x1024.",
+      "refs": [
+        "D:/gameDesign/DNDcard/assets/images/gandalf-bladesinger.png"
+      ],
+      "target": "assets/images/caseboard-v2/gandalf.png"
+    },
+    {
+      "id": "raven-militia-priest",
+      "name": "雷克斐",
+      "prompt": "为奇幻游戏生成一张独立人物头像：灰白色齐肩头发、无胡须的成年男性牧师，穿精致的暗银色盔甲，沉静表情，正面胸像。参考图只用于画风：细腻写实奇幻油画，深灰背景、柔和暖光照亮面孔、古铜色与暗色衣物、清楚的眼睛和自然的皮肤质感。方形1024x1024，头顶和双肩完整入镜。无文字、无圆框、无UI、无拼图，只有一人。",
+      "target": "assets/images/caseboard-v2/raven-militia-priest.png",
+      "references": [
+        "assets/images/relationship-sairen.png"
+      ]
+    },
+    {
+      "id": "sairen",
+      "name": "塞伦",
+      "prompt": "为奇幻游戏 The Black Tower 生成一张独立人物头像。主体：年轻成年男性牧师，黑色齐肩发、象牙白斗篷、金色太阳胸针、内穿盔甲。参考图是同一人物的旧肖像，保持面貌身份特征，同时重新绘制为统一构图。细腻写实的暗黑奇幻油画，深炭灰背景，柔和暖光照亮面孔，古铜色与暗色衣物，自然皮肤和清楚的眼睛，光影方向一致。方形1024x1024，居中头肩胸像，头顶和肩膀完整入镜，面部约占画面高度三分之一，小尺寸也清晰。只有一名人物，无文字，无边框，无UI，无拼图。",
+      "target": "assets/images/caseboard-v2/sairen.png",
+      "references": [
+        "assets/images/relationship-sairen.png"
+      ]
+    },
+    {
+      "id": "shire",
+      "name": "夏尔-金歌",
+      "prompt": "为奇幻游戏 The Black Tower 生成一张独立人物头像。主体：年轻成年男性吟游诗人，黑色卷发，酒红衣领，金色竖琴胸针。参考图是同一人物的旧肖像，保持面貌身份特征，同时重新绘制为统一构图。细腻写实的暗黑奇幻油画，深炭灰背景，柔和暖光照亮面孔，古铜色与暗色衣物，自然皮肤和清楚的眼睛，光影方向一致。方形1024x1024，居中头肩胸像，头顶和肩膀完整入镜，面部约占画面高度三分之一，小尺寸也清晰。只有一名人物，无文字，无边框，无UI，无拼图。",
+      "target": "assets/images/caseboard-v2/shire.png",
+      "references": [
+        "assets/images/relationship-shire-goldsong.png"
+      ]
+    },
+    {
+      "id": "zuo",
+      "name": "左无峰",
+      "prompt": "为奇幻游戏 The Black Tower 生成一张独立人物头像。主体：年轻成年男性武者，东亚面容，黑色发髻，深色布衣。参考图是同一人物的旧肖像，保持面貌身份特征，同时重新绘制为统一构图。细腻写实的暗黑奇幻油画，深炭灰背景，柔和暖光照亮面孔，古铜色与暗色衣物，自然皮肤和清楚的眼睛，光影方向一致。方形1024x1024，居中头肩胸像，头顶和肩膀完整入镜，面部约占画面高度三分之一，小尺寸也清晰。只有一名人物，无文字，无边框，无UI，无拼图。",
+      "target": "assets/images/caseboard-v2/zuo.png",
+      "references": [
+        "assets/images/relationship-zuo-wufeng.png"
+      ]
+    },
+    {
+      "id": "mura",
+      "name": "缪拉-青苔",
+      "prompt": "为奇幻游戏 The Black Tower 生成一张独立人物头像。主体：年轻成年半精灵德鲁伊，尖耳黑发，植物面纹，苔绿色斗篷。参考图是同一人物的旧肖像，保持面貌身份特征，同时重新绘制为统一构图。细腻写实的暗黑奇幻油画，深炭灰背景，柔和暖光照亮面孔，古铜色与暗色衣物，自然皮肤和清楚的眼睛，光影方向一致。方形1024x1024，居中头肩胸像，头顶和肩膀完整入镜，面部约占画面高度三分之一，小尺寸也清晰。只有一名人物，无文字，无边框，无UI，无拼图。",
+      "target": "assets/images/caseboard-v2/mura.png",
+      "references": [
+        "assets/images/relationship-mura-moss.png"
+      ]
+    },
+    {
+      "id": "feiyi",
+      "name": "费伊",
+      "prompt": "为奇幻游戏 The Black Tower 生成一张独立人物头像。主体：年轻成年男性奥术工匠，黑发灰眼，深色大衣，古铜色扣件与少量蓝色符文镶嵌。参考图是同一人物的旧肖像，保持面貌身份特征，同时重新绘制为统一构图。细腻写实的暗黑奇幻油画，深炭灰背景，柔和暖光照亮面孔，古铜色与暗色衣物，自然皮肤和清楚的眼睛，光影方向一致。方形1024x1024，居中头肩胸像，头顶和肩膀完整入镜，面部约占画面高度三分之一，小尺寸也清晰。只有一名人物，无文字，无边框，无UI，无拼图。",
+      "target": "assets/images/caseboard-v2/feiyi.png",
+      "references": [
+        "assets/images/relationship-feiyi.png"
+      ]
+    },
+    {
+      "id": "aili",
+      "name": "艾黎",
+      "prompt": "为奇幻游戏 The Black Tower 生成一张独立人物头像。主体：年轻成年男性游侠，东亚面容，黑发，轻微旧伤疤，深色兜帽斗篷，肩后箭袋。参考图是同一人物的旧肖像，保持面貌身份特征，同时重新绘制为统一构图。细腻写实的暗黑奇幻油画，深炭灰背景，柔和暖光照亮面孔，古铜色与暗色衣物，自然皮肤和清楚的眼睛，光影方向一致。方形1024x1024，居中头肩胸像，头顶和肩膀完整入镜，面部约占画面高度三分之一，小尺寸也清晰。只有一名人物，无文字，无边框，无UI，无拼图。",
+      "target": "assets/images/caseboard-v2/aili.png",
+      "references": [
+        "assets/images/relationship-aili.png"
+      ]
+    },
+    {
+      "id": "chief",
+      "name": "艾德诺根",
+      "prompt": "为奇幻游戏 The Black Tower 生成一张独立人物头像。主体：年长矮人男性，浓密灰色编织长胡须，灰发，朴素古铜额冠，深色金边衣服。参考图是同一人物的旧肖像，保持面貌身份特征，同时重新绘制为统一构图。细腻写实的暗黑奇幻油画，深炭灰背景，柔和暖光照亮面孔，古铜色与暗色衣物，自然皮肤和清楚的眼睛，光影方向一致。方形1024x1024，居中头肩胸像，头顶和肩膀完整入镜，面部约占画面高度三分之一，小尺寸也清晰。只有一名人物，无文字，无边框，无UI，无拼图。",
+      "target": "assets/images/caseboard-v2/chief.png",
+      "references": [
+        "assets/images/relationship-chief.png"
+      ]
+    },
+    {
+      "id": "pazu",
+      "name": "帕祖",
+      "prompt": "为奇幻游戏 The Black Tower 生成一张独立人物头像。主体：年轻成年男性，消瘦面孔，黑发，微量尘土与旧疤，朴素土色斗篷。参考图是同一人物的旧肖像，保持面貌身份特征，同时重新绘制为统一构图。细腻写实的暗黑奇幻油画，深炭灰背景，柔和暖光照亮面孔，古铜色与暗色衣物，自然皮肤和清楚的眼睛，光影方向一致。方形1024x1024，居中头肩胸像，头顶和肩膀完整入镜，面部约占画面高度三分之一，小尺寸也清晰。只有一名人物，无文字，无边框，无UI，无拼图。",
+      "target": "assets/images/caseboard-v2/pazu.png",
+      "references": [
+        "assets/images/relationship-pazu.png"
+      ]
+    },
+    {
+      "id": "maruk",
+      "name": "马鲁克",
+      "prompt": "为奇幻游戏 The Black Tower 生成一张独立人物头像。主体：中年矮人男性，宽脸，深色编织胡须，暗红布衣与皮革。参考图是同一人物的旧肖像，保持面貌身份特征，同时重新绘制为统一构图。细腻写实的暗黑奇幻油画，深炭灰背景，柔和暖光照亮面孔，古铜色与暗色衣物，自然皮肤和清楚的眼睛，光影方向一致。方形1024x1024，居中头肩胸像，头顶和肩膀完整入镜，面部约占画面高度三分之一，小尺寸也清晰。只有一名人物，无文字，无边框，无UI，无拼图。",
+      "target": "assets/images/caseboard-v2/maruk.png",
+      "references": [
+        "assets/images/relationship-maruk.png"
+      ]
+    },
+    {
+      "id": "morris",
+      "name": "墨里斯",
+      "prompt": "为奇幻游戏 The Black Tower 生成一张独立人物头像。主体：中年矮人矿工男性，宽脸棕色胡须，皮帽上有护目镜，少量煤灰。参考图是同一人物的旧肖像，保持面貌身份特征，同时重新绘制为统一构图。细腻写实的暗黑奇幻油画，深炭灰背景，柔和暖光照亮面孔，古铜色与暗色衣物，自然皮肤和清楚的眼睛，光影方向一致。方形1024x1024，居中头肩胸像，头顶和肩膀完整入镜，面部约占画面高度三分之一，小尺寸也清晰。只有一名人物，无文字，无边框，无UI，无拼图。",
+      "target": "assets/images/caseboard-v2/morris.png",
+      "references": [
+        "assets/images/relationship-morris.png"
+      ]
+    },
+    {
+      "id": "raven-militia-captain",
+      "name": "萨特·萨拉利安",
+      "prompt": "为奇幻游戏 The Black Tower 生成一张独立人物头像。主体：成年男性民兵队长，卷曲浅棕发，绿色斗篷，轻甲，自信而友善的脸。参考图只用于统一画风，不要复制参考人物身份。细腻写实的暗黑奇幻油画，深炭灰背景，柔和暖光照亮面孔，古铜色与暗色衣物，自然皮肤和清楚的眼睛，光影方向一致。方形1024x1024，居中头肩胸像，头顶和肩膀完整入镜，面部约占画面高度三分之一，小尺寸也清晰。只有一名人物，无文字，无边框，无UI，无拼图。",
+      "target": "assets/images/caseboard-v2/raven-militia-captain.png",
+      "references": [
+        "assets/images/relationship-chief.png"
+      ]
+    },
+    {
+      "id": "raven-mayor",
+      "name": "拜里斯·波特",
+      "prompt": "为奇幻游戏 The Black Tower 生成一张独立人物头像。主体：中年男性镇长，略秃的棕色卷发，饱满下颌，绿色锦缎衣服和金色项链。参考图只用于统一画风，不要复制参考人物身份。细腻写实的暗黑奇幻油画，深炭灰背景，柔和暖光照亮面孔，古铜色与暗色衣物，自然皮肤和清楚的眼睛，光影方向一致。方形1024x1024，居中头肩胸像，头顶和肩膀完整入镜，面部约占画面高度三分之一，小尺寸也清晰。只有一名人物，无文字，无边框，无UI，无拼图。",
+      "target": "assets/images/caseboard-v2/raven-mayor.png",
+      "references": [
+        "assets/images/relationship-chief.png"
+      ]
+    },
+    {
+      "id": "raven-secretary",
+      "name": "玛丽丝",
+      "prompt": "为奇幻游戏 The Black Tower 生成一张独立人物头像。主体：年轻成年女性秘书，向后盘起的棕发，圆框眼镜，深绿色高领衣服。参考图只用于统一画风，不要复制参考人物身份。细腻写实的暗黑奇幻油画，深炭灰背景，柔和暖光照亮面孔，古铜色与暗色衣物，自然皮肤和清楚的眼睛，光影方向一致。方形1024x1024，居中头肩胸像，头顶和肩膀完整入镜，面部约占画面高度三分之一，小尺寸也清晰。只有一名人物，无文字，无边框，无UI，无拼图。",
+      "target": "assets/images/caseboard-v2/raven-secretary.png",
+      "references": [
+        "assets/images/relationship-chief.png"
+      ]
+    },
+    {
+      "id": "raven-former-captain",
+      "name": "克里夫",
+      "prompt": "为奇幻游戏 The Black Tower 生成一张独立人物头像。主体：成熟男性前圣骑士，深色中长头发，短胡须，严肃沧桑面孔，旧盔甲。参考图只用于统一画风，不要复制参考人物身份。细腻写实的暗黑奇幻油画，深炭灰背景，柔和暖光照亮面孔，古铜色与暗色衣物，自然皮肤和清楚的眼睛，光影方向一致。方形1024x1024，居中头肩胸像，头顶和肩膀完整入镜，面部约占画面高度三分之一，小尺寸也清晰。只有一名人物，无文字，无边框，无UI，无拼图。",
+      "target": "assets/images/caseboard-v2/raven-former-captain.png",
+      "references": [
+        "assets/images/relationship-chief.png"
+      ]
+    },
+    {
+      "id": "raven-necromancer",
+      "name": "艾迪洛特",
+      "prompt": "为奇幻游戏 The Black Tower 生成一张独立人物头像。主体：成年女性亡灵法师，苍白而平静的面孔，黑色兜帽，冷蓝黑色长袍。参考图只用于统一画风，不要复制参考人物身份。细腻写实的暗黑奇幻油画，深炭灰背景，柔和暖光照亮面孔，古铜色与暗色衣物，自然皮肤和清楚的眼睛，光影方向一致。方形1024x1024，居中头肩胸像，头顶和肩膀完整入镜，面部约占画面高度三分之一，小尺寸也清晰。只有一名人物，无文字，无边框，无UI，无拼图。",
+      "target": "assets/images/caseboard-v2/raven-necromancer.png",
+      "references": [
+        "assets/images/relationship-chief.png"
+      ]
+    },
+    {
+      "id": "raven-hyde-father",
+      "name": "海德老爷",
+      "prompt": "为奇幻游戏 The Black Tower 生成一张独立人物头像。主体：中年男性珠宝商，卷曲棕发，饱满面孔，精致酒红金边外衣。参考图只用于统一画风，不要复制参考人物身份。细腻写实的暗黑奇幻油画，深炭灰背景，柔和暖光照亮面孔，古铜色与暗色衣物，自然皮肤和清楚的眼睛，光影方向一致。方形1024x1024，居中头肩胸像，头顶和肩膀完整入镜，面部约占画面高度三分之一，小尺寸也清晰。只有一名人物，无文字，无边框，无UI，无拼图。",
+      "target": "assets/images/caseboard-v2/raven-hyde-father.png",
+      "references": [
+        "assets/images/relationship-chief.png"
+      ]
+    },
+    {
+      "id": "raven-hyde-grandson",
+      "name": "安东尼奥·海德",
+      "prompt": "为奇幻游戏 The Black Tower 生成一张独立人物头像。主体：年轻成年男性贵族，红棕色头发，白皙面孔，精致红黑色外衣。参考图只用于统一画风，不要复制参考人物身份。细腻写实的暗黑奇幻油画，深炭灰背景，柔和暖光照亮面孔，古铜色与暗色衣物，自然皮肤和清楚的眼睛，光影方向一致。方形1024x1024，居中头肩胸像，头顶和肩膀完整入镜，面部约占画面高度三分之一，小尺寸也清晰。只有一名人物，无文字，无边框，无UI，无拼图。",
+      "target": "assets/images/caseboard-v2/raven-hyde-grandson.png",
+      "references": [
+        "assets/images/relationship-chief.png"
+      ]
+    },
+    {
+      "id": "raven-hyde-grandfather",
+      "name": "海德太老爷",
+      "prompt": "为奇幻游戏 The Black Tower 生成一张独立人物头像。主体：老年男性珠宝商，白色卷发，苍白而有皱纹的脸，端庄深色外衣；表现他生前的纪念肖像。参考图只用于统一画风，不要复制参考人物身份。细腻写实的暗黑奇幻油画，深炭灰背景，柔和暖光照亮面孔，古铜色与暗色衣物，自然皮肤和清楚的眼睛，光影方向一致。方形1024x1024，居中头肩胸像，头顶和肩膀完整入镜，面部约占画面高度三分之一，小尺寸也清晰。只有一名人物，无文字，无边框，无UI，无拼图。",
+      "target": "assets/images/caseboard-v2/raven-hyde-grandfather.png",
+      "references": [
+        "assets/images/relationship-chief.png"
+      ]
+    },
+    {
+      "id": "raven-tavern-husband",
+      "name": "隆特",
+      "prompt": "为奇幻游戏 The Black Tower 生成一张独立人物头像。主体：成年男性兽人酒馆老板，绿褐皮肤，含蓄小獠牙，短黑发短胡须，朴素工作服。参考图只用于统一画风，不要复制参考人物身份。细腻写实的暗黑奇幻油画，深炭灰背景，柔和暖光照亮面孔，古铜色与暗色衣物，自然皮肤和清楚的眼睛，光影方向一致。方形1024x1024，居中头肩胸像，头顶和肩膀完整入镜，面部约占画面高度三分之一，小尺寸也清晰。只有一名人物，无文字，无边框，无UI，无拼图。",
+      "target": "assets/images/caseboard-v2/raven-tavern-husband.png",
+      "references": [
+        "assets/images/relationship-chief.png"
+      ]
+    },
+    {
+      "id": "raven-tavern-wife",
+      "name": "玛卡吉拉",
+      "prompt": "为奇幻游戏 The Black Tower 生成一张独立人物头像。主体：成年红皮肤提夫林女性酒馆老板，深色头发，向后弯曲的双角，朴素棕色服装。参考图只用于统一画风，不要复制参考人物身份。细腻写实的暗黑奇幻油画，深炭灰背景，柔和暖光照亮面孔，古铜色与暗色衣物，自然皮肤和清楚的眼睛，光影方向一致。方形1024x1024，居中头肩胸像，头顶和肩膀完整入镜，面部约占画面高度三分之一，小尺寸也清晰。只有一名人物，无文字，无边框，无UI，无拼图。",
+      "target": "assets/images/caseboard-v2/raven-tavern-wife.png",
+      "references": [
+        "assets/images/relationship-chief.png"
+      ]
+    },
+    {
+      "id": "raven-smith-apprentice",
+      "name": "？？？",
+      "prompt": "为奇幻游戏 The Black Tower 生成一张独立人物头像。主体：年轻成年男性铁匠学徒，凌乱金棕色头发，朴素敞领工作衫和皮围裙。参考图只用于统一画风，不要复制参考人物身份。细腻写实的暗黑奇幻油画，深炭灰背景，柔和暖光照亮面孔，古铜色与暗色衣物，自然皮肤和清楚的眼睛，光影方向一致。方形1024x1024，居中头肩胸像，头顶和肩膀完整入镜，面部约占画面高度三分之一，小尺寸也清晰。只有一名人物，无文字，无边框，无UI，无拼图。",
+      "target": "assets/images/caseboard-v2/raven-smith-apprentice.png",
+      "references": [
+        "assets/images/relationship-chief.png"
+      ]
+    },
+    {
+      "id": "raven-merchant",
+      "name": "莱特",
+      "prompt": "为奇幻游戏 The Black Tower 生成一张独立人物头像。主体：中年男性行商，圆润开朗的脸，稀疏浅棕发，朴素土色衣服。参考图只用于统一画风，不要复制参考人物身份。细腻写实的暗黑奇幻油画，深炭灰背景，柔和暖光照亮面孔，古铜色与暗色衣物，自然皮肤和清楚的眼睛，光影方向一致。方形1024x1024，居中头肩胸像，头顶和肩膀完整入镜，面部约占画面高度三分之一，小尺寸也清晰。只有一名人物，无文字，无边框，无UI，无拼图。",
+      "target": "assets/images/caseboard-v2/raven-merchant.png",
+      "references": [
+        "assets/images/relationship-chief.png"
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 // Preserve the existing case wall's identities and known relationships.
 (function(root){
  const nodes=[],edges=[];
- function node(id,name,kind,x,y,portrait='',race='',role='',status='',notes=''){nodes.push({id,name,kind,x,y,portrait:portrait?'assets/images/'+portrait:'',race,role,status,notes,appearance:''})}
+ function node(id,name,kind,x,y,portrait='',race='',role='',status='',notes=''){nodes.push({id,name,kind,x,y,portrait:portrait?'assets/images/caseboard-v2/'+id+'.png':'',race,role,status,notes,appearance:''})}
  node('party','冒险团','group',500,565,'','七名同伴','共同冒险');
  node('gandalf','甘阿·道夫','person',220,220,'gandalf-bladesinger.png','人类','法师（剑咏）');
  node('sairen','赛伦','person',520,170,'relationship-sairen.png','人类','牧师');
