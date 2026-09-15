@@ -54,6 +54,15 @@ test('journal aliases bind to one existing piece without renaming or duplicating
  }finally{a.w.close()}
 });
 
+test('selected piece shows linked journal time, location aliases and people; updates and unlink clear stale fields without writes',async()=>{
+ const server=copy(seed),book=server.parts.journal.snapshot,target=server.parts.map.snapshot.pieces.find(p=>p.kind!=='traveler');
+ book.places.forEach(p=>p.pieceId=null);const [first,second]=book.places;first.pieceId=second.pieceId=target.id;first.name='旧称甲';second.name='旧称乙';book.entries.forEach(e=>e.placeIds=[]);book.entries[0].placeIds=[first.id,second.id];book.entries[0].day='到镇的黄昏';book.entries[0].people=['同行者 <b>甲</b>','工匠'];book.entries[1].placeIds=[first.id];book.entries[1].people=[];
+ const a=page('map.html',server,{storedKey:'a'.repeat(64)});try{await a.ready();vm.runInContext('select(pieces.find(p=>p.id==='+JSON.stringify(target.id)+'))',a.ctx);const related=a.q('#pieceJournalEntries');assert.equal(related.querySelectorAll('article').length,2);assert(related.textContent.includes('到镇的黄昏'));assert(related.textContent.includes('旧称甲（地图棋子：'+target.name+'）'));assert(related.textContent.includes('旧称乙'));assert(related.textContent.includes('同行者 <b>甲</b>'));assert.equal(related.querySelector('b'),null);assert(related.textContent.includes('未记录'));assert(!a.q('#details').textContent.includes('时间：待补充'));const card=related.firstElementChild.nextElementSibling;vm.runInContext('paint();paint()',a.ctx);assert.equal(related.firstElementChild.nextElementSibling,card);
+  book.entries[0].day='翌日清晨';book.entries[0].people=['新来者'];server.parts.journal.revision++;server.revision++;await a.w.ADVENTURE_ARCHIVE.stores.get('journal').sync();assert(related.textContent.includes('翌日清晨'));assert(related.textContent.includes('新来者'));assert(!related.textContent.includes('同行者'));
+  first.pieceId=second.pieceId=null;server.parts.journal.revision++;server.revision++;await a.w.ADVENTURE_ARCHIVE.stores.get('journal').sync();assert.equal(related.querySelectorAll('article').length,0);assert(related.textContent.includes('尚未关联'));assert.equal(a.calls.length,0);
+ }finally{a.w.close()}
+});
+
 test('cancel and a piece removed while choosing cannot write a journal association',async()=>{
  const server=copy(seed),a=page('journal.html',server,{storedKey:'a'.repeat(64)});try{await a.ready();const before=copy(a.w.JournalAPI.read());a.q('[data-link-place]').click();await wait(()=>a.q('#existingPiece').options.length>0);a.q('[data-close-place-link]').click();assert.deepEqual(copy(a.w.JournalAPI.read()),before);assert.equal(a.calls.length,0);
   a.q('[data-link-place]').click();await wait(()=>a.q('#existingPiece').options.length>0);const target=server.parts.map.snapshot.pieces[0];a.q('#existingPiece').value=target.id;a.q('#existingPiece').dispatchEvent(new a.w.Event('change'));server.parts.map.snapshot.pieces=server.parts.map.snapshot.pieces.filter(p=>p.id!==target.id);server.parts.map.revision++;server.revision++;
