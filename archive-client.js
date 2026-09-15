@@ -75,7 +75,7 @@
  }
  window.ADVENTURE_ARCHIVE={open,getLatest,stores};
  // Do not let early default UI edits run before the first validated snapshot arrives.
- document.addEventListener('click',e=>{if(document.body.dataset.archiveLoading==='true'&&e.target.closest('#characterApp button')){e.preventDefault();e.stopImmediatePropagation()}},true);
+ document.addEventListener('click',e=>{if(document.body.dataset.archiveLoading==='true'&&e.target.closest('#characterApp button,#levelUpButton')){e.preventDefault();e.stopImmediatePropagation()}},true);
  window.addEventListener('storage',e=>{for(const s of stores.values())if(e.key===s.key)try{s.external()}catch(error){s.report('storage-error',error.message)}});
  window.addEventListener('online',syncAll);window.addEventListener('focus',()=>{if(started)syncAll()});document.addEventListener('visibilitychange',()=>{if(started&&!document.hidden)syncAll()});setInterval(()=>{if(started&&!document.hidden&&navigator.onLine)syncAll()},15000);
  async function auth(next){user=next?.id===config.ownerId?next:null;for(const s of stores.values())s.authorized=canWrite();if(next&&!user)q('[data-error]').textContent='此账号不是档案主人；只保留本机修改。';update();if(started)await syncAll()}

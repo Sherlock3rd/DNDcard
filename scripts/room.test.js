@@ -28,6 +28,8 @@ test('room routes, independent transparent objects and bookshelf preserve saves'
     assert.equal(w.document.title, 'The Black Tower');
     assert.deepEqual(JSON.parse(JSON.stringify(w.ROOM_LAYER_SPEC)), JSON.parse(fs.readFileSync(path.join(root, 'assets/images/room/layers.json'), 'utf8')), 'runtime hit paths and anchors match the extraction manifest');
     assert.equal(q('#portalApp').hidden, false);
+    assert.equal(all('.tower-nav a').length,4);
+    assert.equal(q('.tower-nav [aria-current="page"]').dataset.towerPage,'room');
     assert.equal(all('.room-layer[data-room-layer]:not([data-room-layer="background"])').length, 5);
     assert.equal(new Set(all('.room-layer[data-room-layer]:not([data-room-layer="background"])').map(i => i.src)).size, 5);
     for (const img of all('.room-layer[data-room-layer]:not([data-room-layer="background"])')) {
@@ -51,8 +53,10 @@ test('room routes, independent transparent objects and bookshelf preserve saves'
     }
     await route('#roomCharacter');
     assert.equal(q('#characterApp').hidden, false);
+    assert.equal(q('.tower-nav [aria-current="page"]').dataset.towerPage,'character');
+    assert.ok(q('.tower-dock #levelUpButton'));
     assert.equal(q('#settingsButton'), null);
-    await route('#characterApp [data-portal-route="portal"]');
+    await route('.tower-nav [data-tower-page="room"]');
     assert.equal(q('#portalApp').hidden, false);
     assert.equal(saved(), before, 'navigation does not write player data');
     assert.deepEqual(errors, []);

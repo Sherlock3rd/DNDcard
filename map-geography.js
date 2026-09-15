@@ -24,6 +24,6 @@
  worker.onerror=fallback;
  for(const id of ['roadsToggle','sitesToggle'])$('#'+id).onclick=()=>{const b=$('#'+id);b.setAttribute('aria-pressed',String(b.getAttribute('aria-pressed')!=='true'));schedule();window.paintMapLabels?.()};
  $('#referenceToggle').addEventListener('click',schedule);
- $('#siteJump').onchange=e=>{const s=(window.mapScenerySites||[]).find(s=>s.id===e.target.value);if(!s)return;stopRebound();x=viewport.clientWidth/2-s.x*scale;y=viewport.clientHeight/2-s.y*scale;$('header small').textContent=s.name+'周边';clampView();paint();$('#layerMenu').open=false;e.target.value=''};
+ $('#siteJump').onchange=e=>{const s=(window.mapScenerySites||[]).find(s=>s.id===e.target.value);if(!s)return;stopRebound();x=viewport.clientWidth/2-s.x*scale;y=viewport.clientHeight/2-s.y*scale;$('#mapContext,header small').textContent=s.name+'周边';clampView();paint();$('#layerMenu').open=false;e.target.value=''};
  window.addEventListener('pagehide',e=>{if(e.persisted)return;worker?.terminate();overview?.close();for(const t of cache.values())t.bitmap.close();cache.clear()},{once:true});schedule();
 })();

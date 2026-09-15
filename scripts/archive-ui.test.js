@@ -170,3 +170,12 @@ test('person level selection persists numbers and explicit unknown across device
   for(const part of ['character','map','journal'])assert.deepEqual(server.parts[part],seed.parts[part]);
  }finally{a.w.close()}
 });
+
+test('global destinations stay separate from board and map tools; relocated actions retain handlers without writes',async()=>{
+ for(const file of ['caseboard.html','map.html']){const server=copy(seed),a=page(file,server);try{await a.ready();assert.equal(a.w.document.querySelectorAll('.tower-nav a').length,4);assert.equal(a.q('.tower-nav [aria-current="page"]').dataset.towerPage,file==='map.html'?'map':'board');assert.equal(a.q('.tower-nav button'),null);
+  const panel=a.q('#towerToolsPanel'),toggle=a.q('#towerToolsToggle');assert(panel.hidden);toggle.click();assert(!panel.hidden);assert.equal(toggle.getAttribute('aria-expanded'),'true');
+  if(file==='caseboard.html'){assert(a.q('.tower-primary-actions #boardEdit'));assert(a.q('.tower-primary-actions #boardFit'));a.q('#boardEdit').click();a.q('#boardNew').click();assert(a.q('#boardPersonDialog').open);assert(panel.hidden);a.q('[data-close-person]').click();}
+  else{assert(a.q('.tower-primary-actions #moveMode'));assert(a.q('.tower-primary-actions #wholeMap'));a.q('#wholeMap').click();assert.equal(a.q('#mapContext').textContent,'费伦全域');assert(!panel.hidden);a.q('#toggle').click();assert(!a.q('#tray').hidden);assert(panel.hidden);a.q('#close').click();}
+  toggle.click();a.w.document.dispatchEvent(new a.w.KeyboardEvent('keydown',{key:'Escape'}));assert(panel.hidden);assert.equal(a.w.document.activeElement,toggle);assert.equal(a.calls.length,0);assert.deepEqual(server,seed);
+ }finally{a.w.close()}}
+});
