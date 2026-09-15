@@ -61,7 +61,7 @@
       "updatedAt": "2026-09-15T12:42:42.719659+00:00"
     },
     "board": {
-      "revision": 14,
+      "revision": 15,
       "snapshot": {
         "edges": [
           {
@@ -203,7 +203,7 @@
             "role": "法师（剑咏）",
             "notes": "",
             "status": "",
-            "portrait": "assets/images/gandalf-bladesinger.png",
+            "portrait": "assets/images/caseboard-v2/gandalf.png",
             "appearance": ""
           },
           {
@@ -216,7 +216,7 @@
             "role": "牧师",
             "notes": "",
             "status": "",
-            "portrait": "assets/images/relationship-sairen.png",
+            "portrait": "assets/images/caseboard-v2/sairen.png",
             "appearance": ""
           },
           {
@@ -229,7 +229,7 @@
             "role": "吟游诗人",
             "notes": "",
             "status": "",
-            "portrait": "assets/images/relationship-shire-goldsong.png",
+            "portrait": "assets/images/caseboard-v2/shire.png",
             "appearance": ""
           },
           {
@@ -242,7 +242,7 @@
             "role": "拳师",
             "notes": "",
             "status": "",
-            "portrait": "assets/images/relationship-zuo-wufeng.png",
+            "portrait": "assets/images/caseboard-v2/zuo.png",
             "appearance": ""
           },
           {
@@ -255,7 +255,7 @@
             "role": "德鲁伊",
             "notes": "",
             "status": "",
-            "portrait": "assets/images/relationship-mura-moss.png",
+            "portrait": "assets/images/caseboard-v2/mura.png",
             "appearance": ""
           },
           {
@@ -268,7 +268,7 @@
             "role": "魔器师",
             "notes": "",
             "status": "",
-            "portrait": "assets/images/relationship-feiyi.png",
+            "portrait": "assets/images/caseboard-v2/feiyi.png",
             "appearance": ""
           },
           {
@@ -281,7 +281,7 @@
             "role": "边境行者",
             "notes": "",
             "status": "",
-            "portrait": "assets/images/relationship-aili.png",
+            "portrait": "assets/images/caseboard-v2/aili.png",
             "appearance": ""
           },
           {
@@ -294,7 +294,7 @@
             "role": "矮人聚落",
             "notes": "",
             "status": "矿坑事故",
-            "portrait": "assets/images/relationship-dwarf-village.png",
+            "portrait": "assets/images/caseboard-v2/iron-village.png",
             "appearance": ""
           },
           {
@@ -307,7 +307,7 @@
             "role": "铁环村村长",
             "notes": "",
             "status": "",
-            "portrait": "assets/images/relationship-chief.png",
+            "portrait": "assets/images/caseboard-v2/chief.png",
             "appearance": ""
           },
           {
@@ -320,7 +320,7 @@
             "role": "",
             "notes": "",
             "status": "已救援",
-            "portrait": "assets/images/relationship-pazu.png",
+            "portrait": "assets/images/caseboard-v2/pazu.png",
             "appearance": ""
           },
           {
@@ -333,7 +333,7 @@
             "role": "",
             "notes": "被误认为叛徒 · 误杀",
             "status": "已故",
-            "portrait": "assets/images/relationship-maruk.png",
+            "portrait": "assets/images/caseboard-v2/maruk.png",
             "appearance": ""
           },
           {
@@ -346,7 +346,7 @@
             "role": "",
             "notes": "矿坑遇难者之一",
             "status": "已故",
-            "portrait": "assets/images/relationship-morris.png",
+            "portrait": "assets/images/caseboard-v2/morris.png",
             "appearance": ""
           },
           {
@@ -359,7 +359,7 @@
             "role": "人物与线索",
             "notes": "民兵团、镇公所、地下墓穴、海德家、守夜人酒馆、铁匠铺；另有渡鸦商行商人。",
             "status": "",
-            "portrait": "",
+            "portrait": "assets/images/caseboard-v2/raven-town.png",
             "appearance": ""
           },
           {
@@ -372,7 +372,7 @@
             "role": "牧师 · Lv.5",
             "notes": "渡鸦镇牧师；渡鸦镇民兵团。",
             "status": "",
-            "portrait": "assets/images/raven-town-reference-1.png",
+            "portrait": "assets/images/caseboard-v2/raven-militia-priest.png",
             "appearance": ""
           },
           {
@@ -385,7 +385,7 @@
             "role": "战士 · Lv.5",
             "notes": "渡鸦镇民兵队长；渡鸦镇民兵团。",
             "status": "",
-            "portrait": "assets/images/raven-town-reference-1.png",
+            "portrait": "assets/images/caseboard-v2/raven-militia-captain.png",
             "appearance": ""
           },
           {
@@ -398,7 +398,7 @@
             "role": "渡鸦镇镇长 · Lv.1",
             "notes": "渡鸦镇镇长；渡鸦镇镇公所。",
             "status": "",
-            "portrait": "assets/images/raven-town-reference-1.png",
+            "portrait": "assets/images/caseboard-v2/raven-mayor.png",
             "appearance": ""
           },
           {
@@ -411,7 +411,7 @@
             "role": "秘书 · Lv.1",
             "notes": "镇长秘书；渡鸦镇镇公所。",
             "status": "",
-            "portrait": "assets/images/raven-town-reference-1.png",
+            "portrait": "assets/images/caseboard-v2/raven-secretary.png",
             "appearance": ""
           },
           {
@@ -424,7 +424,7 @@
             "role": "前圣武士 · Lv.1",
             "notes": "前民兵队长；地下墓穴。",
             "status": "",
-            "portrait": "assets/images/raven-town-reference-1.png",
+            "portrait": "assets/images/caseboard-v2/raven-former-captain.png",
             "appearance": ""
           },
           {
@@ -437,7 +437,7 @@
             "role": "死灵法师 · Lv.1",
             "notes": "地下墓穴。",
             "status": "",
-            "portrait": "assets/images/raven-town-reference-1.png",
+            "portrait": "assets/images/caseboard-v2/raven-necromancer.png",
             "appearance": ""
           },
           {
@@ -450,7 +450,7 @@
             "role": "珠宝商人 · Lv.1",
             "notes": "海德家长子；海德太老爷之子，安东尼奥·海德之父。",
             "status": "",
-            "portrait": "assets/images/raven-town-reference-1.png",
+            "portrait": "assets/images/caseboard-v2/raven-hyde-father.png",
             "appearance": ""
           },
           {
@@ -463,7 +463,7 @@
             "role": "海德家长孙",
             "notes": "截图职业栏：无；Lv.1。海德老爷之子。与姓名未明的铁匠学徒之间标注“盟友？”，关系未确认。",
             "status": "",
-            "portrait": "assets/images/raven-town-reference-1.png",
+            "portrait": "assets/images/caseboard-v2/raven-hyde-grandson.png",
             "appearance": ""
           },
           {
@@ -476,7 +476,7 @@
             "role": "珠宝商 · Lv.1",
             "notes": "海德家太老爷；海德老爷之父。",
             "status": "死亡",
-            "portrait": "assets/images/raven-town-reference-1.png",
+            "portrait": "assets/images/caseboard-v2/raven-hyde-grandfather.png",
             "appearance": ""
           },
           {
@@ -489,7 +489,7 @@
             "role": "酒馆老板 · Lv.1",
             "notes": "守夜人酒馆老板；与玛卡吉拉为夫妻。",
             "status": "",
-            "portrait": "assets/images/raven-town-reference-2.png",
+            "portrait": "assets/images/caseboard-v2/raven-tavern-husband.png",
             "appearance": ""
           },
           {
@@ -502,7 +502,7 @@
             "role": "酒馆老板娘 · Lv.1",
             "notes": "守夜人酒馆老板娘；与隆特为夫妻。",
             "status": "",
-            "portrait": "assets/images/raven-town-reference-2.png",
+            "portrait": "assets/images/caseboard-v2/raven-tavern-wife.png",
             "appearance": ""
           },
           {
@@ -515,7 +515,7 @@
             "role": "铁匠学徒",
             "notes": "姓名未明。截图职业栏：铁匠；Lv.1。渡鸦镇铁匠铺。与安东尼奥·海德之间标注“盟友？”，关系未确认。",
             "status": "",
-            "portrait": "assets/images/raven-town-reference-2.png",
+            "portrait": "assets/images/caseboard-v2/raven-smith-apprentice.png",
             "appearance": ""
           },
           {
@@ -528,7 +528,7 @@
             "role": "商人 · Lv.1",
             "notes": "渡鸦商行商人。",
             "status": "",
-            "portrait": "assets/images/raven-town-reference-2.png",
+            "portrait": "assets/images/caseboard-v2/raven-merchant.png",
             "appearance": ""
           }
         ],
@@ -618,7 +618,7 @@
         "boardId": "black-tower",
         "version": 1
       },
-      "updatedAt": "2026-09-15T14:00:44.902123+00:00"
+      "updatedAt": "2026-09-15T15:19:03.277854+00:00"
     },
     "journal": {
       "revision": 7,
@@ -1009,6 +1009,6 @@
   },
   "format": "dndcard-adventure",
   "version": 1,
-  "revision": 27,
-  "updatedAt": "2026-09-15T14:00:44.922089+00:00"
+  "revision": 28,
+  "updatedAt": "2026-09-15T15:19:03.283185+00:00"
 }
