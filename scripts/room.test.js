@@ -34,10 +34,7 @@ test('room routes, independent transparent objects and bookshelf preserve saves'
       const png = fs.readFileSync(path.join(root, img.getAttribute('src').split('?')[0]));
       assert.equal(png[25], 6, `${img.src} must retain RGBA alpha`);
     }
-    q('#openRelationshipButton').click();
-    assert.equal(q('#relationshipDialog').open, true);
-    assert.ok(q('#relationshipDialog').textContent.includes('甘阿·道夫'));
-    q('#relationshipDialog').close();
+    assert.ok(q('#openRelationshipButton').hasAttribute('data-open-caseboard'));
     assert.ok(q('#roomMap').hasAttribute('data-open-map-table'));
     assert.equal(q('#roomMap').hasAttribute('data-room-placeholder'), false);
     assert.ok(q('#roomJournal').hasAttribute('data-open-journal'));

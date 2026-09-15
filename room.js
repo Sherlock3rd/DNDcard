@@ -9,7 +9,7 @@ function renderRoomScene(level) {
 function renderOriginalRoomLayers(level) {
   const spec = window.ROOM_LAYER_SPEC;
   const labels = {
-    board: ['openRelationshipButton', '案板墙', '人物关系网', 'aria-haspopup="dialog" aria-controls="relationshipDialog"'],
+    board: ['openRelationshipButton', '案板墙', '人物、线索与牵连', 'data-open-caseboard'],
     shelf: ['roomBookshelf', '书架', '规则、资料与设置', 'data-open-bookshelf aria-haspopup="dialog" aria-controls="settingsDialog" aria-expanded="false"'],
     map: ['roomMap', '地图桌', '费伦地图 · 地点与棋子', 'data-open-map-table'],
     character: ['roomCharacter', '甘阿·道夫', '法师 ' + level + ' 级 · 进入角色卡', 'data-portal-route="character"'],
@@ -48,6 +48,7 @@ function initializeRoomScene(root) {
 }
 
 document.addEventListener("click", (event) => {
+  if(event.target.closest('[data-open-caseboard]')){window.location.href='./caseboard.html';return;}
   if(event.target.closest('[data-open-map-table]')){window.location.href='./map.html';return;}
   if(event.target.closest('[data-open-journal]')){window.location.href='./journal.html';return;}
   const placeholder = event.target.closest("[data-room-placeholder]");

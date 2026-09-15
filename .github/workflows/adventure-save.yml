@@ -28,6 +28,7 @@ jobs:
             /cloud-sync-core.js
             /map-save-core.js
             /journal-core.js
+            /caseboard-core.js
             /cloud-config.js
       - name: Commit the latest complete game save and verify it
         env:

@@ -2,12 +2,12 @@
  'use strict';
  const config=window.DND_CLOUD_CONFIG,core=window.ARCHIVE_CORE;
  if(!config||!core||new URLSearchParams(location.search).has('showcase'))return;
- const stores=new Map(),names={character:'角色与装备',map:'地图',journal:'日志'},validators={character:window.DND_CLOUD_CORE?.validate,map:window.MAP_SAVE_CORE?.validate,journal:window.JOURNAL_CORE?.validate};
+ const stores=new Map(),names={character:'角色与装备',map:'地图',journal:'日志',board:'案件板'},validators={character:window.DND_CLOUD_CORE?.validate,map:window.MAP_SAVE_CORE?.validate,journal:window.JOURNAL_CORE?.validate,board:window.CASEBOARD_CORE?.validate};
  let client,user=null,latest=null,gitRevision=0,lastGitCheck=0,gitError=false,fetching=null,timer,started=false;
  const owner=window.ADVENTURE_OWNER;let ownerReady=false,ownerError=owner?.error||'',ownerChecked=0,ownerChecking=null;
  const canWrite=()=>ownerReady||!!user;
  const dialog=document.createElement('dialog');dialog.className='archive-dialog';dialog.id='adventureSaveDialog';
- dialog.innerHTML='<h2>冒险档案</h2><p>当前邮箱的一份完整档案 · 角色、装备、地图与日志</p><p data-summary role="status"></p><p data-git></p><p data-error role="alert"></p><div data-parts></div><form data-auth><label>主人邮箱<input name="email" type="email" autocomplete="email" required></label><label>密码<input name="password" type="password" autocomplete="current-password" required></label><button type="submit">登录并同步</button><p>查看无需登录；新设备首次编辑后，登录现有邮箱即可回传。此处不创建新账号。</p></form><p data-identity></p><div class="archive-actions"><button data-refresh>立即检查同步</button><button data-download>下载完整档案</button><button data-backup>下载本页恢复副本</button><button data-logout hidden>退出本机登录</button><button data-close>关闭</button></div><p>Git 自动备份按约五分钟一批运行，排队时可能延后。地图、日志、角色修改先保存到云端，网页关闭后仍会回传 Git。</p><a href="https://github.com/Sherlock3rd/DNDcard/blob/main/data/save/latest.json" target="_blank" rel="noopener">查看 Git 基础存档与历史 ↗</a>';
+ dialog.innerHTML='<h2>冒险档案</h2><p>当前邮箱的一份完整档案 · 角色、装备、地图、日志与案件板</p><p data-summary role="status"></p><p data-git></p><p data-error role="alert"></p><div data-parts></div><form data-auth><label>主人邮箱<input name="email" type="email" autocomplete="email" required></label><label>密码<input name="password" type="password" autocomplete="current-password" required></label><button type="submit">登录并同步</button><p>查看无需登录；新设备首次编辑后，登录现有邮箱即可回传。此处不创建新账号。</p></form><p data-identity></p><div class="archive-actions"><button data-refresh>立即检查同步</button><button data-download>下载完整档案</button><button data-backup>下载本页恢复副本</button><button data-logout hidden>退出本机登录</button><button data-close>关闭</button></div><p>Git 自动备份按约五分钟一批运行，排队时可能延后。地图、日志、角色和案件板修改先保存到云端，网页关闭后仍会回传 Git。</p><a href="https://github.com/Sherlock3rd/DNDcard/blob/main/data/save/latest.json" target="_blank" rel="noopener">查看 Git 基础存档与历史 ↗</a>';
  document.body.append(dialog);const q=s=>dialog.querySelector(s);
  const copyLink=document.createElement('button');copyLink.textContent='复制专属入口';copyLink.hidden=true;q('.archive-actions').prepend(copyLink);
  const linkField=document.createElement('input');linkField.readOnly=true;linkField.hidden=true;linkField.setAttribute('aria-label','专属入口链接');q('.archive-actions').after(linkField);
@@ -44,7 +44,7 @@
    catch(e){if([401,403].includes(e.status)){ownerReady=false;ownerChecked=0;ownerError='专属链接已失效，本机修改仍保留。';for(const s of stores.values())s.authorized=false}throw e}
   }
   const {data,error}=await client.auth.getSession();if(error)throw error;if(data.session?.user.id!==config.ownerId)throw Error('请使用当前主人的邮箱登录');
-  const ids={character:['character_id','gandalf'],map:['map_id','faerun-3.5'],journal:['journal_id','gandalf-adventures']},[key,id]=ids[name];
+  const ids={character:['character_id','gandalf'],map:['map_id','faerun-3.5'],journal:['journal_id','gandalf-adventures'],board:['board_id','black-tower']},[key,id]=ids[name];
   const result=await json(config.url+'/rest/v1/rpc/save_'+name,{method:'POST',headers:{apikey:config.publishableKey,Authorization:'Bearer '+data.session.access_token,'Content-Type':'application/json'},body:JSON.stringify({['p_'+key]:id,p_expected_revision:revision,p_snapshot:snapshot})});
   // The database trigger publishes a complete snapshot in the same transaction.
   if(result.status==='saved')latest=null;return result;
@@ -65,6 +65,7 @@
   const event=name==='character'?'dndcard:local-save':name+':'+(name==='map'?'save':'change');(name==='character'?window:document).addEventListener(event,e=>{try{s.capture(e.detail||adapter.read());schedule()}catch(error){s.report('storage-error',error.message)}});
   return s;
  }
+ if(window.CaseboardAPI){register('board',{read:CaseboardAPI.read,apply:CaseboardAPI.apply,canApply:CaseboardAPI.canApply,ready:CaseboardAPI.ready})}
  if(window.MapTable){register('map',{read:MapTable.read,apply:MapTable.apply,canApply:MapTable.canApply,ready:()=>{document.querySelector('#viewport').inert=false}})}
  if(window.JournalAPI){register('journal',{read:JournalAPI.read,apply:JournalAPI.apply,canApply:JournalAPI.canApply,ready:JournalAPI.ready})}
  if(typeof managerState!=='undefined'&&typeof state!=='undefined'){

@@ -1,6 +1,6 @@
 // Runs in GitHub Actions with its short-lived, repository-scoped GITHUB_TOKEN.
 const {validateArchive}=require('../archive-core');
-const validators={character:require('../cloud-sync-core').validate,map:require('../map-save-core').validate,journal:require('../journal-core').validate};
+const validators={character:require('../cloud-sync-core').validate,map:require('../map-save-core').validate,journal:require('../journal-core').validate,board:require('../caseboard-core').validate};
 const fs=require('node:fs'),vm=require('node:vm');
 const scope={window:{}};vm.runInNewContext(fs.readFileSync('cloud-config.js','utf8'),scope);const config=scope.window.DND_CLOUD_CONFIG;
 const path='/repos/Sherlock3rd/DNDcard/contents/data/save/latest.json';

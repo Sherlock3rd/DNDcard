@@ -6,6 +6,7 @@
  function validateArchive(a,validators){
   if(!a||a.format!=='dndcard-adventure'||a.version!==1||!Number.isSafeInteger(a.revision)||a.revision<1||!Number.isFinite(Date.parse(a.updatedAt)))throw Error('完整存档格式无效');
   for(const name of ['character','map','journal']){const p=a.parts?.[name];if(!p||!Number.isSafeInteger(p.revision)||p.revision<1||!Number.isFinite(Date.parse(p.updatedAt)))throw Error('存档缺少 '+name);if(validators?.[name])validators[name](p.snapshot)}
+  if(a.parts.board){const p=a.parts.board;if(!Number.isSafeInteger(p.revision)||p.revision<1||!Number.isFinite(Date.parse(p.updatedAt)))throw Error('案件板版本无效');if(validators?.board)validators.board(p.snapshot)}
   return copy(a);
  }
  class PartStore{
