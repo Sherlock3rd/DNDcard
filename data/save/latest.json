@@ -1,13 +1,13 @@
 {
   "parts": {
     "map": {
-      "revision": 24,
+      "revision": 25,
       "snapshot": {
         "mapId": "faerun-3.5",
         "pieces": [
           {
-            "x": 1347.3207640529035,
-            "y": 1148.5311566766945,
+            "x": 1394.8460870873862,
+            "y": 1126.2945376422117,
             "id": "current-position",
             "kind": "traveler",
             "name": "当前位置"
@@ -58,10 +58,10 @@
         ],
         "version": 1
       },
-      "updatedAt": "2026-09-15T06:18:02.514706+00:00"
+      "updatedAt": "2026-09-15T12:42:42.719659+00:00"
     },
     "board": {
-      "revision": 4,
+      "revision": 14,
       "snapshot": {
         "edges": [
           {
@@ -147,6 +147,30 @@
             "to": "maruk",
             "from": "iron-village",
             "note": "与铁环村关联"
+          },
+          {
+            "id": "raven-hyde-grandfather--father",
+            "to": "raven-hyde-father",
+            "from": "raven-hyde-grandfather",
+            "note": "父子：海德太老爷为父，海德老爷为子。"
+          },
+          {
+            "id": "raven-hyde-father--grandson",
+            "to": "raven-hyde-grandson",
+            "from": "raven-hyde-father",
+            "note": "父子：海德老爷为父，安东尼奥·海德为子。"
+          },
+          {
+            "id": "raven-tavern-couple",
+            "to": "raven-tavern-wife",
+            "from": "raven-tavern-husband",
+            "note": "夫妻"
+          },
+          {
+            "id": "raven-hyde--smith",
+            "to": "raven-smith-apprentice",
+            "from": "raven-hyde-grandson",
+            "note": "盟友？（截图保留问号，关系未确认）"
           }
         ],
         "nodes": [
@@ -159,6 +183,12 @@
             "race": "七名同伴",
             "role": "共同冒险",
             "notes": "",
+            "style": {
+              "text": "#322a1d",
+              "color": "#d5c39b",
+              "shape": "square",
+              "border": "#706349"
+            },
             "status": "",
             "portrait": "",
             "appearance": ""
@@ -181,7 +211,7 @@
             "y": 170,
             "id": "sairen",
             "kind": "person",
-            "name": "赛伦",
+            "name": "塞伦",
             "race": "人类",
             "role": "牧师",
             "notes": "",
@@ -268,8 +298,8 @@
             "appearance": ""
           },
           {
-            "x": 1160,
-            "y": 220,
+            "x": 1189.601474612301,
+            "y": 250.69782552386764,
             "id": "chief",
             "kind": "person",
             "name": "艾德诺根",
@@ -281,8 +311,8 @@
             "appearance": ""
           },
           {
-            "x": 1570,
-            "y": 240,
+            "x": 1656.8717653824037,
+            "y": 273.8864700566828,
             "id": "pazu",
             "kind": "person",
             "name": "帕祖",
@@ -318,32 +348,277 @@
             "status": "已故",
             "portrait": "assets/images/relationship-morris.png",
             "appearance": ""
+          },
+          {
+            "x": 2700,
+            "y": 160,
+            "id": "raven-town",
+            "kind": "place",
+            "name": "渡鸦镇",
+            "race": "",
+            "role": "人物与线索",
+            "notes": "民兵团、镇公所、地下墓穴、海德家、守夜人酒馆、铁匠铺；另有渡鸦商行商人。",
+            "status": "",
+            "portrait": "",
+            "appearance": ""
+          },
+          {
+            "x": 2020,
+            "y": 530,
+            "id": "raven-militia-priest",
+            "kind": "person",
+            "name": "雷克斐",
+            "race": "",
+            "role": "牧师 · Lv.5",
+            "notes": "渡鸦镇牧师；渡鸦镇民兵团。",
+            "status": "",
+            "portrait": "assets/images/raven-town-reference-1.png",
+            "appearance": ""
+          },
+          {
+            "x": 2280,
+            "y": 530,
+            "id": "raven-militia-captain",
+            "kind": "person",
+            "name": "萨特·萨拉利安",
+            "race": "",
+            "role": "战士 · Lv.5",
+            "notes": "渡鸦镇民兵队长；渡鸦镇民兵团。",
+            "status": "",
+            "portrait": "assets/images/raven-town-reference-1.png",
+            "appearance": ""
+          },
+          {
+            "x": 2560,
+            "y": 530,
+            "id": "raven-mayor",
+            "kind": "person",
+            "name": "拜里斯·波特",
+            "race": "",
+            "role": "渡鸦镇镇长 · Lv.1",
+            "notes": "渡鸦镇镇长；渡鸦镇镇公所。",
+            "status": "",
+            "portrait": "assets/images/raven-town-reference-1.png",
+            "appearance": ""
+          },
+          {
+            "x": 2820,
+            "y": 530,
+            "id": "raven-secretary",
+            "kind": "person",
+            "name": "玛丽丝",
+            "race": "",
+            "role": "秘书 · Lv.1",
+            "notes": "镇长秘书；渡鸦镇镇公所。",
+            "status": "",
+            "portrait": "assets/images/raven-town-reference-1.png",
+            "appearance": ""
+          },
+          {
+            "x": 3100,
+            "y": 530,
+            "id": "raven-former-captain",
+            "kind": "person",
+            "name": "克里夫",
+            "race": "",
+            "role": "前圣武士 · Lv.1",
+            "notes": "前民兵队长；地下墓穴。",
+            "status": "",
+            "portrait": "assets/images/raven-town-reference-1.png",
+            "appearance": ""
+          },
+          {
+            "x": 3360,
+            "y": 530,
+            "id": "raven-necromancer",
+            "kind": "person",
+            "name": "艾迪洛特",
+            "race": "",
+            "role": "死灵法师 · Lv.1",
+            "notes": "地下墓穴。",
+            "status": "",
+            "portrait": "assets/images/raven-town-reference-1.png",
+            "appearance": ""
+          },
+          {
+            "x": 2020,
+            "y": 1010,
+            "id": "raven-hyde-father",
+            "kind": "person",
+            "name": "海德老爷",
+            "race": "",
+            "role": "珠宝商人 · Lv.1",
+            "notes": "海德家长子；海德太老爷之子，安东尼奥·海德之父。",
+            "status": "",
+            "portrait": "assets/images/raven-town-reference-1.png",
+            "appearance": ""
+          },
+          {
+            "x": 2280,
+            "y": 1010,
+            "id": "raven-hyde-grandson",
+            "kind": "person",
+            "name": "安东尼奥·海德",
+            "race": "",
+            "role": "海德家长孙",
+            "notes": "截图职业栏：无；Lv.1。海德老爷之子。与姓名未明的铁匠学徒之间标注“盟友？”，关系未确认。",
+            "status": "",
+            "portrait": "assets/images/raven-town-reference-1.png",
+            "appearance": ""
+          },
+          {
+            "x": 2020,
+            "y": 1350,
+            "id": "raven-hyde-grandfather",
+            "kind": "person",
+            "name": "海德太老爷",
+            "race": "",
+            "role": "珠宝商 · Lv.1",
+            "notes": "海德家太老爷；海德老爷之父。",
+            "status": "死亡",
+            "portrait": "assets/images/raven-town-reference-1.png",
+            "appearance": ""
+          },
+          {
+            "x": 3100,
+            "y": 1010,
+            "id": "raven-tavern-husband",
+            "kind": "person",
+            "name": "隆特",
+            "race": "",
+            "role": "酒馆老板 · Lv.1",
+            "notes": "守夜人酒馆老板；与玛卡吉拉为夫妻。",
+            "status": "",
+            "portrait": "assets/images/raven-town-reference-2.png",
+            "appearance": ""
+          },
+          {
+            "x": 3360,
+            "y": 1010,
+            "id": "raven-tavern-wife",
+            "kind": "person",
+            "name": "玛卡吉拉",
+            "race": "",
+            "role": "酒馆老板娘 · Lv.1",
+            "notes": "守夜人酒馆老板娘；与隆特为夫妻。",
+            "status": "",
+            "portrait": "assets/images/raven-town-reference-2.png",
+            "appearance": ""
+          },
+          {
+            "x": 2690,
+            "y": 1010,
+            "id": "raven-smith-apprentice",
+            "kind": "person",
+            "name": "？？？",
+            "race": "",
+            "role": "铁匠学徒",
+            "notes": "姓名未明。截图职业栏：铁匠；Lv.1。渡鸦镇铁匠铺。与安东尼奥·海德之间标注“盟友？”，关系未确认。",
+            "status": "",
+            "portrait": "assets/images/raven-town-reference-2.png",
+            "appearance": ""
+          },
+          {
+            "x": 3230,
+            "y": 1400,
+            "id": "raven-merchant",
+            "kind": "person",
+            "name": "莱特",
+            "race": "",
+            "role": "商人 · Lv.1",
+            "notes": "渡鸦商行商人。",
+            "status": "",
+            "portrait": "assets/images/raven-town-reference-2.png",
+            "appearance": ""
           }
         ],
         "zones": [
           {
             "x": 40,
-            "y": 55,
+            "y": 32.573317998849916,
             "id": "ward-party",
             "name": "冒险团",
             "tone": "sage",
-            "width": 910,
-            "height": 1045
+            "width": 937.6020701552617,
+            "height": 1067.42668200115
           },
           {
             "x": 1040,
-            "y": 85,
+            "y": 86.54029409348558,
             "id": "ward-village",
             "name": "铁环村 · 矿坑线索",
             "tone": "amber",
-            "width": 700,
-            "height": 1035
+            "width": 707.701470467428,
+            "height": 1033.4597059065145
+          },
+          {
+            "x": 1840,
+            "y": 30,
+            "id": "ward-raven-town",
+            "name": "渡鸦镇",
+            "tone": "lilac",
+            "width": 1720,
+            "height": 1540
+          },
+          {
+            "x": 1900,
+            "y": 330,
+            "id": "ward-raven-militia",
+            "name": "渡鸦镇民兵团",
+            "tone": "sage",
+            "width": 500,
+            "height": 410
+          },
+          {
+            "x": 2440,
+            "y": 330,
+            "id": "ward-raven-office",
+            "name": "渡鸦镇镇公所",
+            "tone": "sage",
+            "width": 500,
+            "height": 410
+          },
+          {
+            "x": 2980,
+            "y": 330,
+            "id": "ward-raven-crypt",
+            "name": "地下墓穴",
+            "tone": "sage",
+            "width": 500,
+            "height": 410
+          },
+          {
+            "x": 1900,
+            "y": 800,
+            "id": "ward-raven-hyde",
+            "name": "海德家",
+            "tone": "sage",
+            "width": 500,
+            "height": 730
+          },
+          {
+            "x": 2980,
+            "y": 800,
+            "id": "ward-raven-tavern",
+            "name": "守夜人酒馆",
+            "tone": "sage",
+            "width": 500,
+            "height": 430
+          },
+          {
+            "x": 2440,
+            "y": 800,
+            "id": "ward-raven-smith",
+            "name": "渡鸦镇铁匠铺",
+            "tone": "sage",
+            "width": 500,
+            "height": 430
           }
         ],
         "boardId": "black-tower",
         "version": 1
       },
-      "updatedAt": "2026-09-15T10:50:34.554429+00:00"
+      "updatedAt": "2026-09-15T14:00:44.902123+00:00"
     },
     "journal": {
       "revision": 7,
@@ -734,6 +1009,6 @@
   },
   "format": "dndcard-adventure",
   "version": 1,
-  "revision": 16,
-  "updatedAt": "2026-09-15T10:50:34.561349+00:00"
+  "revision": 27,
+  "updatedAt": "2026-09-15T14:00:44.922089+00:00"
 }
