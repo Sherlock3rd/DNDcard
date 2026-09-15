@@ -1,0 +1,12 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-09-16",
+  "prompts": {
+    "blue": "Create a square character portrait for The Black Tower, a dark high fantasy tabletop adventure. NEW SUBJECT: a mysterious human wizard wearing a deep cobalt blue hooded robe, adult male, face partly shaded yet natural and readable, thoughtful guarded expression. Tight head-and-shoulders portrait, face centered and large for small card thumbnail. Cinematic finely detailed realistic fantasy painting, rich fabric texture, antique gold embroidery accents, blue moonlight from behind, warm low candle key light, dark blurred gothic stone interior. One coherent light direction, physically consistent shadows. No text, lettering, symbols overlaid, frames or UI. Match the existing portraits' sophisticated dark gold and moonlit blue palette. Do not invent scars, faction insignias or biography.",
+    "yazan": "Create a square character portrait for The Black Tower, a dark high fantasy tabletop adventure. NEW SUBJECT: Yazan, a very tall imposing HUMAN male bandit leader described as BLOND HAIRED with deeply SUN-TANNED DARK skin. Broad sturdy shoulders, rugged weathered leather and practical dark worn armor, commanding expression. His hair MUST be unmistakably blond, skin richly sun-browned, no crown. Tight head-and-shoulders portrait, face centered and large for small card thumbnail. Cinematic finely detailed realistic fantasy painting, warm candle/lantern key light and cool blue moonlight rim, dark softly blurred forest encampment background. Natural anatomy, physically consistent shadows, antique gold/earth brown/moonlit blue palette matching an established gothic fantasy portrait set. No text, lettering, frames or UI, no invented faction insignias."
+  },
+  "files": [
+    "blue-wizard.png",
+    "yazan.png"
+  ]
+}

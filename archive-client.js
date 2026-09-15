@@ -34,7 +34,7 @@
   fetching=(async()=>{
    let a;try{const rows=await json(config.url+'/rest/v1/adventure_archive?id=eq.main&select=snapshot',{headers:{apikey:config.publishableKey}});a=rows[0]?.snapshot}
    catch(e){try{a=await getGit()}catch{a=await json('./data/save/latest.json?revision='+Date.now())}}
-   a=core.validateArchive(a,validators);if(latest&&a.revision<latest.revision)return latest;latest=a;update();return a;
+   a=core.validateArchive(a,validators);if(latest&&a.revision<latest.revision)return latest;latest=a;document.dispatchEvent(new CustomEvent('archive:latest',{detail:structuredClone(a)}));update();return a;
   })().finally(()=>{fetching=null});return fetching;
  }
  async function checkGit(){if(Date.now()-lastGitCheck<300000)return;lastGitCheck=Date.now();try{const a=core.validateArchive(await getGit());gitRevision=a.revision;gitError=false}catch{gitError=true}update()}
