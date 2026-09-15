@@ -3,7 +3,7 @@
  const config=window.DND_CLOUD_CONFIG,core=window.ARCHIVE_CORE;
  if(!config||!core||new URLSearchParams(location.search).has('showcase'))return;
  const stores=new Map(),names={character:'角色与装备',map:'地图',journal:'日志'},validators={character:window.DND_CLOUD_CORE?.validate,map:window.MAP_SAVE_CORE?.validate,journal:window.JOURNAL_CORE?.validate};
- let client,user=null,latest=null,gitRevision=0,lastGitCheck=0,fetching=null,timer,started=false;
+ let client,user=null,latest=null,gitRevision=0,lastGitCheck=0,gitError=false,fetching=null,timer,started=false;
  const dialog=document.createElement('dialog');dialog.className='archive-dialog';dialog.id='adventureSaveDialog';
  dialog.innerHTML='<h2>冒险档案</h2><p>当前邮箱的一份完整档案 · 角色、装备、地图与日志</p><p data-summary role="status"></p><p data-git></p><p data-error role="alert"></p><div data-parts></div><form data-auth><label>主人邮箱<input name="email" type="email" autocomplete="email" required></label><label>密码<input name="password" type="password" autocomplete="current-password" required></label><button type="submit">登录并同步</button><p>查看无需登录；新设备首次编辑后，登录现有邮箱即可回传。此处不创建新账号。</p></form><p data-identity></p><div class="archive-actions"><button data-refresh>立即检查同步</button><button data-download>下载完整档案</button><button data-backup>下载本页恢复副本</button><button data-logout hidden>退出本机登录</button><button data-close>关闭</button></div><p>Git 自动备份按约五分钟一批运行，排队时可能延后。地图、日志、角色修改先保存到云端，网页关闭后仍会回传 Git。</p><a href="https://github.com/Sherlock3rd/DNDcard/blob/main/data/save/latest.json" target="_blank" rel="noopener">查看 Git 基础存档与历史 ↗</a>';
  document.body.append(dialog);const q=s=>dialog.querySelector(s);
@@ -13,20 +13,21 @@
   const text=bad?label[bad.status]:loading?'读取最新冒险档案…':pending?(user?'本机已保存 · 正在同步':'本机已保存 · 登录后同步'):user?'冒险档案已同步':'最新冒险档案 · 未登录';
   document.querySelectorAll('[data-cloud-status],#mapSaveStatus,#journalSaveStatus,[data-archive-status]').forEach(el=>{el.textContent=text;el.dataset.state=bad?.status||'ready'});
   q('[data-summary]').textContent=text+(latest?' · 档案版本 '+latest.revision:'');q('[data-error]').textContent=bad?.error||'';
-  q('[data-git]').textContent=gitRevision?(gitRevision>=(latest?.revision||0)?'Git 基础存档已更新 · 版本 '+gitRevision:'Git 已备份至版本 '+gitRevision+' · 新修改等待下一批回传'):'正在检查 Git 基础存档';
+  q('[data-git]').textContent=gitRevision?(gitRevision>=(latest?.revision||0)?'Git 基础存档已更新 · 版本 '+gitRevision:'Git 已备份至版本 '+gitRevision+' · 新修改等待下一批回传'):gitError?'Git 状态暂未读取成功 · 云端存档仍保留':'正在检查 Git 基础存档';
   q('[data-auth]').hidden=!!user;q('[data-identity]').textContent=user?'已登录：'+user.email:'';q('[data-logout]').hidden=!user;
   q('[data-parts]').replaceChildren();for(const s of list){const row=document.createElement('section'),p=document.createElement('p');p.textContent=names[s.name]+'：'+label[s.status]+(s.entry?' · v'+s.entry.revision:'');row.append(p);if(s.entry?.conflict)for(const [caption,local] of [['读取云端最新',false],['保留本页修改',true]]){const b=document.createElement('button');b.textContent=caption;b.onclick=()=>s.resolve(local);row.append(b)}q('[data-parts]').append(row)}
  }
  async function json(url,options={}){const r=await fetch(url,{cache:'no-store',...options,signal:AbortSignal.timeout(12000)});if(!r.ok)throw Error('请求暂不可用（'+r.status+'）');return r.json()}
+ async function getGit(){try{return await json(config.archiveGitApiUrl,{headers:{Accept:'application/vnd.github.raw+json'}})}catch{return json(config.archiveGitUrl+'?t='+Math.floor(Date.now()/300000))}}
  async function getLatest(){
   if(fetching)return fetching;
   fetching=(async()=>{
    let a;try{const rows=await json(config.url+'/rest/v1/adventure_archive?id=eq.main&select=snapshot',{headers:{apikey:config.publishableKey}});a=rows[0]?.snapshot}
-   catch(e){try{a=await json(config.archiveGitUrl+'?t='+Math.floor(Date.now()/10000))}catch{a=await json('./data/save/latest.json?revision='+Date.now())}}
+   catch(e){try{a=await getGit()}catch{a=await json('./data/save/latest.json?revision='+Date.now())}}
    a=core.validateArchive(a,validators);if(latest&&a.revision<latest.revision)return latest;latest=a;update();return a;
   })().finally(()=>{fetching=null});return fetching;
  }
- async function checkGit(){if(Date.now()-lastGitCheck<30000)return;lastGitCheck=Date.now();try{const a=core.validateArchive(await json(config.archiveGitUrl+'?t='+Math.floor(Date.now()/10000)));gitRevision=a.revision}catch{}update()}
+ async function checkGit(){if(Date.now()-lastGitCheck<300000)return;lastGitCheck=Date.now();try{const a=core.validateArchive(await getGit());gitRevision=a.revision;gitError=false}catch{gitError=true}update()}
  async function savePart(name,revision,snapshot){
   const {data,error}=await client.auth.getSession();if(error)throw error;if(data.session?.user.id!==config.ownerId)throw Error('请使用当前主人的邮箱登录');
   const ids={character:['character_id','gandalf'],map:['map_id','faerun-3.5'],journal:['journal_id','gandalf-adventures']},[key,id]=ids[name];
