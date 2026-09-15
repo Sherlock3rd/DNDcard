@@ -4,6 +4,7 @@
     if (event.target.closest("[data-open-git-sync]")) openGitSync();
   });
   function openGitSync() {
+    if(window.ADVENTURE_ARCHIVE){window.ADVENTURE_ARCHIVE.open();return;}
     const dialog = document.querySelector("#gitSyncDialog");
     dialog.innerHTML = `<form method="dialog">
       <div class="dialog-heading"><div><p>GIT SNAPSHOT</p><h2>同步回填到 Git</h2></div><button type="button" data-close-sync aria-label="关闭">×</button></div>

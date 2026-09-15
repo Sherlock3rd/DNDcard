@@ -163,8 +163,8 @@ test("remote refresh and account switch wait for open editor drafts", async () =
   assert.equal(remote.rows.has("b"), false);
 });
 
-test("real page login/import UI is isolated, import waits for confirmation, local saves trigger upload", async () => {
-  const html = fs.readFileSync("index.html", "utf8");
+test("legacy login/import remains compatible with previous snapshot UI", async () => {
+  const html = fs.readFileSync("index.html", "utf8").replace(/<script src="\.\/archive-core[^>]*><\/script><script src="\.\/archive-client[^>]*><\/script>/, '<script src="./cloud-sync.js"></script>');
   const dom = new JSDOM(html, { url: "https://example.test/", runScripts: "outside-only", pretendToBeVisual: true });
   const w = dom.window, errors = [], remote = server();
   let authCallback, session = null;

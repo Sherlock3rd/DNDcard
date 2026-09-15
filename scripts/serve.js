@@ -2,7 +2,8 @@ const http = require("node:http");
 const fs = require("node:fs");
 const path = require("node:path");
 const root = path.resolve(__dirname, "..");
-const types = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".png": "image/png", ".jpg": "image/jpeg", ".svg": "image/svg+xml" };
+const port = Number(process.env.PORT || 4173);
+const types = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".webp": "image/webp", ".png": "image/png", ".jpg": "image/jpeg", ".svg": "image/svg+xml" };
 http.createServer((req, res) => {
   try {
     const route = decodeURIComponent(new URL(req.url, "http://localhost").pathname);
@@ -15,4 +16,4 @@ http.createServer((req, res) => {
     res.writeHead(200, { "Content-Type": (types[path.extname(file)] || "application/octet-stream") + "; charset=utf-8", "Cache-Control": "no-store" });
     fs.createReadStream(file).pipe(res);
   } catch { res.writeHead(404).end(); }
-}).listen(4173, "127.0.0.1", () => console.log("DNDcard preview: http://127.0.0.1:4173"));
+}).listen(port, "127.0.0.1", () => console.log("DNDcard preview: http://127.0.0.1:" + port));

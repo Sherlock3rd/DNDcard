@@ -1,0 +1,35 @@
+name: Back up adventure archive
+on:
+  schedule:
+    - cron: '2-57/5 * * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/adventure-save.yml'
+      - 'scripts/sync-adventure-git.js'
+permissions:
+  contents: write
+concurrency:
+  group: adventure-git-save
+  cancel-in-progress: false
+jobs:
+  save:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /scripts/sync-adventure-git.js
+            /archive-core.js
+            /cloud-sync-core.js
+            /map-save-core.js
+            /journal-core.js
+            /cloud-config.js
+      - name: Commit the latest complete game save and verify it
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/sync-adventure-git.js

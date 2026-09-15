@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="./portal.css?v=20260913-item-editor" />
     <link rel="stylesheet" href="./room.css?v=20260914-map-release" />
     <link rel="stylesheet" href="./cloud-sync.css?v=20260913-cloud-1" />
-  </head>
+  <link rel="stylesheet" href="./archive.css?v=1" /></head>
   <body>
     <div class="portal-view" id="portalApp" hidden></div>
     <div class="archive-view" id="archiveApp" hidden></div>
@@ -383,7 +383,7 @@
       <p class="shelf-intro">取下一本书，翻开规则、资料与私人档案。</p>
       <div class="shelf-row"><button type="button" class="shelf-book book-sage" data-portal-route="classes"><span class="book-number">Ⅰ</span><strong>职业规则</strong><span class="book-ornament" aria-hidden="true">✧</span><small>CLASS COMPENDIUM</small></button><button type="button" class="shelf-book book-blue" data-portal-route="spell-library"><span class="book-number">Ⅱ</span><strong>法术查询</strong><span class="book-ornament" aria-hidden="true">✧</span><small>GRIMOIRE</small></button><button type="button" class="shelf-book book-ochre" data-portal-route="item-library"><span class="book-number">Ⅲ</span><strong>道具查询</strong><span class="book-ornament" aria-hidden="true">✧</span><small>ARTIFACTS</small></button><button type="button" class="shelf-book book-wine" data-portal-route="rules"><span class="book-number">Ⅳ</span><strong>基础规则</strong><span class="book-ornament" aria-hidden="true">✧</span><small>THE HANDBOOK</small></button></div>
       <div class="shelf-row shelf-personal">
-        <button class="shelf-book book-blue" type="button" data-open-cloud><span class="book-number">Ⅴ</span><strong>账号与云端</strong><span class="book-ornament" aria-hidden="true">☾</span><small data-cloud-status>未登录 · 保存在本机</small></button>
+        <button class="shelf-book book-blue" type="button" data-open-cloud><span class="book-number">Ⅴ</span><strong>冒险档案</strong><span class="book-ornament" aria-hidden="true">☾</span><small data-cloud-status>未登录 · 保存在本机</small></button>
         <button class="shelf-book book-sage" type="button" data-open-git-sync><span class="book-number">Ⅵ</span><strong>档案备份</strong><span class="book-ornament" aria-hidden="true">✧</span><small>导出 / 同步到 Git</small></button>
         <button class="shelf-book book-wine" id="resetButton" type="button"><span class="book-number">Ⅶ</span><strong>状态重置</strong><span class="book-ornament" aria-hidden="true">◇</span><small>恢复战斗资源 · 需确认</small></button>
       </div>
@@ -434,10 +434,10 @@
     <script src="./assets/images/room/layout.js?v=20260914-original-pixels"></script>
     <script src="./room.js?v=20260914-journal"></script>
     <script src="./portal.js?v=20260914-original-pixels"></script>
-    <script src="./git-sync.js?v=20260913-item-editor"></script>
+    <script src="./git-sync.js?v=20260915-archive"></script>
     <script src="./assets/vendor/supabase.js?v=2.116.0"></script>
-    <script src="./cloud-config.js?v=20260913-cloud-1"></script>
+    <script src="./cloud-config.js?v=20260915-archive"></script>
     <script src="./cloud-sync-core.js?v=20260913-cloud-1"></script>
-    <script src="./cloud-sync.js?v=20260914-original-pixels"></script>
+    <script src="./archive-core.js?v=1"></script><script src="./archive-client.js?v=1"></script>
   </body>
 </html>
