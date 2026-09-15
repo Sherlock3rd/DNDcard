@@ -31,10 +31,12 @@
     else if(!this.ready){if(!this.canApply()){this.report('editing');return}this.apply(copy(this.entry.snapshot));this.ready=true}
     if(row.revision<this.entry.revision){this.report('error','读取到较旧的备份，已保留本机较新版本');return}
     if(this.entry.conflict){this.report('conflict');return}
-    if(this.entry.revision!==row.revision){
+    // Older clients can cache a normalized snapshot that omits newly added fields.
+    // Refresh clean caches even at the same revision; never replace unsynced edits.
+    if(this.entry.revision!==row.revision||(!this.entry.dirty&&!equal(this.validate(row.snapshot),this.entry.snapshot))){
      if(equal(row.snapshot,this.entry.snapshot)){this.entry={...this.entry,revision:row.revision,updatedAt:row.updatedAt,dirty:false};this.persist()}
      else if(this.entry.dirty){this.backup(this.entry,'local-conflict');this.backup(row,'server-conflict');this.entry.conflict=row;this.persist();this.report('conflict');return}
-     else{if(!this.canApply()){this.report('editing');return}this.entry={revision:row.revision,updatedAt:row.updatedAt,snapshot:this.validate(row.snapshot),dirty:false};this.persist();this.apply(copy(this.entry.snapshot))}
+     else{if(!this.canApply()){this.report('editing');return}if(this.entry.revision===row.revision)this.backup(this.entry,'before-cache-refresh');this.entry={revision:row.revision,updatedAt:row.updatedAt,snapshot:this.validate(row.snapshot),dirty:false};this.persist();this.apply(copy(this.entry.snapshot))}
     }
     if(this.entry.dirty&&this.authorized){
      const sent=copy(this.entry.snapshot),base=this.entry.revision;const result=await this.remoteSave(base,sent);
