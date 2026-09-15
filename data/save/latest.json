@@ -61,7 +61,7 @@
       "updatedAt": "2026-09-15T06:18:02.514706+00:00"
     },
     "board": {
-      "revision": 1,
+      "revision": 4,
       "snapshot": {
         "edges": [
           {
@@ -255,8 +255,8 @@
             "appearance": ""
           },
           {
-            "x": 1270,
-            "y": 590,
+            "x": 1504.3983312101197,
+            "y": 605.5412679678429,
             "id": "iron-village",
             "kind": "place",
             "name": "铁环村",
@@ -320,10 +320,30 @@
             "appearance": ""
           }
         ],
+        "zones": [
+          {
+            "x": 40,
+            "y": 55,
+            "id": "ward-party",
+            "name": "冒险团",
+            "tone": "sage",
+            "width": 910,
+            "height": 1045
+          },
+          {
+            "x": 1040,
+            "y": 85,
+            "id": "ward-village",
+            "name": "铁环村 · 矿坑线索",
+            "tone": "amber",
+            "width": 700,
+            "height": 1035
+          }
+        ],
         "boardId": "black-tower",
         "version": 1
       },
-      "updatedAt": "2026-09-15T10:12:39.343741+00:00"
+      "updatedAt": "2026-09-15T10:50:34.554429+00:00"
     },
     "journal": {
       "revision": 7,
@@ -714,6 +734,6 @@
   },
   "format": "dndcard-adventure",
   "version": 1,
-  "revision": 13,
-  "updatedAt": "2026-09-15T10:12:39.359783+00:00"
+  "revision": 16,
+  "updatedAt": "2026-09-15T10:50:34.561349+00:00"
 }
