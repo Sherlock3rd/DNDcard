@@ -25,10 +25,10 @@
  }else if(kind==='journal'){
   move('#contentsToggle',primary);move('#newEntry',primary);const p=pane('journal');move('#journalSaveStatus',p);move('[data-fullscreen]',p);q('.journal-toolbar').hidden=true;q('.journal-desk').append(dock);
  }else{
-  pane('room').innerHTML='<button type="button" data-open-bookshelf>书架与设置</button>';
+  pane('room');
   const p=pane('character');move('#saveState',p);move('#levelUpButton',primary);q('.character-home-button')?.remove();
  }
  document.querySelectorAll('.case-frame>header,main>header,#characterApp>.topbar').forEach(h=>h.hidden=true);
- function update(){const current=isIndex?(document.body.dataset.route==='character'?'character':'room'):kind;chrome.querySelectorAll('[data-tower-page]').forEach(a=>{if(a.dataset.towerPage===current)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});Object.entries(panes).forEach(([id,p])=>p.hidden=id!==current);if(isIndex)primary.hidden=current!=='character';q('.tower-tools-heading strong').textContent=({room:'书房',board:'案件板',map:'地图桌',character:'人物',journal:'日记'}[current])+'工具';setOpen(false)}
+ function update(){const current=isIndex?(document.body.dataset.route==='character'?'character':'room'):kind;dock.hidden=isIndex&&current==='room';chrome.querySelectorAll('[data-tower-page]').forEach(a=>{if(a.dataset.towerPage===current)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});Object.entries(panes).forEach(([id,p])=>p.hidden=id!==current);if(isIndex)primary.hidden=current!=='character';q('.tower-tools-heading strong').textContent=({room:'书房',board:'案件板',map:'地图桌',character:'人物',journal:'日记'}[current])+'工具';setOpen(false)}
  update();if(isIndex)new MutationObserver(update).observe(document.body,{attributes:true,attributeFilter:['data-route']});
 })();

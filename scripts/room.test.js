@@ -41,7 +41,18 @@ test('room routes, independent transparent objects and bookshelf preserve saves'
     assert.equal(q('#roomMap').hasAttribute('data-room-placeholder'), false);
     assert.ok(q('#roomJournal').hasAttribute('data-open-journal'));
     assert.equal(q('#roomJournal').hasAttribute('data-room-placeholder'), false);
-    assert.equal(all('.shelf-book').length, 7);
+    assert.equal(all('.shelf-book').length, 5);
+    assert.equal(q('.room-footer'), null);
+    assert.equal(q('.tower-dock').hidden, true);
+    q('[data-open-bookshelf]').click();
+    q('[data-open-archive-book]').click();
+    assert.equal(q('#archiveBookPanel').hidden, false);
+    q('#resetButton').click();
+    assert.equal(q('#resetStateDialog').open, true);
+    q('[data-cancel-reset]').click();
+    q('[data-close-archive-book]').click();
+    assert.equal(q('#shelfCabinet').hidden, false);
+    q('[data-close-settings]').click();
     for (const name of ['classes', 'spell-library', 'item-library', 'rules']) {
       q('[data-open-bookshelf]').click();
       assert.equal(q('#settingsDialog').open, true);
@@ -55,6 +66,7 @@ test('room routes, independent transparent objects and bookshelf preserve saves'
     assert.equal(q('#characterApp').hidden, false);
     assert.equal(q('.tower-nav [aria-current="page"]').dataset.towerPage,'character');
     assert.ok(q('.tower-dock #levelUpButton'));
+    assert.equal(q('.tower-dock').hidden, false);
     assert.equal(q('#settingsButton'), null);
     await route('.tower-nav [data-tower-page="room"]');
     assert.equal(q('#portalApp').hidden, false);

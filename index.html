@@ -13,7 +13,7 @@
     <title>The Black Tower</title>
     <link rel="stylesheet" href="./styles.css?v=20260913-settings-confirm" />
     <link rel="stylesheet" href="./portal.css?v=20260913-item-editor" />
-    <link rel="stylesheet" href="./room.css?v=20260914-map-release" />
+    <link rel="stylesheet" href="./room.css?v=20260916-bookshelf" />
     <link rel="stylesheet" href="./cloud-sync.css?v=20260913-cloud-1" />
   <link rel="stylesheet" href="./archive.css?v=1" /><link rel="stylesheet" href="./tower-navigation.css?v=2"></head>
   <body>
@@ -382,13 +382,13 @@
 
     <dialog class="manager-dialog bookshelf-dialog" id="settingsDialog" aria-labelledby="settingsTitle">
       <div class="dialog-heading"><div><p>THE BLACK TOWER · LIBRARY</p><h2 id="settingsTitle">书架</h2></div><button type="button" data-close-settings aria-label="关闭书架" autofocus>×</button></div>
-      <p class="shelf-intro">取下一本书，翻开规则、资料与私人档案。</p>
-      <div class="shelf-row"><button type="button" class="shelf-book book-sage" data-portal-route="classes"><span class="book-number">Ⅰ</span><strong>职业规则</strong><span class="book-ornament" aria-hidden="true">✧</span><small>CLASS COMPENDIUM</small></button><button type="button" class="shelf-book book-blue" data-portal-route="spell-library"><span class="book-number">Ⅱ</span><strong>法术查询</strong><span class="book-ornament" aria-hidden="true">✧</span><small>GRIMOIRE</small></button><button type="button" class="shelf-book book-ochre" data-portal-route="item-library"><span class="book-number">Ⅲ</span><strong>道具查询</strong><span class="book-ornament" aria-hidden="true">✧</span><small>ARTIFACTS</small></button><button type="button" class="shelf-book book-wine" data-portal-route="rules"><span class="book-number">Ⅳ</span><strong>基础规则</strong><span class="book-ornament" aria-hidden="true">✧</span><small>THE HANDBOOK</small></button></div>
-      <div class="shelf-row shelf-personal">
-        <button class="shelf-book book-blue" type="button" data-open-cloud><span class="book-number">Ⅴ</span><strong>冒险档案</strong><span class="book-ornament" aria-hidden="true">☾</span><small data-cloud-status>未登录 · 保存在本机</small></button>
-        <button class="shelf-book book-sage" type="button" data-open-git-sync><span class="book-number">Ⅵ</span><strong>档案备份</strong><span class="book-ornament" aria-hidden="true">✧</span><small>导出 / 同步到 Git</small></button>
-        <button class="shelf-book book-wine" id="resetButton" type="button"><span class="book-number">Ⅶ</span><strong>状态重置</strong><span class="book-ornament" aria-hidden="true">◇</span><small>恢复战斗资源 · 需确认</small></button>
-      </div>
+      <div id="shelfCabinet" class="shelf-cabinet"><div class="shelf-cornice"><span>黑塔藏书</span></div><div class="shelf-row"><button type="button" class="shelf-book book-sage" data-portal-route="classes" aria-label="职业规则"><span class="book-number">Ⅰ</span><strong>职业规则</strong><span class="book-ornament" aria-hidden="true">✧</span><small>职业与成长</small></button><button type="button" class="shelf-book book-blue" data-portal-route="spell-library" aria-label="法术查询"><span class="book-number">Ⅱ</span><strong>法术查询</strong><span class="book-ornament" aria-hidden="true">✧</span><small>奥术与祷言</small></button><button type="button" class="shelf-book book-ochre" data-portal-route="item-library" aria-label="道具查询"><span class="book-number">Ⅲ</span><strong>道具查询</strong><span class="book-ornament" aria-hidden="true">✧</span><small>装备与奇物</small></button><button type="button" class="shelf-book book-wine" data-portal-route="rules" aria-label="基础规则"><span class="book-number">Ⅳ</span><strong>基础规则</strong><span class="book-ornament" aria-hidden="true">✧</span><small>冒险者指南</small></button><button class="shelf-book book-archive" type="button" data-open-archive-book aria-label="冒险档案" aria-expanded="false" aria-controls="archiveBookPanel"><span class="book-number">Ⅴ</span><strong>冒险档案</strong><span class="book-ornament" aria-hidden="true">☾</span><small>存档 · 备份 · 状态</small></button></div><div class="shelf-plinth" aria-hidden="true"></div></div>
+      <section id="archiveBookPanel" class="archive-volume" aria-label="冒险档案书页" hidden>
+        <button type="button" class="ghost-button" data-close-archive-book>← 放回书架</button>
+        <p class="volume-inscription">旅途所记，悉藏于此。</p>
+        <div class="volume-actions"><button type="button" data-open-cloud><strong>存档与备份</strong><span>查看冒险档案、同步进度与 Git 备份，或下载副本。</span><small data-cloud-status>正在读取冒险档案…</small></button>
+        <button id="resetButton" type="button"><strong>状态重置</strong><span>恢复生命、法术位与战斗资源；操作前需要确认。</span></button></div>
+      </section>
       <menu><button class="ghost-button" type="button" data-close-settings>放回书本，返回房间</button></menu>
     </dialog>
     <dialog class="manager-dialog room-placeholder-dialog" id="roomPlaceholderDialog" aria-labelledby="roomPlaceholderTitle">
@@ -434,12 +434,12 @@
     <script src="./app.js?v=20260914-original-pixels"></script>
     <script src="./manager.js?v=20260913-settings-confirm"></script>
     <script src="./assets/images/room/layout.js?v=20260914-original-pixels"></script>
-    <script src="./room.js?v=20260916-navigation"></script>
+    <script src="./room.js?v=20260916-bookshelf"></script>
     <script src="./portal.js?v=20260915-caseboard"></script>
     <script src="./git-sync.js?v=20260915-archive"></script>
     <script src="./assets/vendor/supabase.js?v=2.116.0"></script>
     <script src="./cloud-config.js?v=20260915-archive2"></script>
     <script src="./cloud-sync-core.js?v=20260913-cloud-1"></script>
     <script src="./archive-core.js?v=3"></script><script src="./archive-client.js?v=6-map-links"></script>
-  <script src="./tower-navigation.js?v=4"></script></body>
+  <script src="./tower-navigation.js?v=5"></script></body>
 </html>

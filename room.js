@@ -1,7 +1,7 @@
 function renderRoomScene(level) {
   return `<header class="room-heading" hidden><a class="room-wordmark" href="#portal" aria-label="书房主页"><span class="room-seal" aria-hidden="true">B</span><span><h1>The Black Tower</h1><small>PRIVATE ADVENTURE ARCHIVE</small></span></a><span class="room-edition">黑塔 · 私人书房<span>归来，落座，再启程</span></span></header>
     ${renderOriginalRoomLayers(level)}
-    <footer class="room-footer"><p><span class="room-spark" aria-hidden="true"></span>点击房间内的物品，翻开你的冒险档案。<small>左右滑动探索房间，点击物品打开档案。</small></p><span class="room-occupant">一间书房<span>SRD 5.1 · CC BY 4.0</span></span></footer>`;
+`;
 }
 
 
@@ -63,3 +63,19 @@ document.addEventListener("click", (event) => {
   if (event.target.closest("[data-close-room-placeholder]")) document.querySelector("#roomPlaceholderDialog").close();
   if (event.target.closest(".shelf-book[data-portal-route]")) document.querySelector("#settingsDialog").close();
 });
+
+// One physical archive volume opens the existing save and state actions.
+const archiveVolume = document.querySelector('#archiveBookPanel');
+const shelfCabinet = document.querySelector('#shelfCabinet');
+function showArchiveVolume(open, focus = true) {
+  archiveVolume.hidden = !open;
+  shelfCabinet.hidden = open;
+  document.querySelector('#settingsTitle').textContent = open ? '冒险档案' : '书架';
+  document.querySelector('[data-open-archive-book]').setAttribute('aria-expanded', String(open));
+  if (focus) document.querySelector(open ? '[data-close-archive-book]' : '[data-open-archive-book]').focus();
+}
+document.addEventListener('click', event => {
+  if (event.target.closest('[data-open-archive-book]')) showArchiveVolume(true);
+  if (event.target.closest('[data-close-archive-book]')) showArchiveVolume(false);
+});
+document.querySelector('#settingsDialog').addEventListener('close', () => showArchiveVolume(false, false));
