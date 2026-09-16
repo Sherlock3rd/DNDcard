@@ -61,7 +61,7 @@
       "updatedAt": "2026-09-15T12:42:42.719659+00:00"
     },
     "board": {
-      "revision": 23,
+      "revision": 26,
       "snapshot": {
         "edges": [
           {
@@ -300,6 +300,12 @@
             "race": "",
             "role": "矮人聚落",
             "notes": "",
+            "style": {
+              "text": "#322a1d",
+              "color": "#b48f41",
+              "shape": "rounded",
+              "border": "#706349"
+            },
             "status": "矿坑事故",
             "portrait": "assets/images/caseboard-v2/iron-village.png",
             "appearance": "",
@@ -370,6 +376,12 @@
             "race": "",
             "role": "人物与线索",
             "notes": "民兵团、镇公所、地下墓穴、海德家、守夜人酒馆、铁匠铺；另有渡鸦商行商人。",
+            "style": {
+              "text": "#322a1d",
+              "color": "#dca838",
+              "shape": "rounded",
+              "border": "#706349"
+            },
             "status": "",
             "portrait": "assets/images/caseboard-v2/raven-town.png",
             "appearance": "",
@@ -571,8 +583,8 @@
             "appearance": ""
           },
           {
-            "x": 2720.381509900261,
-            "y": -221.91551180638146,
+            "x": 2844.1796687150018,
+            "y": -215.03785310787356,
             "id": "1ae35a91-d16f-454a-8047-e1992033b047",
             "kind": "person",
             "name": "亚赞",
@@ -670,7 +682,7 @@
         "boardId": "black-tower",
         "version": 1
       },
-      "updatedAt": "2026-09-15T17:49:21.778571+00:00"
+      "updatedAt": "2026-09-16T02:32:34.683296+00:00"
     },
     "journal": {
       "revision": 7,
@@ -1061,6 +1073,6 @@
   },
   "format": "dndcard-adventure",
   "version": 1,
-  "revision": 36,
-  "updatedAt": "2026-09-15T17:49:21.792972+00:00"
+  "revision": 39,
+  "updatedAt": "2026-09-16T02:32:34.685957+00:00"
 }
