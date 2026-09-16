@@ -52,3 +52,15 @@ body.tower-layout[data-workspace=journal].focus-screen .journal-frame{margin-top
  body.tower-layout[data-workspace=journal] .tower-dock button{padding:8px 10px;font-size:12px}
 }
 @media(max-height:550px){body.tower-layout[data-workspace=journal] .journal-desk{padding-bottom:58px}}
+
+/* Keep the journal actions inside the desk, with their own measured grid row. */
+body.tower-layout[data-workspace=journal] .journal-desk{grid-template-rows:auto minmax(0,1fr) auto auto;padding-bottom:10px;min-width:0}
+body.tower-layout[data-workspace=journal] .tower-dock{position:relative;inset:auto;justify-self:end;max-width:100%;min-width:0;margin-top:4px}
+body.tower-layout[data-workspace=journal] .tower-dock-row{flex-wrap:wrap;max-width:100%}
+body.tower-layout[data-workspace=journal] .tower-primary-actions{min-width:0;flex-wrap:wrap}
+body.tower-layout[data-workspace=journal] .tower-tools-panel{width:min(320px,calc(100vw - 88px));max-height:calc(100dvh - var(--tower-bar-height) - 120px);overflow-x:hidden}
+body.tower-layout[data-workspace=journal] .tower-tools-content>[data-tools-page]{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+body.tower-layout[data-workspace=journal] .tower-tools-content button{min-width:0;overflow-wrap:anywhere}
+body.tower-layout[data-workspace=journal].focus-screen .journal-desk{grid-template-rows:minmax(0,1fr) auto auto}
+@media(max-width:700px){body.tower-layout[data-workspace=journal] .tower-tools-panel{width:min(320px,calc(100vw - 44px))}}
+@media(max-width:650px),(max-height:650px){body.tower-layout[data-workspace=journal] .journal-desk{grid-template-rows:minmax(0,1fr) auto auto}}

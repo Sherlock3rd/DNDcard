@@ -23,7 +23,7 @@
  }else if(kind==='map'){
   move('#moveMode',primary);move('#wholeMap',primary);const p=pane('map'),old=q('main>header nav');old.querySelectorAll('a[href*="index.html"]').forEach(a=>a.remove());while(old.firstChild)p.append(old.firstChild);move('#mapSaveStatus',p);move('#mapContext',p);if(q('#journalSaveStatus'))q('#journalSaveStatus').hidden=true;
  }else if(kind==='journal'){
-  move('#contentsToggle',primary);move('#newEntry',primary);const p=pane('journal');move('#journalSaveStatus',p);move('[data-fullscreen]',p);q('.journal-toolbar').hidden=true;
+  move('#contentsToggle',primary);move('#newEntry',primary);const p=pane('journal');move('#journalSaveStatus',p);move('[data-fullscreen]',p);q('.journal-toolbar').hidden=true;q('.journal-desk').append(dock);
  }else{
   pane('room').innerHTML='<button type="button" data-open-bookshelf>书架与设置</button>';
   const p=pane('character');move('#saveState',p);move('#levelUpButton',primary);q('.character-home-button')?.remove();
