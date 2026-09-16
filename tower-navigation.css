@@ -41,3 +41,7 @@ body.tower-layout[data-workspace=map] #details{max-height:calc(100% - 100px)}
  .tower-layout .room-footer{padding:20px 16px 102px}
 }
 @media(max-height:500px){:root{--tower-bar-height:54px}.tower-bar .tower-nav a{min-height:38px;flex-direction:row;gap:7px}.tower-tools-panel{max-height:calc(100dvh - var(--tower-bar-height) - 108px)}.tower-dock{bottom:30px}.tower-layout .room-footer{display:none}}
+/* Journal is a fifth permanent destination; retain all labels on small screens. */
+.tower-tools-content #journalSaveStatus{grid-column:1/-1;width:100%}
+@media(max-width:900px){.tower-wordmark{display:none}.tower-bar{justify-content:center}.tower-bar .tower-nav{width:100%;justify-content:space-around}}
+@media(max-width:700px){.tower-bar .tower-nav a{padding:5px 4px;font-size:10px;gap:3px}}

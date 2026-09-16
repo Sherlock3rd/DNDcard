@@ -190,10 +190,20 @@ test('person level selection persists numbers and explicit unknown across device
 });
 
 test('global destinations stay separate from board and map tools; relocated actions retain handlers without writes',async()=>{
- for(const file of ['caseboard.html','map.html']){const server=copy(seed),a=page(file,server);try{await a.ready();assert.equal(a.w.document.querySelectorAll('.tower-nav a').length,4);assert.equal(a.q('.tower-nav [aria-current="page"]').dataset.towerPage,file==='map.html'?'map':'board');assert.equal(a.q('.tower-nav button'),null);
+ for(const file of ['caseboard.html','map.html']){const server=copy(seed),a=page(file,server);try{await a.ready();assert.equal(a.w.document.querySelectorAll('.tower-nav a').length,5);assert.equal(a.q('.tower-nav [aria-current="page"]').dataset.towerPage,file==='map.html'?'map':'board');assert.equal(a.q('.tower-nav button'),null);
   const panel=a.q('#towerToolsPanel'),toggle=a.q('#towerToolsToggle');assert(panel.hidden);toggle.click();assert(!panel.hidden);assert.equal(toggle.getAttribute('aria-expanded'),'true');
   if(file==='caseboard.html'){assert(a.q('.tower-primary-actions #boardEdit'));assert(a.q('.tower-primary-actions #boardFit'));a.q('#boardEdit').click();a.q('#boardNew').click();assert(a.q('#boardPersonDialog').open);assert(panel.hidden);a.q('[data-close-person]').click();}
   else{assert(a.q('.tower-primary-actions #moveMode'));assert(a.q('.tower-primary-actions #wholeMap'));a.q('#wholeMap').click();assert.equal(a.q('#mapContext').textContent,'费伦全域');assert(!panel.hidden);a.q('#toggle').click();assert(!a.q('#tray').hidden);assert(panel.hidden);a.q('#close').click();}
   toggle.click();a.w.document.dispatchEvent(new a.w.KeyboardEvent('keydown',{key:'Escape'}));assert(panel.hidden);assert.equal(a.w.document.activeElement,toggle);assert.equal(a.calls.length,0);assert.deepEqual(server,seed);
  }finally{a.w.close()}}
+});
+
+test('journal is a permanent destination and relocated journal tools retain read-only browsing and cancel behavior',async()=>{
+ const server=copy(seed),a=page('journal.html',server,{storedKey:'a'.repeat(64)});
+ try{await a.ready();const before=copy(server),saved=copy(a.w.JournalAPI.read());assert.equal(a.w.document.querySelectorAll('.tower-nav a').length,5);assert.equal(a.q('.tower-nav [aria-current=page]').dataset.towerPage,'journal');assert(a.q('.tower-primary-actions #contentsToggle'));assert(a.q('.tower-primary-actions #newEntry'));assert(a.q('#towerToolsPanel #journalSaveStatus'));assert(a.q('.journal-toolbar').hidden);
+ a.q('#contentsToggle').click();assert.equal(a.q('#contents').hidden,false);a.q('#entryList button:nth-child(2)').click();assert.equal(a.q('#contents').hidden,true);assert.match(a.q('#pageProgress').textContent,/2/);
+ a.q('#newEntry').click();assert(a.q('#entryEditor').open);a.q('[data-cancel-edit]').click();assert(!a.q('#entryEditor').open);
+ a.q('#towerToolsToggle').click();assert(!a.q('#towerToolsPanel').hidden);a.q('#journalSaveStatus').click();assert(a.q('#towerToolsPanel').hidden);assert(a.q('#adventureSaveDialog').open);
+ assert.deepEqual(copy(a.w.JournalAPI.read()),saved);assert.deepEqual(server,before);assert.equal(a.calls.length,0);
+ }finally{a.w.close()}
 });

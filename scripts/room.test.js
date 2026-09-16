@@ -28,7 +28,7 @@ test('room routes, independent transparent objects and bookshelf preserve saves'
     assert.equal(w.document.title, 'The Black Tower');
     assert.deepEqual(JSON.parse(JSON.stringify(w.ROOM_LAYER_SPEC)), JSON.parse(fs.readFileSync(path.join(root, 'assets/images/room/layers.json'), 'utf8')), 'runtime hit paths and anchors match the extraction manifest');
     assert.equal(q('#portalApp').hidden, false);
-    assert.equal(all('.tower-nav a').length,4);
+    assert.equal(all('.tower-nav a').length,5);
     assert.equal(q('.tower-nav [aria-current="page"]').dataset.towerPage,'room');
     assert.equal(all('.room-layer[data-room-layer]:not([data-room-layer="background"])').length, 5);
     assert.equal(new Set(all('.room-layer[data-room-layer]:not([data-room-layer="background"])').map(i => i.src)).size, 5);
