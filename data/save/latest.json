@@ -1,13 +1,13 @@
 {
   "parts": {
     "map": {
-      "revision": 25,
+      "revision": 26,
       "snapshot": {
         "mapId": "faerun-3.5",
         "pieces": [
           {
-            "x": 1394.8460870873862,
-            "y": 1126.2945376422117,
+            "x": 1405.4581560529036,
+            "y": 1119.6295130116698,
             "id": "current-position",
             "kind": "traveler",
             "name": "当前位置"
@@ -58,7 +58,7 @@
         ],
         "version": 1
       },
-      "updatedAt": "2026-09-15T12:42:42.719659+00:00"
+      "updatedAt": "2026-09-18T16:16:00.168649+00:00"
     },
     "board": {
       "revision": 26,
@@ -1073,6 +1073,6 @@
   },
   "format": "dndcard-adventure",
   "version": 1,
-  "revision": 39,
-  "updatedAt": "2026-09-16T02:32:34.685957+00:00"
+  "revision": 40,
+  "updatedAt": "2026-09-18T16:16:00.218115+00:00"
 }
