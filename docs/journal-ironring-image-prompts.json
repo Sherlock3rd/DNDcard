@@ -1,0 +1,50 @@
+{
+  "common": "Use case: illustration-story. Create one original chapter illustration for a Chinese D&D campaign journal, landscape 1536x1024, no text, no lettering, no borders, no collage. Match the existing journal image's muted ash-grey, dusty ochre, old-gold palette, hand-painted thick brushstrokes, fine weathered stone architecture, atmospheric overcast light, subdued realistic fantasy illustration. Environment-led, restrained chiaroscuro, never glossy 3D or cartoon. Party has exactly FOUR active adventurers in these chapters: a sword-carrying cloaked spellblade seen from behind (the narrator, do NOT depict the Lord of the Rings character), a plain-clothed monk, a hooded ranger with bow, a modest armored cleric. Faces kept small/obscured, no invented portrait identities. ",
+  "prompts": [
+    [
+      "06-fort-road",
+      "Four adventurers setting out through the broken gate of their newly claimed stone fortress at grey dawn. Unfinished walls, piled timber, a few practical tools in foreground show rebuilding shortage. The winding rocky road leads toward distant mountains. Wide evocative shot from behind, only four departing figures, fortress dominant, understated hopeful mood."
+    ],
+    [
+      "07-pazu-road",
+      "A roadside rescue before a dwarven mountain settlement: four adventurers attend ONE exhausted adult dwarf ore carrier beside his motionless fallen mule and overturned empty ore sacks, no graphic injury or visible gore. Rocky wilderness, a narrow northern mountain pass and small stone mining town beyond, steep mountains on three sides. Weathered dwarf holds a torn harness, ranger watching approach, cleric kneels to assist, spellblade and monk close by. Tragedy implied, soft grey-gold daylight."
+    ],
+    [
+      "08-mine-vigil",
+      "An abandoned gold mine chamber at night after fighting. Exactly four adventurers keeping an overconfident vigil toward the tunnel mouth around a dim lantern, no enemies present. Ore rails, damp stone, timber beams, gold-bearing rock subtly visible, deep wash-work area with stacked wooden crates fading into darkness behind the watchers. The crates obscure their rear, no visible hidden victim, no bodies foreground. Cold shadows contrast weak amber lamp. Visually emphasize wrong direction of attention and uneasy empty passage."
+    ],
+    [
+      "09-town-aftermath",
+      "Morning after a raid in a small dwarven mining town. Four weary adventurers stopped at street entrance, seen from behind. Burned timber and broken doors, ash across flagstones, surviving adult dwarves gathered silently; a grieving elderly dwarf kneels beside a fully cloth-covered stretcher. White-bearded broad dwarf mayor speaks to the party in middle distance. No graphic blood, no exposed dead bodies, no mass corpse spectacle. Restrained grief, cold grey dawn, a little old-gold light on stone. The town still stands but is badly wounded."
+    ],
+    [
+      "10-silver-needle",
+      "Inside a dwarven miners' guildhall, tense investigation just after an interrupted attack, NOT ongoing combat. Foreground focal point: an extremely fine silver needle laid on a dark linen cloth on a worn wooden desk, casting a faint indigo magical glow examined by a gloved spellblade hand. Subtle indigo wisps imply enchantment, restrained not neon. Background softly painted: distressed adult dwarf Pazu seated and watched by companions, broad white-bearded dwarf mayor steadying himself, monk, ranger, cleric nearby. One needle only, no surgery or exposed brain, no gore. Grey-gold interior, clues and expressions rather than heroic pose."
+    ]
+  ],
+  "provider": "builtin image_gen",
+  "size": "1536x1024",
+  "delivery": "WebP quality 86; full generated originals retained outside Git",
+  "chapterAssets": [
+    {
+      "chapter": "ironring-06",
+      "image": "assets/images/journal/06-fort-road.webp"
+    },
+    {
+      "chapter": "ironring-07",
+      "image": "assets/images/journal/07-pazu-road.webp"
+    },
+    {
+      "chapter": "ironring-08",
+      "image": "assets/images/journal/08-mine-vigil.webp"
+    },
+    {
+      "chapter": "ironring-09",
+      "image": "assets/images/journal/09-town-aftermath.webp"
+    },
+    {
+      "chapter": "ironring-10",
+      "image": "assets/images/journal/10-silver-needle.webp"
+    }
+  ]
+}
