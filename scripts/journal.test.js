@@ -38,6 +38,18 @@ test('bound journal place follows the physical piece; clearing with confirmation
   a.q('#clearJournalPlace').click();const raw=a.raw();a.q('#keepPlace').click();assert.equal(a.raw(),raw);a.q('#clearJournalPlace').click();a.q('#confirmClearPlace').click();const cleared=a.snapshot().places.find(p=>p.id==='mining-town');assert.equal(cleared.x,null);assert.equal(cleared.pieceId,null);assert.equal(a.w.document.querySelectorAll('.piece').length,1);
  }finally{a.close()}
 });
+test('map deep links wait for a cloud-only journal place before consuming initial focus',()=>{
+ for(const readyFirst of [false,true]){
+  const a=open('map.html',null,'?journalPlace=raven-town');try{
+   let writes=0;a.w.document.addEventListener('journal:change',()=>writes++);
+   const s=a.w.JournalAPI.read();s.places.push({id:'raven-town',name:'渡鸦镇',x:1387,y:1121,pieceId:null,note:'来自云端的新地点'});s.entries[0].placeIds.push('raven-town');
+   if(readyFirst)a.w.JournalAPI.ready();a.w.JournalAPI.apply(s);a.w.JournalAPI.ready();
+   assert.equal(a.q('#journalPlaceSelect').value,'raven-town');assert(a.q('#journalPlaceEntries').textContent.includes(s.entries[0].title));
+   a.w.document.dispatchEvent(new a.w.Event('map:restored'));assert.equal(a.q('#journalPlaceSelect').value,'raven-town');assert.equal(writes,0);
+  }finally{a.close()}
+ }
+});
+
 test('JSONB key ordering does not cause false server read-back errors',async()=>{
  const c=core(),remote=server(),original=remote.save.bind(remote);const reordered=v=>Array.isArray(v)?v.map(reordered):v&&typeof v==='object'?Object.fromEntries(Object.entries(v).reverse().map(([k,val])=>[k,reordered(val)])):v;
  remote.save=async(...args)=>reordered(await original(...args));const a=new c.Store({storage:storage(),remote});await a.setUser('A');a.save(c.initial());await a.sync();assert.equal(a.status,'synced');assert(c.equal(a.entry.snapshot,reordered(a.entry.snapshot)));

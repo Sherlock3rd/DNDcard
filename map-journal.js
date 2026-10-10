@@ -21,7 +21,10 @@
  function selectPlace(id,center=false){active=book.places.find(p=>p.id===id)||book.places[0];q('#journalPlaceEntries').replaceChildren();q('#journalPlaceNote').textContent='';q('#clearPlaceConfirm').hidden=true;q('#clearJournalPlace').hidden=!active||active.x===null;if(!active)return;q('#journalPlaceSelect').value=active.id;q('#journalPlaceNote').textContent=active.note+(active.x===null?' 尚未在地图定位。':'');showEntries(q('#journalPlaceEntries'),[active.id]);if(center)focus(active)}
  function render(){
   for(const m of markers)m.el.remove();markers=[];q('#journalPlaceSelect').replaceChildren();for(const p of book.places){q('#journalPlaceSelect').append(new Option(p.name,p.id));if(getPosition(p).x===null||p.pieceId&&pieces.some(piece=>String(piece.id)===p.pieceId))continue;const el=document.createElement('button');el.className='journal-map-point';el.title='查看 '+p.name+' 的冒险日志';el.setAttribute('aria-label',el.title);const mark=document.createElement('img');mark.src='assets/images/map-tokens/'+({'baldurs-gate':'port','mining-town':'village','reclaimed-fort':'castle'}[p.id]||'event')+'.png';mark.alt='';mark.draggable=false;const label=document.createElement('small');label.textContent=p.name;el.append(mark,label);el.onclick=e=>{e.stopPropagation();panel.hidden=false;selectPlace(p.id)};viewport.append(el);markers.push({el,p})}
-  selectPlace(active?.id||requested||book.places[0]?.id);if(!focused&&requested&&ready){focused=true;if(active)focus(active)}paintLinks();
+  // A deep-linked place may exist only in the cloud save, not in the initial seed.
+  // Keep its focus pending until the requested place itself is available.
+  const requestedPlace=book.places.find(p=>p.id===requested),focusRequested=!focused&&ready&&requestedPlace;
+  selectPlace(focusRequested?requestedPlace.id:active?.id||requested||book.places[0]?.id);if(focusRequested){focused=true;focus(requestedPlace)}paintLinks();
  }
  function paintLinks(){for(const {el,p} of markers){const pos=getPosition(p);el.style.left=(x+pos.x*scale)+'px';el.style.top=(y+pos.y*scale)+'px';el.hidden=pos.x===null}const ids=selected?book.places.filter(p=>p.pieceId===String(selected.id)).map(p=>p.id):[];showEntries(related,ids)}
  const originalPaint=paint;paint=function(){originalPaint();paintLinks()};
