@@ -1,0 +1,26 @@
+{
+  "provider": "builtin image_gen",
+  "common": "Use case: illustration-story. One original landscape 1536x1024 illustration for a Chinese D&D campaign diary. Consistent muted ash-grey, dusty ochre, antique gold, weathered stone and restrained dark indigo magic, realistic painterly thick brushstrokes, atmospheric natural light, environment-led composition like the preceding journal illustrations. No lettering, no captions, no frames, no collage, no glossy 3D. The traveling party is exactly FIVE adults: a plain-clothed martial monk, a hooded bow-carrying ranger, a female dark-cloaked warlock, a traveling bard with lute, and a female druid with mossy cloak and staff. Keep faces small, unidentifiable, matching silhouettes across chapters. Gandalf the spellblade and the cleric are NOT present on these expeditions. Never add a white-bearded wizard with a pointed hat. ",
+  "scenes": [
+    [
+      "11-south-ravine",
+      "Scene: five adventurers stealthily approach a concealed natural limestone cave at the end of a narrow muddy southern mountain ravine in cold early spring. Crude wooden barricade at cave entrance, exactly three slatted transport crates stacked just outside. A tiny spectral spider summoned by the female warlock crawls into a crack near her outstretched hand. Slick rock, fog, bare branches, faint warm light deep inside. Wide view from behind the five figures; tense reconnaissance, no battle or visible enemies."
+    ],
+    [
+      "12-blue-apparition",
+      "Scene: in the rear chamber of a natural cave, a fragile broken small wooden box on a stone table releases dense blue-grey smoke forming a translucent middle-aged male apparition wearing a deep blue robe, bald head and thick full beard. He raises a threatening hand above the table. In foreground the five weary traveling companions and ONE broad white-bearded dwarf mayor holding a practical warhammer watch warily; three companions with modest bandages, no graphic injuries. Scorched intricate circular magical traces on the stone floor, long-used bedding and small domestic objects in background. The apparition is clearly an illusion, identity unknown. No corpses, no gore, no readable text on the crumpled note."
+    ],
+    [
+      "13-raven-arrival",
+      "Scene: five tired adventurers arrive at a silent medieval market town at midnight with a modest travel wagon behind them, passing wet grey stone buildings toward the warm amber doorway of a tavern. An adult tiefling woman innkeeper, modest practical clothes and small horns, stands in the doorway greeting them. No readable sign lettering. Dark wood, shuttered windows, distant tower, muddy wheels, quiet weary mood after a long eastern journey. Wide street-level view, exactly five party silhouettes; no combat."
+    ],
+    [
+      "14-mayor-two-troubles",
+      "Scene: morning in a modest medieval town hall. A worried human mayor behind a worn wooden desk consults with the five adventurers. A small adult halfling secretary stands nearby holding papers. On the desk an unlabelled hand-drawn cemetery plan divided into surface burial plots and an underground crypt cross-section; another rough unlabelled road sketch points east toward woods and a small outpost. No readable words, no exact tomb count drawn, no glowing quest symbols. Pale mist through windows, restrained grey-gold morning light, believable bureaucracy and anxious faces. No visible necromancer or supposed culprit."
+    ],
+    [
+      "15-heir-gift",
+      "Scene: outside the stone porch of a wealthy merchant family's mansion in a misty medieval town. A young ADULT noble heir discreetly presses a tied heavy coin pouch into one of the five traveling adventurers' hands while the other four wait in the cold. Closed imposing doors and an aloof servant far behind imply the party has just been turned away. Modest earnest expression on the heir, not a child. Beyond the porch a town crossroads stretches toward dark eastern woodland in one direction and distant cemetery stonework in another. Weathered stone, subdued old gold, cold grey light, no text, no visual claim about which path is chosen."
+    ]
+  ]
+}
