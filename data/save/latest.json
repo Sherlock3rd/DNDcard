@@ -1279,7 +1279,7 @@
       "updatedAt": "2026-10-11T08:09:56.395497+00:00"
     },
     "character": {
-      "revision": 4,
+      "revision": 19,
       "snapshot": {
         "scope": "full",
         "format": "dndcard-snapshot",
@@ -1288,11 +1288,13 @@
             "hp": 26,
             "maxHp": 26,
             "slot1": 4,
-            "slot2": 3,
+            "slot2": 1,
             "tempHp": 0,
-            "conditions": [],
-            "bladesongUses": 2,
-            "bladesongActive": false
+            "conditions": [
+              "preset:mirror-image"
+            ],
+            "bladesongUses": 1,
+            "bladesongActive": true
           },
           "manager": {
             "coins": {
@@ -1319,10 +1321,10 @@
               "magic-missile",
               "mirror-image",
               "misty-step",
-              "comprehend-languages",
               "see-invisibility",
               "shield",
-              "sleep"
+              "sleep",
+              "thunderwave"
             ],
             "abilities": {
               "CHA": 6,
@@ -1386,12 +1388,6 @@
                 "notes": "1 包 · 共 20 支 · 轻弩弹药",
                 "equipped": false,
                 "quantity": 1
-              },
-              {
-                "id": "custom-item-1789283515466",
-                "notes": "",
-                "equipped": true,
-                "quantity": 5
               }
             ],
             "spellbook": [
@@ -1506,9 +1502,9 @@
           }
         },
         "version": 1,
-        "exportedAt": "2026-10-11T07:39:58.938Z"
+        "exportedAt": "2026-10-11T11:42:51.776Z"
       },
-      "updatedAt": "2026-10-11T07:40:01.241194+00:00"
+      "updatedAt": "2026-10-11T11:42:53.732645+00:00"
     }
   },
   "assets": {
@@ -1518,6 +1514,6 @@
   },
   "format": "dndcard-adventure",
   "version": 1,
-  "revision": 44,
-  "updatedAt": "2026-10-11T08:09:56.43987+00:00"
+  "revision": 59,
+  "updatedAt": "2026-10-11T11:42:53.773559+00:00"
 }
