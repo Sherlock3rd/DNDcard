@@ -1,10 +1,26 @@
 (()=>{
  'use strict';
  const q=s=>document.querySelector(s),isIndex=!!q('#characterApp'),kind=isIndex?'index':q('#boardViewport')?'board':document.body.dataset.workspace==='journal'?'journal':'map';
+ const progressKey='dndcard-tower-view-progress-v1';
+ const navigation=performance.getEntriesByType?.('navigation')?.[0];if(navigation?.type==='reload'||!navigation&&performance.navigation?.type===1)try{sessionStorage.removeItem(progressKey)}catch{}
+ function readProgress(){try{const value=JSON.parse(sessionStorage.getItem(progressKey));return value&&value.version===1&&value.pages?value:{version:1,pages:{}}}catch{return {version:1,pages:{}}}}
+ function writeProgress(value){try{sessionStorage.setItem(progressKey,JSON.stringify(value))}catch{}}
+ function currentPage(){return isIndex?(document.body.dataset.route==='character'?'character':'room'):kind}
+ function pageHref(id,fallback){const saved=readProgress().pages[id]?.href;if(typeof saved!=='string')return fallback;if(id==='room'&&/^\.\/index\.html#(?:portal|classes|spell-library|item-library|rules)$/.test(saved))return saved;if(id==='journal'&&/^\.\/journal\.html(?:#[A-Za-z0-9%._~-]+)?$/.test(saved))return saved;if(id==='character'&&/^\.\/index\.html#(?:overview|abilities|combat|spells|equipment|features|story)$/.test(saved))return saved;return fallback}
+ const destinations=[['room','书房',isIndex?'#portal':'./index.html#portal'],['journal','冒险日记','./journal.html'],['map','地图桌','./map.html'],['board','案件板','./caseboard.html'],['character','人物',isIndex?'#overview':'./index.html#overview']];
+ function syncDestinations(){for(const [id,,fallback] of destinations){const link=document.querySelector(`[data-tower-page="${id}"]`);if(link)link.setAttribute('href',pageHref(id,fallback))}}
+ function snapshot(){const id=currentPage(),state={href:id==='journal'?'./journal.html'+location.hash:id==='character'?'./index.html'+(location.hash||'#overview'):id==='room'?'./index.html'+(location.hash||'#portal'):`./${id==='board'?'caseboard':id}.html`,scrollX:scrollX||0,scrollY:scrollY||0};if(id==='journal')state.readingScroll=q('.reading-scroll')?.scrollTop||0;if(id==='map')state.view=window.MapTableView?.read();if(id==='board')state.view=window.CaseboardView?.read();const progress=readProgress();progress.pages[id]=state;writeProgress(progress);syncDestinations();return state}
+ function restore(id=currentPage()){
+  const saved=readProgress().pages[id];if(!saved)return;
+  const params=new URLSearchParams(location.search),focused=id==='map'&&(params.has('journalPlace')||params.has('piece'))||id==='board'&&params.has('person');
+  if(id==='map'&&!focused)window.MapTableView?.apply(saved.view);
+  if(id==='board'&&!focused)window.CaseboardView?.apply(saved.view);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{if(currentPage()!==id)return;scrollTo(saved.scrollX||0,saved.scrollY||0);if(id==='journal'&&q('.reading-scroll'))q('.reading-scroll').scrollTop=saved.readingScroll||0}))
+ }
  const icons={journal:'M4 3h13a3 3 0 0 1 3 3v15H6a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3M7 3v18M11 8h5M11 12h5',room:'M3 21V8l9-5 9 5v13M3 10h18M9 21v-8h6v8',board:'M3 4h18v15H3zM7 8h3v3H7zM15 7h3v3h-3zM12 14h4v2h-4M10 10l5-2M9 11l4 4',map:'m3 5 6-2 6 2 6-2v16l-6 2-6-2-6 2V5m6-2v16m6-14v16',character:'M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0M4 21v-3a8 8 0 0 1 16 0v3',tools:'M4 6h16M4 12h16M4 18h16M8 3v6M16 9v6M10 15v6'};
  const icon=id=>`<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="${icons[id]}"/></svg>`;
  const chrome=document.createElement('div');chrome.className='tower-bar';chrome.setAttribute('role','banner');
- chrome.innerHTML='<a class="tower-wordmark" href="./index.html#portal">THE BLACK TOWER</a><nav class="tower-nav" aria-label="主要导航">'+[['room','书房',isIndex?'#portal':'./index.html#portal'],['journal','冒险日记','./journal.html'],['map','地图桌','./map.html'],['board','案件板','./caseboard.html'],['character','人物',isIndex?'#overview':'./index.html#overview']].map(([id,label,href])=>`<a href="${href}" data-tower-page="${id}" title="${label}">${icon(id)}<span>${label}</span></a>`).join('')+'</nav>';
+ chrome.innerHTML='<a class="tower-wordmark" href="./index.html#portal">THE BLACK TOWER</a><nav class="tower-nav" aria-label="主要导航">'+destinations.map(([id,label,href])=>`<a href="${pageHref(id,href)}" data-tower-page="${id}" title="${label}">${icon(id)}<span>${label}</span></a>`).join('')+'</nav>';
  document.body.prepend(chrome);document.body.classList.add('tower-layout');
  const dock=document.createElement('aside');dock.className='tower-dock';dock.setAttribute('aria-label','当前页面操作');
  dock.innerHTML='<section id="towerToolsPanel" class="tower-tools-panel" aria-label="页面工具" hidden><div class="tower-tools-heading"><strong></strong><button type="button" aria-label="收起页面工具">×</button></div><div class="tower-tools-content"></div></section><div class="tower-dock-row"><div class="tower-primary-actions"></div><button id="towerToolsToggle" type="button" aria-expanded="false" aria-controls="towerToolsPanel">'+icon('tools')+'<span>工具</span></button></div>';
@@ -30,5 +46,6 @@
  }
  document.querySelectorAll('.case-frame>header,main>header,#characterApp>.topbar').forEach(h=>h.hidden=true);
  function update(){const current=isIndex?(document.body.dataset.route==='character'?'character':'room'):kind;dock.hidden=isIndex&&current==='room';chrome.querySelectorAll('[data-tower-page]').forEach(a=>{if(a.dataset.towerPage===current)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});Object.entries(panes).forEach(([id,p])=>p.hidden=id!==current);if(isIndex)primary.hidden=current!=='character';q('.tower-tools-heading strong').textContent=({room:'书房',board:'案件板',map:'地图桌',character:'人物',journal:'日记'}[current])+'工具';setOpen(false)}
- update();if(isIndex)new MutationObserver(update).observe(document.body,{attributes:true,attributeFilter:['data-route']});
+ chrome.addEventListener('click',e=>{if(e.target.closest('a'))snapshot()},true);window.addEventListener('pagehide',snapshot);document.addEventListener('map:restored',()=>restore('map'));document.addEventListener('board:ready',()=>restore('board'));
+ update();restore();if(isIndex)new MutationObserver(()=>{update();restore()}).observe(document.body,{attributes:true,attributeFilter:['data-route']});
 })();

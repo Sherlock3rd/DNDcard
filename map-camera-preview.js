@@ -44,6 +44,10 @@ viewport.inert=!new URLSearchParams(location.search).has('showcase');
 // Persist logical map coordinates, never camera or DOM pixels.
 function mapSnapshot(){return {version:1,mapId:'faerun-3.5',pieces:pieces.map(p=>({id:String(p.id),kind:p.type[1],name:p.name,...(typeof p.notes==='string'?{notes:p.notes}:{}),x:pieceDrag?.p===p?pieceDrag.oldX:p.x,y:pieceDrag?.p===p?pieceDrag.oldY:p.y}))}}
 function saveMap(){document.dispatchEvent(new CustomEvent('map:save',{detail:mapSnapshot()}))}
+window.MapTableView={
+ read:()=>({scale,x,y}),
+ apply(saved){if(!saved||![saved.scale,saved.x,saved.y].every(Number.isFinite)||saved.scale<=0)return false;stopRebound();scale=Math.min(4,saved.scale);x=saved.x;y=saved.y;clampView();paint();return true}
+};
 window.MapTable={read:mapSnapshot,canApply:()=>!pieceDrag&&!drag&&!mode&&$('#editor').hidden,
  apply(snapshot){setMoveMode(false);drag=null;select(null);for(const p of pieces)p.el.remove();pieces.length=0;
  for(const saved of snapshot.pieces){const p=create(Object.values(types).flat().find(t=>t[1]===saved.kind),saved.x,saved.y);p.id=saved.id;p.name=saved.name;p.notes=saved.notes;p.label.textContent=saved.name}home(true);document.dispatchEvent(new Event('map:restored'))}};
