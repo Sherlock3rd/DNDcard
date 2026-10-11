@@ -28,13 +28,17 @@ try{
  await cdp.send('Page.reload',{ignoreCache:false});await waitFor(cdp,mapReady,30000);const second=JSON.parse(await value(cdp,"JSON.stringify(document.querySelector('#geography').dataset)"));
  await cdp.send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:2,mobile:true});await cdp.send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:5});
  await cdp.send('Page.navigate',{url:`${base}/caseboard.html?showcase=1`});await waitFor(cdp,"!document.querySelector('#boardViewport')?.inert && document.querySelector('#boardWorld')?.style.transform",20000);
- await cdp.send('Runtime.evaluate',{expression:"window.__boardWrites=0;document.addEventListener('board:change',()=>window.__boardWrites++)"});
+ await cdp.send('Runtime.evaluate',{expression:"window.__boardWrites=0;window.__touchStarts=0;document.addEventListener('board:change',()=>window.__boardWrites++);document.querySelector('#boardViewport').addEventListener('touchstart',()=>window.__touchStarts++)"});
  const before=JSON.parse(await value(cdp,"JSON.stringify({transform:document.querySelector('#boardWorld').style.transform,rect:(()=>{const r=document.querySelector('#boardViewport').getBoundingClientRect();return {left:r.left,top:r.top,width:r.width,height:r.height}})()})")),rect=before.rect,cx=rect.left+rect.width/2,cy=rect.top+rect.height/2;
- await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:cx-70,y:cy},{x:cx+70,y:cy}]});await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:cx-120,y:cy+25},{x:cx+130,y:cy+25}]});await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await sleep(300);
- const after=JSON.parse(await value(cdp,"JSON.stringify({transform:document.querySelector('#boardWorld').style.transform,writes:window.__boardWrites,scrollWidth:document.documentElement.scrollWidth,clientWidth:document.documentElement.clientWidth,hint:document.querySelector('#boardHint').textContent})")),exceptions=cdp.events.filter(event=>event.method==='Runtime.exceptionThrown').map(event=>event.params.exceptionDetails.text);
+ await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:cx,y:cy}]});await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:cx+35,y:cy+20}]});await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await sleep(100);
+ const pan=JSON.parse(await value(cdp,"JSON.stringify({transform:document.querySelector('#boardWorld').style.transform,writes:window.__boardWrites})"));
+ await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:cx-70,y:cy}]});await sleep(80);
+ await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:cx-70,y:cy},{x:cx+70,y:cy}]});await sleep(80);
+ await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:cx-120,y:cy+25},{x:cx+130,y:cy+25}]});await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await sleep(300);
+ const after=JSON.parse(await value(cdp,"JSON.stringify({transform:document.querySelector('#boardWorld').style.transform,writes:window.__boardWrites,touchStarts:window.__touchStarts,scrollWidth:document.documentElement.scrollWidth,clientWidth:document.documentElement.clientWidth,hint:document.querySelector('#boardHint').textContent})")),exceptions=cdp.events.filter(event=>event.method==='Runtime.exceptionThrown').map(event=>event.params.exceptionDetails.text);
  if(first.overviewCache!=='miss'||second.overviewCache!=='hit'||second.lastPersistentCache!=='hit')throw Error(`Persistent cache did not hit after reload: ${JSON.stringify({first,second})}`);
- if(before.transform===after.transform||after.writes!==0||after.scrollWidth!==after.clientWidth||exceptions.length)throw Error(`Mobile pinch verification failed: ${JSON.stringify({before,after,exceptions})}`);
- console.log(JSON.stringify({map:{first,second},caseboard:{before,after},exceptions},null,2));
+ if(before.transform===pan.transform||pan.writes!==0||pan.transform===after.transform||after.writes!==0||after.touchStarts<3||after.scrollWidth!==after.clientWidth||exceptions.length)throw Error(`Mobile touch verification failed: ${JSON.stringify({before,pan,after,exceptions})}`);
+ console.log(JSON.stringify({map:{first,second},caseboard:{before,pan,after},exceptions},null,2));
 }finally{
  cdp?.ws.close();browser.kill();server.kill();await sleep(250);await rm(profile,{recursive:true,force:true});
 }
