@@ -3,10 +3,10 @@ import {mkdtemp,rm} from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 
-const root=path.resolve(import.meta.dirname,'..'),port=4179,debugPort=9334,base=`http://127.0.0.1:${port}`;
+const root=path.resolve(import.meta.dirname,'..'),port=4179,debugPort=9334,base=(process.env.DND_BASE||`http://127.0.0.1:${port}`).replace(/\/$/,'');
 const chrome=process.env.CHROME_PATH||'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 const profile=await mkdtemp(path.join(os.tmpdir(),'dnd-view-progress-'));
-const server=spawn(process.execPath,['scripts/serve.js'],{cwd:root,env:{...process.env,PORT:String(port)},windowsHide:true,stdio:'ignore'});
+const server=process.env.DND_BASE?null:spawn(process.execPath,['scripts/serve.js'],{cwd:root,env:{...process.env,PORT:String(port)},windowsHide:true,stdio:'ignore'});
 const browser=spawn(chrome,['--headless=new','--disable-gpu',`--remote-debugging-port=${debugPort}`,`--user-data-dir=${profile}`,'--no-first-run','--no-default-browser-check',`${base}/index.html#equipment`],{windowsHide:true,stdio:'ignore'});
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 
@@ -51,5 +51,5 @@ try{
  if(characterHref!=='./index.html#equipment'||characterScroll<100||journal.scroll!==137||!journal.hash||writes!==1||exceptions.length||!close(mapExpected.scale,mapActual.scale)||!close(mapExpected.x,mapActual.x)||!close(mapExpected.y,mapActual.y)||!close(boardExpected.zoom,boardActual.zoom)||!close(boardExpected.tx,boardActual.tx)||!close(boardExpected.ty,boardActual.ty))throw Error(JSON.stringify({characterHref,characterScroll,mapExpected,mapActual,journal,boardExpected,boardActual,writes,exceptions}));
  console.log(JSON.stringify({character:{href:characterHref,scroll:characterScroll},map:{expected:mapExpected,actual:mapActual},journal,board:{expected:boardExpected,actual:boardActual},exceptions},null,2));
 }finally{
- cdp?.ws.close();browser.kill();server.kill();await sleep(250);await rm(profile,{recursive:true,force:true});
+ cdp?.ws.close();browser.kill();server?.kill();await sleep(250);await rm(profile,{recursive:true,force:true});
 }
