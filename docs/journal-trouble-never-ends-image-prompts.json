@@ -1,0 +1,29 @@
+{
+  "shared": "Use case: illustration-story. Asset type: The Black Tower adventure journal chapter illustration, landscape 1536x1024. Existing chapter 15 image is style reference only. Muted ash-grey, dusty ochre and old gold painterly medieval dark fantasy, restrained realism, fine stone architecture, environmental storytelling, no readable text, no UI, no border, no collage, no watermark, no excessive gore, and do not depict Tolkien's Gandalf.",
+  "chapters": [
+    {
+      "id": "trouble-16",
+      "scene": "A vast overgrown cemetery beneath low storm clouds. A disciplined undead formation blocks the iron gate while eight adult adventurers face it; silver holy light is visibly suppressed and a warlock recoils from an unseen whisper."
+    },
+    {
+      "id": "trouble-17",
+      "scene": "A massive catacomb tomb door opens. Oathbreaker warrior Cliff and young necromancer Eddie emerge between restrained spectral and skeletal guards while eight adventurers wait cautiously."
+    },
+    {
+      "id": "trouble-18",
+      "scene": "An underground burial vault filled with coins, jewelry, merchant crates and revolutionary supplies. Cliff proposes a secret alliance to the party with Eddie and orderly undead nearby."
+    },
+    {
+      "id": "trouble-19",
+      "scene": "Eddie reveals a small archaic funerary relic whose pale force field suppresses silver divine light and necromantic wisps; the party studies it while supplies are prepared for evacuation."
+    },
+    {
+      "id": "trouble-20",
+      "scene": "Outside the Hyde manor, a nervous blond blacksmith apprentice secretly gives Antonio a crescent hand sign. A tiny familiar watches from the wall while the adventurers approach as ordinary visitors."
+    },
+    {
+      "id": "trouble-21",
+      "scene": "After midnight in a tavern room, Fei wakes to a skeletal cat with cold green fire in its eye sockets delivering an unseen patron's command beside an amber candle."
+    }
+  ]
+}
