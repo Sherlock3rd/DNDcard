@@ -57,7 +57,7 @@
       window.addEventListener('beforeunload',e=>{if(store.status==='storage-error'){e.preventDefault();e.returnValue=''}});
       window.addEventListener('online',()=>ready?store.sync():connect());window.addEventListener('focus',()=>ready?store.sync():connect());
       document.addEventListener('visibilitychange',()=>{if(!document.hidden&&ready)store.sync()});
-      setInterval(()=>{if(ready&&!document.hidden&&navigator.onLine)store.sync()},15000);
+      // No idle polling; edits, resume and manual refresh trigger synchronization.
       connect();
     }catch(e){button.textContent='地图存档读取失败 · 请勿编辑';q('[data-error]').textContent=e.message;document.querySelector('#viewport').inert=true}
   }

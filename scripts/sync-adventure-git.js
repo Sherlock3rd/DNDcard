@@ -10,10 +10,18 @@ async function sync({fetcher=fetch,token=process.env.GITHUB_TOKEN}={}){
  async function request(url,options={}){const r=await fetcher(url,{...options,signal:AbortSignal.timeout(20000)});return {status:r.status,ok:r.ok,data:await r.json()}}
  for(let attempt=0;attempt<4;attempt++){
   // Re-read both sides after conflicts; never retry a captured stale snapshot.
+  const remote=await request('https://api.github.com'+path+'?ref=main',{headers});if(!remote.ok&&remote.status!==404)throw Error('Git read failed: '+remote.status);
+  const previous=remote.ok?validateArchive(JSON.parse(Buffer.from(remote.data.content,'base64').toString('utf8')),validators):null;
+  if(previous){
+   const meta=await request(config.url+'/rest/v1/adventure_archive?id=eq.main&select=revision',{headers:{apikey:config.publishableKey}});
+   if(!meta.ok)throw Error('Archive version read failed: '+meta.status);
+   const revision=meta.data[0]?.revision;if(!Number.isSafeInteger(revision)||revision<1)throw Error('Invalid archive revision');
+   if(previous.revision>revision)throw Error('Refusing to replace a newer Git archive');
+   if(previous.revision===revision)return {status:'unchanged',revision};
+  }
   const source=await request(config.url+'/rest/v1/adventure_archive?id=eq.main&select=snapshot',{headers:{apikey:config.publishableKey,'Cache-Control':'no-cache'}});
   if(!source.ok)throw Error('Archive read failed: '+source.status);
   const archive=validateArchive(source.data[0]?.snapshot,validators);
-  const remote=await request('https://api.github.com'+path+'?ref=main',{headers});if(!remote.ok&&remote.status!==404)throw Error('Git read failed: '+remote.status);
   if(remote.ok){const previous=validateArchive(JSON.parse(Buffer.from(remote.data.content,'base64').toString('utf8')),validators);if(previous.revision>archive.revision)throw Error('Refusing to replace a newer Git archive');if(previous.revision===archive.revision){if(!require('../archive-core').equal(previous,archive))throw Error('Equal revisions have different contents');return {status:'unchanged',revision:archive.revision}}}
   const text=JSON.stringify(archive,null,2)+'\n',content=Buffer.from(text).toString('base64');
   const saved=await request('https://api.github.com'+path,{method:'PUT',headers,body:JSON.stringify({message:'Save adventure archive v'+archive.revision,branch:'main',content,...(remote.ok?{sha:remote.data.sha}:{})})});

@@ -60,7 +60,7 @@
       window.addEventListener('beforeunload',e=>{if(store.status==='storage-error'){e.preventDefault();e.returnValue=''}});
       window.addEventListener('online',()=>ready?store.sync():connect());window.addEventListener('focus',()=>ready?store.sync():connect());
       document.addEventListener('visibilitychange',()=>{if(!document.hidden&&ready)store.sync()});
-      setInterval(()=>{if(!document.hidden&&navigator.onLine){if(ready)store.sync();else connect()}},15000);
+      // No idle polling; edits, resume and manual refresh trigger synchronization.
       connect();
     }catch(e){button.textContent='日志存档读取失败 · 请勿编辑';q('[data-error]').textContent=e.message;table.block?.()}
   }

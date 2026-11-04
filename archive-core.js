@@ -24,10 +24,10 @@
    try{if(this.storage.getItem(this.key)!==this.raw){this.backup(next,'concurrent-tab-edit');throw Error('另一页面已更新，同页修改已保留副本，请刷新核对')}this.entry=next;this.persist();this.report(this.authorized?'pending':'local')}
    catch(e){this.report('storage-error',e.message);throw e}
   }
-  sync(){const task=this.queue.then(()=>this.run());this.queue=task.catch(()=>{});return task}
-  async run(){
+  sync({refresh=true}={}){const task=this.queue.then(()=>this.run(refresh));this.queue=task.catch(()=>{});return task}
+  async run(refresh){
    try{
-    this.report('syncing');const row=await this.load();this.validate(row.snapshot);if(!Number.isSafeInteger(row.revision)||row.revision<1)throw Error('服务器部分版本无效');
+    this.report('syncing');const row=await this.load(refresh);this.validate(row.snapshot);if(!Number.isSafeInteger(row.revision)||row.revision<1)throw Error('服务器部分版本无效');
     if(!this.entry){if(!this.canApply()){this.report('editing');return}this.backup(this.read(),'before-unified-migration');this.entry={revision:row.revision,updatedAt:row.updatedAt,snapshot:this.validate(row.snapshot),dirty:false};this.persist();this.apply(copy(this.entry.snapshot));this.ready=true}
     else if(!this.ready){if(!this.canApply()){this.report('editing');return}this.apply(copy(this.entry.snapshot));this.ready=true}
     if(row.revision<this.entry.revision){this.report('error','读取到较旧的备份，已保留本机较新版本');return}
@@ -53,7 +53,7 @@
   }
   async resolve(local){
    if(!this.entry?.conflict||!this.canApply())return;
-   const row=await this.load();if(row.revision!==this.entry.conflict.revision){this.entry.conflict=row;this.persist();this.report('conflict','云端再次更新，请重新核对');return}
+   const row=await this.load(true);if(row.revision!==this.entry.conflict.revision){this.entry.conflict=row;this.persist();this.report('conflict','云端再次更新，请重新核对');return}
    this.backup(this.entry,'before-resolution');this.entry={revision:row.revision,updatedAt:row.updatedAt,snapshot:local?this.entry.snapshot:this.validate(row.snapshot),dirty:local};this.persist();this.apply(copy(this.entry.snapshot));return this.sync();
   }
   external(){

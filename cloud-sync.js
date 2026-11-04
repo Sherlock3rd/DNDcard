@@ -174,7 +174,7 @@
         engine.backup(read(), "another-tab-active");
         locked();
       }, { once: true });
-      setInterval(() => { if (!document.hidden && navigator.onLine) engine.sync(); }, 15000);
+      // No idle polling; edits, resume and manual refresh trigger synchronization.
       update();
     } catch (error) { message(error.message); $("#cloudStatus").textContent = "云端暂不可用 · 可继续本地编辑"; }
   }
